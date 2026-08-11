@@ -4,25 +4,21 @@ import nodemailer from 'nodemailer';
  * Creates a Nodemailer transporter instance based on environment variables.
  */
 export function createTransporter() {
-  const host = process.env.SMTP_HOST;
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
-  if (!host || !user || !pass) {
+  if (!user || !pass) {
     console.warn(
-      '[Mailer Warning] SMTP environment variables (SMTP_HOST, SMTP_USER, SMTP_PASS) are not fully configured. Email sending will be logged to console.'
+      '[Mailer Warning] SMTP environment variables (SMTP_USER, SMTP_PASS) are not fully configured. Email sending will be logged to console.'
     );
     return null;
   }
 
   return nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465, // true for port 465, false for other ports
+    service: 'gmail',
     auth: {
-      user,
-      pass,
+      user: user,
+      pass: pass,
     },
   });
 }
@@ -202,13 +198,19 @@ export async function sendPasswordResetEmail({ toEmail, name, resetUrl }) {
     return { success: true, simulated: true };
   }
 
-  const info = await transporter.sendMail({
-    from: fromAddress,
-    to: toEmail,
-    subject: 'Reset Your Password - PaperPulse',
-    html: htmlContent,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to: toEmail,
+      subject: 'Reset Your Password - PaperPulse',
+      html: htmlContent,
+    });
 
-  console.log('[Mailer] Password reset email sent successfully. MessageID:', info.messageId);
-  return { success: true, messageId: info.messageId };
+    console.log('[Mailer Success] Password reset email sent successfully to', toEmail, 'MessageID:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[Mailer Error] Failed to send password reset email via Gmail SMTP:');
+    console.error(error);
+    return { success: false, error: error.message || error };
+  }
 }

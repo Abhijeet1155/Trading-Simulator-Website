@@ -1,22 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { TrendingUp, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { createBrowserClient } from '@supabase/ssr';
 
-// Initialize the client-side Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
-
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
   // Verification states
   const [checking, setChecking] = useState(true);
-  const [hasSession, setHasSession] = useState(false);
+  const [isValidToken, setIsValidToken] = useState(false);
   const [verificationError, setVerificationError] = useState('');
 
   // Form states
@@ -32,80 +28,34 @@ export default function ResetPasswordPage() {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
 
-  // Verify the recovery session on mount
+  // Verify the token on mount
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!token) {
+      setVerificationError('No reset token provided. Please request a new password reset link.');
+      setChecking(false);
+      return;
+    }
 
-    const verifySession = async () => {
+    const verifyToken = async () => {
       try {
-        const hash = window.location.hash;
-        const search = window.location.search;
+        const res = await fetch(`/api/auth/verify-reset-token?token=${encodeURIComponent(token)}`);
+        const data = await res.json();
 
-        // 1. Check if there are explicit error parameters from Supabase redirect
-        if (hash) {
-          const hashParams = new URLSearchParams(hash.substring(1));
-          const errorMsg = hashParams.get('error_description') || hashParams.get('error');
-          if (errorMsg) {
-            setVerificationError(decodeURIComponent(errorMsg).replace(/\+/g, ' '));
-            setChecking(false);
-            return;
-          }
+        if (res.ok && data.valid) {
+          setIsValidToken(true);
+        } else {
+          setVerificationError(data.error || 'This password reset link is invalid or expired.');
         }
-
-        if (search) {
-          const searchParams = new URLSearchParams(search);
-          const errorMsg = searchParams.get('error_description') || searchParams.get('error');
-          if (errorMsg) {
-            setVerificationError(decodeURIComponent(errorMsg).replace(/\+/g, ' '));
-            setChecking(false);
-            return;
-          }
-        }
-
-        // 2. Check if we already have a session
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          setHasSession(true);
-          setChecking(false);
-          return;
-        }
-
-        // 3. Short-circuit if there is no access token in the hash (prevents unnecessary delay/timeout)
-        const hasAccessToken = hash && hash.includes('access_token');
-        if (!hasAccessToken) {
-          setChecking(false);
-          return;
-        }
-
-        // 4. Listen to auth state changes to detect the session from the hash
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-          console.log('Reset Password Auth Event:', event, 'Session active:', !!session);
-          if (session) {
-            setHasSession(true);
-            setChecking(false);
-            subscription.unsubscribe();
-          }
-        });
-
-        // 5. Set a safety timeout
-        const timeout = setTimeout(() => {
-          setChecking(false);
-          subscription.unsubscribe();
-        }, 3000);
-
-        return () => {
-          clearTimeout(timeout);
-          subscription.unsubscribe();
-        };
       } catch (err) {
-        console.error('Error verifying session:', err);
+        console.error('Error verifying token:', err);
         setVerificationError('An error occurred while verifying the reset link.');
+      } finally {
         setChecking(false);
       }
     };
 
-    verifySession();
-  }, []);
+    verifyToken();
+  }, [token]);
 
   // Client-side validation
   const validate = () => {
@@ -136,20 +86,26 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: password
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: token,
+          password: password,
+          confirmPassword: confirmPassword,
+        }),
       });
 
-      if (error) {
-        setApiError(error.message);
-      } else {
-        // Sign out user client-side so they must log in with their new password
-        await supabase.auth.signOut();
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         router.push('/login?message=Your password has been reset successfully. Please log in with your new password.');
         router.refresh();
+      } else {
+        setApiError(data.error || 'Failed to reset password. Please try again.');
       }
     } catch (err) {
-      console.error('Reset password API error:', err);
+      console.error('Reset password submit error:', err);
       setApiError('A network error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -163,14 +119,14 @@ export default function ResetPasswordPage() {
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 rounded-full border-3 border-[#2563EB]/20 border-t-[#2563EB] animate-spin" />
           <h2 className="text-lg font-semibold text-[#111111]">Verifying your reset link...</h2>
-          <p className="text-sm text-[#6B7280]">Please wait while we establish a secure session.</p>
+          <p className="text-sm text-[#6B7280]">Please wait while we check your token.</p>
         </div>
       </div>
     );
   }
 
-  // 2. Error screen (invalid link/session)
-  if (!hasSession && !checking) {
+  // 2. Error screen (invalid / expired link)
+  if (!isValidToken) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8">
         {/* Top Logo */}
@@ -190,14 +146,22 @@ export default function ResetPasswordPage() {
           </div>
           <h2 className="text-xl font-bold text-[#111111] mb-2">Invalid or Expired Link</h2>
           <p className="text-sm text-[#6B7280] mb-6">
-            {verificationError || 'The password reset link is invalid, expired, or has already been used. Please request a new one.'}
+            {verificationError || 'This password reset link is invalid, expired, or has already been used. Please request a new one.'}
           </p>
-          <Link
-            href="/login"
-            className="inline-flex justify-center items-center w-full py-3.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all text-sm cursor-pointer"
-          >
-            Back to Login
-          </Link>
+          <div className="flex flex-col gap-3 w-full">
+            <Link
+              href="/forgot-password"
+              className="inline-flex justify-center items-center w-full py-3.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-all text-sm cursor-pointer"
+            >
+              Request New Link
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex justify-center items-center w-full py-3 border border-[#E5E7EB] bg-white text-[#4B5563] hover:bg-[#FAFAFA] font-semibold rounded-lg transition-all text-sm cursor-pointer"
+            >
+              Back to Login
+            </Link>
+          </div>
         </div>
 
         {/* Footer copyright */}
@@ -319,5 +283,22 @@ export default function ResetPasswordPage() {
         &copy; {new Date().getFullYear()} PaperPulse. All rights reserved.
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 rounded-full border-3 border-[#2563EB]/20 border-t-[#2563EB] animate-spin" />
+            <h2 className="text-lg font-semibold text-[#111111]">Loading...</h2>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 import { sendPasswordResetEmail } from '@/lib/mailer';
 
 // In-memory rate limiting fallback map (email -> array of timestamps)
@@ -45,7 +45,7 @@ export async function POST(req) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // 1. Look up user in public.users table
     const { data: user, error: userError } = await supabase

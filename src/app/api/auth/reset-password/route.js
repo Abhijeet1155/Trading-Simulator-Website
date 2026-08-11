@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
 import { createAdminClient } from '@/lib/supabaseAdmin';
 
 export async function POST(req) {
@@ -18,10 +17,10 @@ export async function POST(req) {
       return NextResponse.json({ success: false, error: 'Passwords do not match.' }, { status: 400 });
     }
 
-    const supabase = await createClient();
+    const supabaseAdmin = createAdminClient();
 
     // 1. Fetch token record from DB
-    const { data: tokenData, error: tokenError } = await supabase
+    const { data: tokenData, error: tokenError } = await supabaseAdmin
       .from('password_reset_tokens')
       .select('id, user_id, expires_at, used')
       .eq('token', token.trim())
@@ -66,7 +65,7 @@ export async function POST(req) {
     }
 
     // 3. Mark token as used immediately to ensure single-use security
-    const { error: markUsedError } = await supabase
+    const { error: markUsedError } = await supabaseAdmin
       .from('password_reset_tokens')
       .update({ used: true })
       .eq('id', tokenData.id);

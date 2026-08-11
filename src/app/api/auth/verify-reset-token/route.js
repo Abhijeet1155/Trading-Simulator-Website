@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 
 export async function GET(req) {
   try {
@@ -13,7 +13,7 @@ export async function GET(req) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // Query password_reset_tokens
     const { data: tokenData, error } = await supabase

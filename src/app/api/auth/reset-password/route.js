@@ -51,7 +51,6 @@ export async function POST(req) {
     }
 
     // 2. Update user's auth password via Supabase Admin API
-    const supabaseAdmin = createAdminClient();
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(tokenData.user_id, {
       password: password,
     });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
+import { sendWelcomeEmail } from '@/lib/mailer';
 
 export async function POST(req) {
   try {
@@ -89,6 +90,13 @@ export async function POST(req) {
     if (walletError) {
       console.error('Failed to create virtual wallet in public.wallets:', walletError);
       return NextResponse.json({ success: false, error: walletError.message }, { status: 400 });
+    }
+
+    // 4. Send Welcome Email via Gmail SMTP
+    try {
+      await sendWelcomeEmail({ toEmail: emailLower, name: name.trim() });
+    } catch (mailErr) {
+      console.error('[Signup] Failed to send welcome email:', mailErr);
     }
 
     const session = authData.session;

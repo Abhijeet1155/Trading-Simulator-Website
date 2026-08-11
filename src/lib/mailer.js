@@ -4,8 +4,8 @@ import nodemailer from 'nodemailer';
  * Creates a Nodemailer transporter instance based on environment variables.
  */
 export function createTransporter() {
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : null;
+  const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : null;
 
   if (!user || !pass) {
     console.warn(
@@ -214,3 +214,63 @@ export async function sendPasswordResetEmail({ toEmail, name, resetUrl }) {
     return { success: false, error: error.message || error };
   }
 }
+
+/**
+ * Generates and sends a welcome email to a new user.
+ * 
+ * @param {Object} params
+ * @param {string} params.toEmail
+ * @param {string} params.name
+ */
+export async function sendWelcomeEmail({ toEmail, name }) {
+  const transporter = createTransporter();
+  const fromAddress = process.env.SMTP_FROM || `"PaperPulse" <${process.env.SMTP_USER || 'no-reply@paperpulse.com'}>`;
+  const recipientName = name ? name.trim() : 'Trader';
+
+  const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to PaperPulse!</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAFAFA; margin: 0; padding: 0; color: #111111; }
+    .container { max-width: 520px; margin: 40px auto; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+    h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 16px; }
+    p { font-size: 15px; line-height: 1.6; color: #4B5563; }
+    .btn { display: inline-block; background: #2563EB; color: #fff !important; font-size: 15px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 10px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to PaperPulse, ${recipientName}! 🚀</h1>
+    <p>Thank you for joining PaperPulse. You can now start practicing paper trading, tracking real-time stock data, and building your risk-free portfolio.</p>
+    <p>Log in anytime to explore live trading competitions, monitor market updates, and analyze your performance.</p>
+    <div style="text-align: center;">
+      <a href="http://localhost:3000/dashboard" class="btn">Go to Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  if (!transporter) {
+    console.log('[DEV MODE] Welcome email simulated for:', toEmail);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to: toEmail,
+      subject: 'Welcome to PaperPulse! 🚀',
+      html: htmlContent,
+    });
+    console.log('[Mailer Success] Welcome email sent successfully to', toEmail, 'MessageID:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('[Mailer Error] Failed to send welcome email via Gmail SMTP:', error);
+    return { success: false, error: error.message || error };
+  }
+}
+

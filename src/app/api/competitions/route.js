@@ -1,23 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 import { getActiveWallet } from '@/lib/activeWallet';
-import fs from 'fs';
-import path from 'path';
-
-// Helper to load local database as fallback
-function getLocalDb() {
-  const localDbPath = path.join(process.cwd(), 'local_db.json');
-  if (fs.existsSync(localDbPath)) {
-    return JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-  }
-  return { trades: [], wallets: {}, competitions: [], competition_participants: [] };
-}
-
-// Helper to save local database
-function saveLocalDb(db) {
-  const localDbPath = path.join(process.cwd(), 'local_db.json');
-  fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2), 'utf8');
-}
 
 export async function GET(req) {
   try {
@@ -27,65 +11,27 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const supabaseAdmin = createAdminClient();
     const { searchParams } = new URL(req.url);
     const competitionId = searchParams.get('id');
 
-    // 1. Fetch data from Supabase or Fallback to local_db.json
-    let dbCompetitions = [];
-    let dbParticipants = [];
-    let dbWallets = [];
-    let dbUsers = [];
-    let isSupabase = true;
+    // 1. Fetch data from Supabase via Admin Client
+    const [compsRes, partsRes, walletsRes, usersRes] = await Promise.all([
+      supabaseAdmin.from('competitions').select('*'),
+      supabaseAdmin.from('competition_participants').select('*'),
+      supabaseAdmin.from('wallets').select('user_id, virtual_balance, balance_configured'),
+      supabaseAdmin.from('users').select('id, name')
+    ]);
 
-    try {
-      // Fetch competitions
-      const { data: comps, error: compsErr } = await supabase
-        .from('competitions')
-        .select('*');
-      if (compsErr) throw compsErr;
-      dbCompetitions = comps || [];
-
-      // Fetch participants
-      const { data: parts, error: partsErr } = await supabase
-        .from('competition_participants')
-        .select('*');
-      if (partsErr) throw partsErr;
-      dbParticipants = parts || [];
-
-      // Fetch wallets to get latest balances
-      const { data: wallets, error: walletsErr } = await supabase
-        .from('wallets')
-        .select('user_id, virtual_balance, balance_configured');
-      if (walletsErr) throw walletsErr;
-      dbWallets = wallets || [];
-
-      // Fetch users for names
-      const { data: users, error: usersErr } = await supabase
-        .from('users')
-        .select('id, name');
-      if (usersErr) throw usersErr;
-      dbUsers = users || [];
-
-    } catch (e) {
-      console.warn('Supabase fetch failed in user competitions, loading fallback:', e.message);
-      isSupabase = false;
-      const db = getLocalDb();
-      dbCompetitions = db.competitions || [];
-      dbParticipants = db.competition_participants || [];
-      
-      // Map local wallets
-      dbWallets = Object.entries(db.wallets || {}).map(([uid, bal]) => ({
-        user_id: uid,
-        virtual_balance: bal,
-        balance_configured: db.wallets_configured?.[uid] || false
-      }));
-
-      // Mock users list based on active wallet keys
-      dbUsers = dbWallets.map((w, index) => ({
-        id: w.user_id,
-        name: w.user_id === user.id ? (user.user_metadata?.name || 'You') : `Trader ${index + 1}`
-      }));
+    if (compsRes.error) {
+      console.error('[Competitions API] Error fetching competitions:', compsRes.error);
+      throw compsRes.error;
     }
+
+    const dbCompetitions = compsRes.data || [];
+    const dbParticipants = partsRes.data || [];
+    const dbWallets = walletsRes.data || [];
+    const dbUsers = usersRes.data || [];
 
     // Map wallets and users for fast lookups
     const walletsMap = {};
@@ -107,31 +53,14 @@ export async function GET(req) {
     // Find all participations of the current user
     const userParticipations = dbParticipants.filter(p => p.user_id === user.id);
     
-    // If Supabase, we can update the database. If local, we can update in memory and write back.
     if (userParticipations.length > 0) {
-      if (isSupabase) {
-        for (const p of userParticipations) {
-          if (parseFloat(p.current_balance) !== userWalletBalance) {
-            await supabase
-              .from('competition_participants')
-              .update({ current_balance: userWalletBalance })
-              .eq('id', p.id);
-            p.current_balance = userWalletBalance; // update in local array for immediate display
-          }
-        }
-      } else {
-        let db = getLocalDb();
-        let changed = false;
-        if (!db.competition_participants) db.competition_participants = [];
-        db.competition_participants.forEach(p => {
-          if (p.user_id === user.id && p.current_balance !== userWalletBalance) {
-            p.current_balance = userWalletBalance;
-            changed = true;
-          }
-        });
-        if (changed) {
-          saveLocalDb(db);
-          dbParticipants = db.competition_participants;
+      for (const p of userParticipations) {
+        if (parseFloat(p.current_balance) !== userWalletBalance) {
+          await supabaseAdmin
+            .from('competition_participants')
+            .update({ current_balance: userWalletBalance })
+            .eq('id', p.id);
+          p.current_balance = userWalletBalance; // update in local array for immediate display
         }
       }
     }
@@ -155,7 +84,6 @@ export async function GET(req) {
       const compParticipants = dbParticipants
         .filter(p => p.competition_id === competitionId)
         .map(p => {
-          // Use latest wallet balance for current balance
           const latestBalance = walletsMap[p.user_id] ?? parseFloat(p.current_balance);
           const pnlPercent = calcPnL(p.starting_balance, latestBalance);
           return {
@@ -177,11 +105,8 @@ export async function GET(req) {
 
       // Find the current user's participation and ranking
       const userPart = rankedParticipants.find(p => p.user_id === user.id);
-
-      // Extract top 5
       const top5 = rankedParticipants.slice(0, 5);
 
-      // Return details
       return NextResponse.json({
         competition,
         joined: !!userPart,
@@ -195,11 +120,6 @@ export async function GET(req) {
 
     // Default: Return list of active and upcoming competitions
     const now = new Date();
-    const activeOrUpcomingComps = dbCompetitions.filter(c => {
-      const endDate = new Date(c.end_date);
-      // Show competitions that haven't ended yet
-      return endDate >= now;
-    });
 
     // Map participant counts and user join status
     const formattedCompetitions = dbCompetitions.map(c => {
@@ -243,8 +163,8 @@ export async function GET(req) {
     });
 
   } catch (error) {
-    console.error('Failed to query competitions:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Competitions GET Error]:', error);
+    return NextResponse.json({ error: error.message || 'Failed to fetch competitions' }, { status: 500 });
   }
 }
 
@@ -256,46 +176,31 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const supabaseAdmin = createAdminClient();
     const { competitionId } = await req.json();
     if (!competitionId) {
       return NextResponse.json({ error: 'Competition ID is required' }, { status: 400 });
     }
 
     // 1. Get competition details to find entry fee and starting equity
-    let entryFee = 0;
-    let initialEquity = 10000;
-    let isSupabase = true;
+    const { data: comp, error: compErr } = await supabaseAdmin
+      .from('competitions')
+      .select('entry_fee, initial_equity')
+      .eq('id', competitionId)
+      .single();
 
-    try {
-      const { data: comp, error: compErr } = await supabase
-        .from('competitions')
-        .select('entry_fee, initial_equity')
-        .eq('id', competitionId)
-        .single();
-      if (compErr) throw compErr;
-      entryFee = comp ? parseFloat(comp.entry_fee) : 0;
-      initialEquity = comp && comp.initial_equity ? parseFloat(comp.initial_equity) : 10000;
-    } catch (e) {
-      console.warn('Failed to query competition from Supabase, check fallback:', e.message);
-      isSupabase = false;
-      const db = getLocalDb();
-      const comp = (db.competitions || []).find(c => c.id === competitionId);
-      if (!comp) {
-        return NextResponse.json({ error: 'Competition not found' }, { status: 404 });
-      }
-      entryFee = comp.entry_fee ? parseFloat(comp.entry_fee) : 0;
-      initialEquity = comp.initial_equity ? parseFloat(comp.initial_equity) : 10000;
+    if (compErr || !comp) {
+      console.error('[Competitions POST] Competition lookup error:', compErr);
+      return NextResponse.json({ error: 'Competition not found' }, { status: 404 });
     }
+
+    const entryFee = comp ? parseFloat(comp.entry_fee) : 0;
+    const initialEquity = comp && comp.initial_equity ? parseFloat(comp.initial_equity) : 10000;
 
     // 2. Resolve active wallet
-    const { activeWallet, useLocalFallback: forceLocal } = await getActiveWallet(user.id);
-    
-    if (forceLocal) {
-      isSupabase = false;
-    }
-
-    userWalletBalance = parseFloat(activeWallet.virtual_balance || 0);
-    balanceConfigured = activeWallet.balance_configured || false;
+    const { activeWallet } = await getActiveWallet(user.id);
+    const userWalletBalance = parseFloat(activeWallet.virtual_balance || 0);
+    const balanceConfigured = activeWallet.balance_configured || false;
 
     // Check if user has configured starting balance
     if (!balanceConfigured) {
@@ -309,7 +214,7 @@ export async function POST(req) {
 
     const balanceAfterFee = userWalletBalance - entryFee;
 
-    // 3. Register participant and update wallet balance
+    // 3. Register participant and update wallet balance using Admin Client
     const newParticipant = {
       competition_id: competitionId,
       user_id: user.id,
@@ -318,82 +223,40 @@ export async function POST(req) {
       status: 'active'
     };
 
-    if (isSupabase) {
-      // Deduct fee from active wallet
-      const { error: walletUpdateErr } = await supabase
+    // Deduct fee from active wallet
+    const { error: walletUpdateErr } = await supabaseAdmin
+      .from('wallets')
+      .update({ virtual_balance: balanceAfterFee, updated_at: new Date().toISOString() })
+      .eq('id', activeWallet.id);
+    
+    if (walletUpdateErr) {
+      console.error('[Competitions POST] Wallet fee deduction error:', walletUpdateErr);
+      return NextResponse.json({ error: 'Failed to deduct entry fee from wallet' }, { status: 500 });
+    }
+
+    const { error: insertErr } = await supabaseAdmin
+      .from('competition_participants')
+      .insert(newParticipant);
+    
+    if (insertErr) {
+      console.error('[Competitions POST] Participant insert error:', insertErr);
+      // Rollback wallet balance if participant insert fails
+      await supabaseAdmin
         .from('wallets')
-        .update({ virtual_balance: balanceAfterFee, updated_at: new Date().toISOString() })
+        .update({ virtual_balance: userWalletBalance, updated_at: new Date().toISOString() })
         .eq('id', activeWallet.id);
-      
-      if (walletUpdateErr) {
-        console.error('Failed to deduct fee from wallet in Supabase:', walletUpdateErr);
-        return NextResponse.json({ error: 'Failed to deduct entry fee from wallet' }, { status: 500 });
-      }
 
-      const { error: insertErr } = await supabase
-        .from('competition_participants')
-        .insert(newParticipant);
-      
-      if (insertErr) {
-        // Rollback wallet balance if participant insert fails
-        await supabase
-          .from('wallets')
-          .update({ virtual_balance: userWalletBalance, updated_at: new Date().toISOString() })
-          .eq('id', activeWallet.id);
-
-        if (insertErr.code === '23505') {
-          return NextResponse.json({ error: 'You have already joined this competition.' }, { status: 400 });
-        }
-        console.error('Failed to insert participant in Supabase:', insertErr);
-        return NextResponse.json({ error: insertErr.message }, { status: 400 });
-      }
-    } else {
-      const db = getLocalDb();
-      if (!db.competition_participants) {
-        db.competition_participants = [];
-      }
-      const alreadyJoined = db.competition_participants.some(
-        p => p.competition_id === competitionId && p.user_id === user.id
-      );
-      if (alreadyJoined) {
+      if (insertErr.code === '23505') {
         return NextResponse.json({ error: 'You have already joined this competition.' }, { status: 400 });
       }
-
-      // Deduct fee from local wallets_multi
-      if (!db.wallets_multi) db.wallets_multi = [];
-      let wallet = db.wallets_multi.find(w => w.id === activeWallet.id && w.user_id === user.id);
-      if (wallet) {
-        wallet.virtual_balance = balanceAfterFee;
-        wallet.updated_at = new Date().toISOString();
-      } else {
-        wallet = {
-          id: activeWallet.id,
-          user_id: user.id,
-          account_number: activeWallet.account_number,
-          virtual_balance: balanceAfterFee,
-          initial_balance: activeWallet.initial_balance || 10000.00,
-          balance_configured: true,
-          updated_at: new Date().toISOString()
-        };
-        db.wallets_multi.push(wallet);
-      }
-
-      // Keep legacy wallets dictionary updated for default account
-      if (activeWallet.id === user.id) {
-        if (!db.wallets) db.wallets = {};
-        db.wallets[user.id] = balanceAfterFee;
-      }
-
-      newParticipant.id = Math.random().toString(36).substring(2, 15);
-      newParticipant.joined_at = new Date().toISOString();
-      db.competition_participants.push(newParticipant);
-      saveLocalDb(db);
+      return NextResponse.json({ error: insertErr.message || 'Failed to join competition' }, { status: 400 });
     }
 
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('Failed to join competition:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Competitions POST Error]:', error);
+    return NextResponse.json({ error: error.message || 'Failed to join competition' }, { status: 500 });
   }
 }
+

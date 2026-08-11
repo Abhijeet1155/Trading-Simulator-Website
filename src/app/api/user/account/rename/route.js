@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 
 export async function POST(request) {
   try {
@@ -12,6 +11,8 @@ export async function POST(request) {
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const supabaseAdmin = createAdminClient();
 
     // 2. Parse request body
     const body = await request.json();
@@ -24,54 +25,27 @@ export async function POST(request) {
     const trimmedName = name ? name.trim().substring(0, 50) : '';
 
     // 3. Update wallet in Supabase
-    let ownWallet = false;
-    let useLocalFallback = false;
+    const { data, error } = await supabaseAdmin
+      .from('wallets')
+      .update({ account_name: trimmedName || null, updated_at: new Date().toISOString() })
+      .eq('id', walletId)
+      .eq('user_id', user.id)
+      .select('id')
+      .maybeSingle();
 
-    try {
-      const { data, error } = await supabase
-        .from('wallets')
-        .update({ account_name: trimmedName || null, updated_at: new Date().toISOString() })
-        .eq('id', walletId)
-        .eq('user_id', user.id)
-        .select('id')
-        .maybeSingle();
-      
-      if (error) {
-        if (error.message?.includes('schema cache') || error.message?.includes('does not exist') || error.message?.includes('column')) {
-          useLocalFallback = true;
-        } else {
-          throw error;
-        }
-      } else if (data) {
-        ownWallet = true;
-      }
-    } catch (e) {
-      useLocalFallback = true;
+    if (error) {
+      console.error('[Account Rename API Error]:', error);
+      return NextResponse.json({ error: error.message || 'Failed to rename account' }, { status: 500 });
     }
 
-    // Fallback: update local_db.json
-    if (useLocalFallback || !ownWallet) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        if (!db.wallets_multi) db.wallets_multi = [];
-        const wallet = db.wallets_multi.find(w => w.id === walletId && w.user_id === user.id);
-        if (wallet) {
-          wallet.account_name = trimmedName || null;
-          wallet.updated_at = new Date().toISOString();
-          ownWallet = true;
-          fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-        }
-      }
-    }
-
-    if (!ownWallet) {
+    if (!data) {
       return NextResponse.json({ error: 'Wallet not found or access denied' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, name: trimmedName });
   } catch (error) {
-    console.error('Error renaming account:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('[Account Rename API Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

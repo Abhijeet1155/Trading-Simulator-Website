@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 
 export async function POST(request) {
   try {
@@ -13,6 +12,8 @@ export async function POST(request) {
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const supabaseAdmin = createAdminClient();
 
     // 2. Parse request body
     const body = await request.json();
@@ -27,7 +28,7 @@ export async function POST(request) {
     // 3. Resolve user plan type
     let planType = 'free';
     try {
-      const { data: dbUser } = await supabase
+      const { data: dbUser } = await supabaseAdmin
         .from('users')
         .select('plan_type')
         .eq('id', user.id)
@@ -36,43 +37,24 @@ export async function POST(request) {
         planType = dbUser.plan_type.toLowerCase();
       }
     } catch (e) {
-      // ignore, default to free
+      // default to free
     }
 
     // Define account limits based on plan
     const maxAccounts = planType === 'premium' ? 5 : 2;
 
     // 4. Fetch existing wallets
-    let existingWallets = [];
-    let useLocalFallback = false;
-    try {
-      const { data, error } = await supabase
-        .from('wallets')
-        .select('*')
-        .eq('user_id', user.id);
-      
-      if (error) {
-        if (error.message?.includes('schema cache') || error.message?.includes('does not exist')) {
-          useLocalFallback = true;
-        } else {
-          throw error;
-        }
-      } else {
-        existingWallets = data || [];
-      }
-    } catch (e) {
-      useLocalFallback = true;
+    const { data: existingWalletsData, error: walletsFetchError } = await supabaseAdmin
+      .from('wallets')
+      .select('*')
+      .eq('user_id', user.id);
+
+    if (walletsFetchError) {
+      console.error('[Account Create] Error fetching user wallets:', walletsFetchError);
+      return NextResponse.json({ error: 'Failed to retrieve user accounts.' }, { status: 500 });
     }
 
-    const localDbPath = path.join(process.cwd(), 'local_db.json');
-    if (useLocalFallback && fs.existsSync(localDbPath)) {
-      try {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        existingWallets = db.wallets_multi?.filter(w => w.user_id === user.id) || [];
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    const existingWallets = existingWalletsData || [];
 
     // Check account limit
     if (existingWallets.length >= maxAccounts) {
@@ -90,22 +72,13 @@ export async function POST(request) {
       attempts++;
       const randNum = String(Math.floor(100000 + Math.random() * 900000));
       
-      // Check collision
-      let isColliding = false;
-      if (!useLocalFallback) {
-        const { data } = await supabase
-          .from('wallets')
-          .select('id')
-          .eq('account_number', randNum)
-          .maybeSingle();
-        if (data) isColliding = true;
-      } else if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        const exists = db.wallets_multi?.some(w => w.account_number === randNum);
-        if (exists) isColliding = true;
-      }
-
-      if (!isColliding) {
+      const { data } = await supabaseAdmin
+        .from('wallets')
+        .select('id')
+        .eq('account_number', randNum)
+        .maybeSingle();
+      
+      if (!data) {
         newAccountNumber = randNum;
         collision = false;
       }
@@ -116,74 +89,24 @@ export async function POST(request) {
     }
 
     // 6. Create new account
-    const newWalletId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    const newWallet = {
-      id: useLocalFallback ? newWalletId : undefined, // Supabase generates gen_random_uuid() by default
-      user_id: user.id,
-      account_number: newAccountNumber,
-      account_name: trimmedName || null,
-      virtual_balance: numAmount,
-      currency: 'USD',
-      initial_balance: numAmount,
-      balance_configured: true,
-      updated_at: new Date().toISOString()
-    };
+    const { data: createdWallet, error: insertError } = await supabaseAdmin
+      .from('wallets')
+      .insert({
+        user_id: user.id,
+        account_number: newAccountNumber,
+        account_name: trimmedName || null,
+        virtual_balance: numAmount,
+        currency: 'USD',
+        initial_balance: numAmount,
+        balance_configured: true,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single();
 
-    let createdWallet = null;
-    if (!useLocalFallback) {
-      try {
-        const { data, error } = await supabase
-          .from('wallets')
-          .insert({
-            user_id: user.id,
-            account_number: newAccountNumber,
-            account_name: trimmedName || null,
-            virtual_balance: numAmount,
-            currency: 'USD',
-            initial_balance: numAmount,
-            balance_configured: true,
-            updated_at: new Date().toISOString()
-          })
-          .select()
-          .single();
-        
-        if (error) {
-          if (error.message?.includes('schema cache') || error.message?.includes('does not exist') || error.code === 'PGRST204') {
-            useLocalFallback = true;
-          } else {
-            throw error;
-          }
-        } else {
-          createdWallet = data;
-        }
-      } catch (err) {
-        console.error('Failed to insert wallet in Supabase:', err.message || err);
-        if (err.code === 'PGRST204' || err.message?.includes('schema cache') || err.message?.includes('does not exist')) {
-          useLocalFallback = true;
-        }
-        if (!useLocalFallback) {
-          return NextResponse.json({ error: `Supabase database error: ${err.message || err}` }, { status: 500 });
-        }
-      }
-    }
-
-    if (useLocalFallback) {
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        if (!db.wallets_multi) db.wallets_multi = [];
-        
-        const localWallet = {
-          ...newWallet,
-          id: newWalletId // Make sure ID is set for local fallback
-        };
-        db.wallets_multi.push(localWallet);
-        fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-        createdWallet = localWallet;
-      }
-    }
-
-    if (!createdWallet) {
-      return NextResponse.json({ error: 'Failed to create demo account' }, { status: 500 });
+    if (insertError || !createdWallet) {
+      console.error('[Account Create API Error]:', insertError);
+      return NextResponse.json({ error: insertError?.message || 'Failed to create demo account' }, { status: 500 });
     }
 
     // 7. Set cookie to make it the active wallet
@@ -198,7 +121,8 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, wallet: createdWallet });
   } catch (error) {
-    console.error('Error creating demo account:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('[Account Create API Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

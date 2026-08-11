@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 
 async function verifyAdmin(supabase) {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -9,7 +8,8 @@ async function verifyAdmin(supabase) {
     return { error: 'Unauthorized', status: 401 };
   }
 
-  const { data: dbUser } = await supabase
+  const supabaseAdmin = createAdminClient();
+  const { data: dbUser } = await supabaseAdmin
     .from('users')
     .select('is_admin')
     .eq('id', user.id)
@@ -39,36 +39,26 @@ async function verifyAdmin(supabase) {
 export async function GET(request) {
   try {
     const supabase = await createClient();
-    
-    // Auth check
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    let competitions = [];
-    try {
-      const { data, error } = await supabase
-        .from('competitions')
-        .select('*')
-        .order('created_at', { ascending: false });
+    const supabaseAdmin = createAdminClient();
+    const { data, error } = await supabaseAdmin
+      .from('competitions')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      competitions = data || [];
-    } catch (e) {
-      console.warn('Failed to fetch competitions from Supabase, loading from local_db.json fallback:', e.message);
-      // Fallback to local_db.json
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        competitions = db.competitions || [];
-      }
+    if (error) {
+      console.error('[Admin Competitions GET Error]:', error);
+      return NextResponse.json({ error: error.message || 'Failed to fetch competitions' }, { status: 500 });
     }
 
-    return NextResponse.json({ competitions });
+    return NextResponse.json({ competitions: data || [] });
   } catch (error) {
-    console.error('Failed to get competitions:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Competitions GET Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -105,44 +95,22 @@ export async function POST(request) {
       banner_video_url: banner_video_url || null
     };
 
-    let insertedData = null;
-    let insertError = null;
+    const supabaseAdmin = createAdminClient();
+    const { data, error } = await supabaseAdmin
+      .from('competitions')
+      .insert(newComp)
+      .select()
+      .single();
 
-    try {
-      const { data, error } = await supabase
-        .from('competitions')
-        .insert(newComp)
-        .select()
-        .single();
-      insertError = error;
-      insertedData = data;
-    } catch (e) {
-      insertError = e;
+    if (error || !data) {
+      console.error('[Admin Competitions POST Error]:', error);
+      return NextResponse.json({ error: error?.message || 'Failed to create competition' }, { status: 500 });
     }
 
-    // Fallback to local_db.json
-    if (insertError) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        if (!db.competitions) {
-          db.competitions = [];
-        }
-        const mockComp = {
-          id: Math.random().toString(36).substring(2, 9),
-          ...newComp,
-          created_at: new Date().toISOString()
-        };
-        db.competitions.push(mockComp);
-        fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-        insertedData = mockComp;
-      }
-    }
-
-    return NextResponse.json({ success: true, competition: insertedData });
+    return NextResponse.json({ success: true, competition: data });
   } catch (error) {
-    console.error('Failed to create competition:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Competitions POST Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -178,44 +146,23 @@ export async function PUT(request) {
     if (banner_image_url !== undefined) updates.banner_image_url = banner_image_url;
     if (banner_video_url !== undefined) updates.banner_video_url = banner_video_url;
 
-    let updatedData = null;
-    let updateError = null;
+    const supabaseAdmin = createAdminClient();
+    const { data, error } = await supabaseAdmin
+      .from('competitions')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
 
-    try {
-      const { data, error } = await supabase
-        .from('competitions')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
-      updateError = error;
-      updatedData = data;
-    } catch (e) {
-      updateError = e;
+    if (error || !data) {
+      console.error('[Admin Competitions PUT Error]:', error);
+      return NextResponse.json({ error: error?.message || 'Failed to update competition' }, { status: 500 });
     }
 
-    // Fallback update in local_db.json
-    if (updateError) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        if (db.competitions) {
-          db.competitions = db.competitions.map(c => {
-            if (c.id === id) {
-              return { ...c, ...updates };
-            }
-            return c;
-          });
-          fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-          updatedData = db.competitions.find(c => c.id === id);
-        }
-      }
-    }
-
-    return NextResponse.json({ success: true, competition: updatedData });
+    return NextResponse.json({ success: true, competition: data });
   } catch (error) {
-    console.error('Failed to update competition:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Competitions PUT Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -233,35 +180,21 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Missing competition id' }, { status: 400 });
     }
 
-    let deleteError = null;
-    try {
-      const { error } = await supabase
-        .from('competitions')
-        .delete()
-        .eq('id', id);
-      deleteError = error;
-    } catch (e) {
-      deleteError = e;
-    }
+    const supabaseAdmin = createAdminClient();
+    const { error } = await supabaseAdmin
+      .from('competitions')
+      .delete()
+      .eq('id', id);
 
-    // Fallback delete from local_db.json
-    if (deleteError) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        if (db.competitions) {
-          db.competitions = db.competitions.filter(c => c.id !== id);
-          if (db.competition_participants) {
-            db.competition_participants = db.competition_participants.filter(p => p.competition_id !== id);
-          }
-          fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-        }
-      }
+    if (error) {
+      console.error('[Admin Competitions DELETE Error]:', error);
+      return NextResponse.json({ error: error.message || 'Failed to delete competition' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Failed to delete competition:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Competitions DELETE Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

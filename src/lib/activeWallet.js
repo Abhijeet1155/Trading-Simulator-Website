@@ -1,10 +1,10 @@
 import { cookies } from 'next/headers';
-import { createClient } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 import fs from 'fs';
 import path from 'path';
 
 export async function getActiveWallet(userId) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const cookieStore = await cookies();
   const activeWalletId = cookieStore.get('pp_active_wallet_id')?.value;
 
@@ -19,17 +19,13 @@ export async function getActiveWallet(userId) {
     
     if (error) throw error;
     
-    // Detect if Supabase PostgREST schema cache is missing the new columns
-    if (data && data.length > 0) {
-      const sample = data[0];
-      if (!('balance_configured' in sample) || !('account_name' in sample)) {
-        throw new Error('Supabase schema cache is missing balance_configured or account_name columns');
-      }
-    }
-    
-    wallets = data || [];
+    wallets = (data || []).map(item => ({
+      ...item,
+      balance_configured: item.balance_configured ?? true,
+      account_name: item.account_name || 'Primary Demo'
+    }));
   } catch (err) {
-    console.warn('getActiveWallet: Supabase query failed or schema cache is outdated. Forcing local DB fallback:', err.message || err);
+    console.error('[getActiveWallet Error]:', err);
     useLocalFallback = true;
   }
 

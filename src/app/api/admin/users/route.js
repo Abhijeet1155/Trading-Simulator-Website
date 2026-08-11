@@ -1,7 +1,28 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabaseAdmin';
+
+async function checkAdmin(user) {
+  const supabaseAdmin = createAdminClient();
+  const { data: callerUser } = await supabaseAdmin
+    .from('users')
+    .select('is_admin')
+    .eq('id', user.id)
+    .single();
+
+  const ADMIN_EMAILS = [
+    'patilabhijeet409@gmail.com',
+    'abhieet881@gmail.com',
+    'abhijeetpatil881@gmail.com',
+    'abhijeet881@gmail.com',
+    'gzabhijeet@gmail.com'
+  ];
+  const emailMatch = ADMIN_EMAILS.some(
+    (e) => e.toLowerCase() === (user.email || '').toLowerCase()
+  );
+  
+  return callerUser?.is_admin === true || emailMatch;
+}
 
 // PUT: Edit user profile details, plan, balance, or active status
 export async function PUT(request) {
@@ -15,24 +36,7 @@ export async function PUT(request) {
     }
 
     // 2. Check if caller is admin
-    const { data: callerUser, error: callerError } = await supabase
-      .from('users')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single();
-
-    const ADMIN_EMAILS = [
-      'patilabhijeet409@gmail.com',
-      'abhieet881@gmail.com',
-      'abhijeetpatil881@gmail.com',
-      'abhijeet881@gmail.com',
-      'gzabhijeet@gmail.com'
-    ];
-    const emailMatch = ADMIN_EMAILS.some(
-      (e) => e.toLowerCase() === (user.email || '').toLowerCase()
-    );
-    let isAdmin = callerUser?.is_admin === true || emailMatch;
-
+    const isAdmin = await checkAdmin(user);
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -45,69 +49,40 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
+    const supabaseAdmin = createAdminClient();
+
     // 4. Perform updates in Supabase
-    let updateError = null;
-    try {
-      const userUpdates = {};
-      if (status !== undefined) userUpdates.status = status;
-      if (name !== undefined) userUpdates.name = name;
-      if (plan_type !== undefined) userUpdates.plan_type = plan_type;
+    const userUpdates = {};
+    if (status !== undefined) userUpdates.status = status;
+    if (name !== undefined) userUpdates.name = name;
+    if (plan_type !== undefined) userUpdates.plan_type = plan_type;
 
-      if (Object.keys(userUpdates).length > 0) {
-        const { error } = await supabase
-          .from('users')
-          .update(userUpdates)
-          .eq('id', userId);
-        if (error) throw error;
+    if (Object.keys(userUpdates).length > 0) {
+      const { error: userUpdateErr } = await supabaseAdmin
+        .from('users')
+        .update(userUpdates)
+        .eq('id', userId);
+      if (userUpdateErr) {
+        console.error('[Admin Users PUT] User update error:', userUpdateErr);
+        return NextResponse.json({ error: userUpdateErr.message || 'Failed to update user' }, { status: 500 });
       }
-
-      if (virtual_balance !== undefined) {
-        const { error } = await supabase
-          .from('wallets')
-          .update({ virtual_balance: parseFloat(virtual_balance), updated_at: new Date().toISOString() })
-          .eq('user_id', userId);
-        if (error) throw error;
-      }
-    } catch (e) {
-      updateError = e;
     }
 
-    // Fallback: Update local_db.json
-    if (updateError || !callerUser) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-        
-        if (status !== undefined) {
-          if (!db.user_statuses) db.user_statuses = {};
-          db.user_statuses[userId] = status;
-        }
-
-        if (virtual_balance !== undefined) {
-          if (!db.wallets) db.wallets = {};
-          db.wallets[userId] = parseFloat(virtual_balance);
-        }
-
-        if (db.users) {
-          db.users = db.users.map(u => {
-            if (u.id === userId) {
-              const updated = { ...u };
-              if (name !== undefined) updated.name = name;
-              if (plan_type !== undefined) updated.plan_type = plan_type;
-              if (status !== undefined) updated.status = status;
-              return updated;
-            }
-            return u;
-          });
-        }
-        fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
+    if (virtual_balance !== undefined) {
+      const { error: walletUpdateErr } = await supabaseAdmin
+        .from('wallets')
+        .update({ virtual_balance: parseFloat(virtual_balance), updated_at: new Date().toISOString() })
+        .eq('user_id', userId);
+      if (walletUpdateErr) {
+        console.error('[Admin Users PUT] Wallet update error:', walletUpdateErr);
+        return NextResponse.json({ error: walletUpdateErr.message || 'Failed to update user wallet' }, { status: 500 });
       }
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Admin user status update error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Users PUT Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -123,24 +98,7 @@ export async function DELETE(request) {
     }
 
     // 2. Check if caller is admin
-    const { data: callerUser } = await supabase
-      .from('users')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single();
-
-    const ADMIN_EMAILS = [
-      'patilabhijeet409@gmail.com',
-      'abhieet881@gmail.com',
-      'abhijeetpatil881@gmail.com',
-      'abhijeet881@gmail.com',
-      'gzabhijeet@gmail.com'
-    ];
-    const emailMatch = ADMIN_EMAILS.some(
-      (e) => e.toLowerCase() === (user.email || '').toLowerCase()
-    );
-    let isAdmin = callerUser?.is_admin === true || emailMatch;
-
+    const isAdmin = await checkAdmin(user);
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -153,65 +111,31 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Missing userId parameter' }, { status: 400 });
     }
 
-    // 4. Perform deletes in Supabase
-    let deleteError = null;
-    try {
-      // Deleting public.users cascades to trades, wallets, and competition_participants tables
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', userId);
-      
-      if (error) throw error;
+    const supabaseAdmin = createAdminClient();
 
-      // Clean up Supabase Auth account if Admin Service Role key is configured
-      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-      if (serviceKey) {
-        const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
-        const adminClient = createSupabaseClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-          serviceKey,
-          { auth: { persistSession: false } }
-        );
-        await adminClient.auth.admin.deleteUser(userId);
-      }
-    } catch (e) {
-      deleteError = e;
+    // 4. Perform deletes in Supabase
+    // Deleting public.users cascades to trades, wallets, and competition_participants tables
+    const { error: deleteErr } = await supabaseAdmin
+      .from('users')
+      .delete()
+      .eq('id', userId);
+    
+    if (deleteErr) {
+      console.error('[Admin Users DELETE Error]:', deleteErr);
+      return NextResponse.json({ error: deleteErr.message || 'Failed to delete user' }, { status: 500 });
     }
 
-    // Fallback: Delete from local_db.json
-    if (deleteError || !callerUser) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-
-        if (db.users) {
-          db.users = db.users.filter(u => u.id !== userId);
-        }
-
-        if (db.wallets && db.wallets[userId] !== undefined) {
-          delete db.wallets[userId];
-        }
-
-        if (db.user_statuses && db.user_statuses[userId] !== undefined) {
-          delete db.user_statuses[userId];
-        }
-
-        if (db.trades) {
-          db.trades = db.trades.filter(t => t.user_id !== userId);
-        }
-
-        if (db.competition_participants) {
-          db.competition_participants = db.competition_participants.filter(p => p.user_id !== userId);
-        }
-
-        fs.writeFileSync(localDbPath, JSON.stringify(db, null, 2));
-      }
+    // Clean up Supabase Auth account using Admin Service Role client
+    try {
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+    } catch (authDeleteErr) {
+      console.warn('[Admin Users DELETE] Auth user cleanup warning:', authDeleteErr.message);
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Admin user delete error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[Admin Users DELETE Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

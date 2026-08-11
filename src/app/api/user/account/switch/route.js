@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase';
-import fs from 'fs';
-import path from 'path';
+import { createAdminClient } from '@/lib/supabaseAdmin';
 
 export async function POST(request) {
   try {
@@ -14,6 +13,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const supabaseAdmin = createAdminClient();
+
     // 2. Parse walletId
     const body = await request.json();
     const { walletId } = body;
@@ -22,43 +23,16 @@ export async function POST(request) {
     }
 
     // 3. Verify wallet ownership
-    let ownWallet = false;
-    let useLocalFallback = false;
+    const { data: ownWallet, error: fetchError } = await supabaseAdmin
+      .from('wallets')
+      .select('id')
+      .eq('id', walletId)
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-    try {
-      const { data, error } = await supabase
-        .from('wallets')
-        .select('id')
-        .eq('id', walletId)
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (error) {
-        if (error.message?.includes('schema cache') || error.message?.includes('does not exist')) {
-          useLocalFallback = true;
-        } else {
-          throw error;
-        }
-      } else if (data) {
-        ownWallet = true;
-      }
-    } catch (e) {
-      useLocalFallback = true;
-    }
-
-    if (useLocalFallback) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        try {
-          const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-          const wallet = db.wallets_multi?.find(w => w.id === walletId && w.user_id === user.id);
-          if (wallet) {
-            ownWallet = true;
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
+    if (fetchError) {
+      console.error('[Account Switch API Error]:', fetchError);
+      return NextResponse.json({ error: fetchError.message || 'Error verifying account' }, { status: 500 });
     }
 
     if (!ownWallet) {
@@ -77,7 +51,8 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, activeWalletId: walletId });
   } catch (error) {
-    console.error('Error switching active account:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('[Account Switch API Error]:', error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

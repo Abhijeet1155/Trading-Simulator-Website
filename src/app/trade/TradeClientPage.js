@@ -362,6 +362,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
   // Search dialog visibility
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [isLiveData, setIsLiveData] = useState(true);
 
   // Account Details Dropdown state and click outside handler
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
@@ -770,11 +771,16 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
       try {
         const res = await fetch('/api/prices');
         const data = await res.json();
+
+        if (data._meta && typeof data._meta.isLiveData === 'boolean') {
+          setIsLiveData(data._meta.isLiveData);
+        }
         
         setPrices(prev => {
           const next = {};
           const newDirs = { ...directions };
           Object.keys(data).forEach(sym => {
+            if (sym.startsWith('_')) return;
             next[sym] = data[sym].price;
             newDirs[sym] = data[sym].price >= (prev[sym] || data[sym].price) ? 'up' : 'down';
           });
@@ -785,6 +791,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         setChangePercents(prev => {
           const next = { ...prev };
           Object.keys(data).forEach(sym => {
+            if (sym.startsWith('_')) return;
             if (data[sym]) next[sym] = data[sym].change;
           });
           return next;
@@ -793,6 +800,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         setStats(prev => {
           const next = { ...prev };
           Object.keys(data).forEach(sym => {
+            if (sym.startsWith('_')) return;
             if (data[sym]) {
               next[sym] = { 
                 high24h: data[sym].high, 
@@ -2010,6 +2018,13 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
               <span className="text-[#2563EB] font-mono">{selectedAsset}/USDT</span>
               <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
             </button>
+
+            {!isLiveData && (
+              <span className="hidden sm:flex items-center gap-1 text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 px-2.5 py-0.5 rounded-full select-none" title="Live REST price feeds unavailable. Displaying fallback prices.">
+                <ShieldAlert className="w-3 h-3 text-amber-600 shrink-0" />
+                <span>Price data delayed</span>
+              </span>
+            )}
           </div>
 
           <nav className="hidden md:flex items-center gap-6">

@@ -1,16 +1,40 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  const commonHeaders = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Accept': 'application/json'
+  };
+
   try {
-    // Fetch live market tickers in parallel
+    const binanceSymbols = encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","PAXGUSDT"]));
+    const binanceUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${binanceSymbols}`;
+
+    // Fetch live market tickers in parallel with no-store and browser User-Agent
     const [cryptoRes, forexRes, stockRes] = await Promise.allSettled([
-      fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","DOGEUSDT"]', { next: { revalidate: 2 } }).then(r => r.json()),
-      fetch('https://open.er-api.com/v6/latest/USD', { next: { revalidate: 60 } }).then(r => r.json()),
+      fetch(binanceUrl, { headers: commonHeaders, cache: 'no-store' }).then(async r => {
+        if (!r.ok) {
+          const txt = await r.text();
+          throw new Error(`Binance API error HTTP ${r.status}: ${txt}`);
+        }
+        return r.json();
+      }),
+      fetch('https://open.er-api.com/v6/latest/USD', { headers: commonHeaders, cache: 'no-store' }).then(async r => {
+        if (!r.ok) throw new Error(`ER-API HTTP ${r.status}`);
+        return r.json();
+      }),
       fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL,TSLA,NVDA,MSFT,AMZN,GOOGL,META', { 
-        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
-        next: { revalidate: 10 } 
-      }).then(r => r.json())
+        headers: commonHeaders,
+        cache: 'no-store'
+      }).then(async r => {
+        if (!r.ok) throw new Error(`Yahoo Finance HTTP ${r.status}`);
+        return r.json();
+      })
     ]);
+
+    let isCryptoLive = false;
+    let isForexLive = false;
+    let isStockLive = false;
 
     // 1. Parse Cryptos
     const cryptoData = {
@@ -23,22 +47,7 @@ export async function GET() {
       DOGE: { price: 0.1250, change: 4.85, high: 0.1320, low: 0.1180, volume: '180M DOGE' }
     };
 
-    if (cryptoRes.status === 'fulfilled' && Array.isArray(cryptoRes.value)) {
-      cryptoRes.value.forEach(val => {
-        const baseSymbol = val.symbol.replace('USDT', '');
-        if (cryptoData[baseSymbol]) {
-          cryptoData[baseSymbol] = {
-            price: parseFloat(val.lastPrice) || cryptoData[baseSymbol].price,
-            change: parseFloat(val.priceChangePercent) || cryptoData[baseSymbol].change,
-            high: parseFloat(val.highPrice) || cryptoData[baseSymbol].high,
-            low: parseFloat(val.lowPrice) || cryptoData[baseSymbol].low,
-            volume: `${(parseFloat(val.volume) / 1000).toFixed(1)}K ${baseSymbol}`
-          };
-        }
-      });
-    }
-
-    // 2. Parse Forex and Commodities
+    // Initialize Forex and Commodities
     const forexData = {
       'EUR/USD': { price: 1.0845, change: 0.12, high: 1.0890, low: 1.0812, volume: '85K Lots' },
       'GBP/USD': { price: 1.2825, change: 0.18, high: 1.2910, low: 1.2780, volume: '62K Lots' },
@@ -49,7 +58,41 @@ export async function GET() {
       'XAU/USD': { price: 2380.50, change: 0.79, high: 2405.00, low: 2368.00, volume: '38K Lots' }
     };
 
+    if (cryptoRes.status === 'fulfilled' && Array.isArray(cryptoRes.value)) {
+      isCryptoLive = true;
+      cryptoRes.value.forEach(val => {
+        if (val.symbol === 'PAXGUSDT') {
+          // Map PAXGUSDT to XAU/USD gold spot price
+          const paxgPrice = parseFloat(val.lastPrice);
+          if (paxgPrice) {
+            forexData['XAU/USD'] = {
+              price: paxgPrice,
+              change: parseFloat(val.priceChangePercent) || forexData['XAU/USD'].change,
+              high: parseFloat(val.highPrice) || forexData['XAU/USD'].high,
+              low: parseFloat(val.lowPrice) || forexData['XAU/USD'].low,
+              volume: `${(parseFloat(val.volume) / 1000).toFixed(1)}K oz`
+            };
+          }
+        } else {
+          const baseSymbol = val.symbol.replace('USDT', '');
+          if (cryptoData[baseSymbol]) {
+            cryptoData[baseSymbol] = {
+              price: parseFloat(val.lastPrice) || cryptoData[baseSymbol].price,
+              change: parseFloat(val.priceChangePercent) || cryptoData[baseSymbol].change,
+              high: parseFloat(val.highPrice) || cryptoData[baseSymbol].high,
+              low: parseFloat(val.lowPrice) || cryptoData[baseSymbol].low,
+              volume: `${(parseFloat(val.volume) / 1000).toFixed(1)}K ${baseSymbol}`
+            };
+          }
+        }
+      });
+    } else {
+      console.error('[Prices API Binance Error]:', cryptoRes.reason || cryptoRes.value);
+    }
+
+    // 2. Parse Forex and Commodities
     if (forexRes.status === 'fulfilled' && forexRes.value && forexRes.value.rates) {
+      isForexLive = true;
       const rates = forexRes.value.rates;
       
       const updateRate = (pair, rateVal, invert = false) => {
@@ -73,6 +116,8 @@ export async function GET() {
       updateRate('USD/CAD', rates.CAD, false);
       updateRate('USD/CHF', rates.CHF, false);
       updateRate('XAU/USD', rates.XAU, true);
+    } else {
+      console.error('[Prices API Forex Error]:', forexRes.reason || forexRes.value);
     }
 
     // 3. Parse Stocks
@@ -87,6 +132,7 @@ export async function GET() {
     };
 
     if (stockRes.status === 'fulfilled' && stockRes.value && stockRes.value.quoteResponse && Array.isArray(stockRes.value.quoteResponse.result)) {
+      isStockLive = true;
       stockRes.value.quoteResponse.result.forEach(val => {
         const sym = val.symbol;
         if (stockData[sym]) {
@@ -99,18 +145,34 @@ export async function GET() {
           };
         }
       });
+    } else {
+      console.error('[Prices API Stock Error]:', stockRes.reason || stockRes.value);
     }
 
     return NextResponse.json({
+      _meta: {
+        isLiveData: isCryptoLive && isForexLive && isStockLive,
+        isCryptoLive,
+        isForexLive,
+        isStockLive,
+        timestamp: new Date().toISOString()
+      },
       ...cryptoData,
       ...forexData,
       ...stockData
     });
   } catch (error) {
-    console.error('Error fetching real-time prices:', error);
+    console.error('[Prices API Error]:', error);
     
-    // Graceful full fallback payload
+    // Fallback payload
     return NextResponse.json({
+      _meta: {
+        isLiveData: false,
+        isCryptoLive: false,
+        isForexLive: false,
+        isStockLive: false,
+        timestamp: new Date().toISOString()
+      },
       BTC: { price: 67240.50, change: 2.45, high: 68100.00, low: 65890.00, volume: '18.4K BTC' },
       ETH: { price: 3482.15, change: -1.20, high: 3560.40, low: 3410.20, volume: '142K ETH' },
       SOL: { price: 152.40, change: 3.12, high: 156.20, low: 148.50, volume: '840K SOL' },
@@ -135,3 +197,4 @@ export async function GET() {
     });
   }
 }
+

@@ -278,19 +278,47 @@ export async function PUT(request) {
     const returnedAmount = usdAmount + pnl;
 
     // 4. Resolve correct target wallet
-    const targetWalletId = trade.wallet_id || user.id;
+    let wallet = null;
 
-    const { data: wallet, error: walletError } = await supabaseAdmin
-      .from('wallets')
-      .select('*')
-      .eq('id', targetWalletId)
-      .single();
-
-    if (walletError || !wallet) {
-      console.error('[Trades API PUT] Wallet fetch error:', walletError);
-      throw new Error(`Target wallet not found: ${walletError?.message || 'Wallet missing'}`);
+    if (trade.wallet_id) {
+      const { data, error } = await supabaseAdmin
+        .from('wallets')
+        .select('*')
+        .eq('id', trade.wallet_id)
+        .maybeSingle();
+      if (error) console.error('[Trades API PUT] Wallet fetch by wallet_id error:', error);
+      wallet = data;
     }
 
+    if (!wallet) {
+      // Fallback for legacy trades (wallet_id is null): lookup wallet by user_id
+      const { data: userWallets, error: userWalletsErr } = await supabaseAdmin
+        .from('wallets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false });
+
+      if (userWalletsErr || !userWallets || userWallets.length === 0) {
+        console.error('[Trades API PUT] Fallback wallet fetch by user_id error:', userWalletsErr);
+        throw new Error(`Target wallet not found for user: ${userWalletsErr?.message || 'Wallet missing'}`);
+      }
+
+      wallet = userWallets.find(w => w.is_active || w.is_default || w.balance_configured) || userWallets[0];
+
+      // Backfill trade record with resolved wallet_id for future operations
+      if (wallet && wallet.id) {
+        await supabaseAdmin
+          .from('trades')
+          .update({ wallet_id: wallet.id })
+          .eq('id', tradeId);
+      }
+    }
+
+    if (!wallet) {
+      throw new Error('Target wallet missing');
+    }
+
+    const targetWalletId = wallet.id;
     const balance = parseFloat(wallet.virtual_balance);
     const newBalance = parseFloat((balance + returnedAmount).toFixed(2));
 

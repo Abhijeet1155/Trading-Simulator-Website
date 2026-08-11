@@ -14,14 +14,8 @@ export async function POST(req) {
     const requestUrl = new URL(req.url);
     const origin = requestUrl.origin;
 
-    const { error } = await supabase.auth.resetPasswordForEmail(emailLower, {
-      redirectTo: `${origin}/auth/callback?next=/reset-password&type=recovery`,
-    });
-
-    if (error) {
-      console.error('Reset password error:', error);
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
+    // Supabase resetPasswordForEmail removed to prevent Supabase built-in emails.
+    // Custom email / Nodemailer flow is handled separately.
 
     return NextResponse.json({ success: true });
   } catch (error) {

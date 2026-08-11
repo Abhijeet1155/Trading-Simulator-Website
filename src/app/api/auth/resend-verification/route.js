@@ -13,18 +13,8 @@ export async function POST(req) {
     const requestUrl = new URL(req.url);
     const origin = requestUrl.origin;
 
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: email.toLowerCase().trim(),
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`
-      }
-    });
-
-    if (error) {
-      console.error('Error resending verification email:', error);
-      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
+    // Supabase auth.resend removed to prevent Supabase built-in verification emails.
+    // Custom email flow is handled separately.
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -200,7 +200,8 @@ export async function GET(request) {
       .eq('user_id', user.id);
     
     // Filter by wallet_id
-    if (activeWallet.id === user.id) {
+    const isPrimary = activeWallet.id === user.id || activeWallet.account_name === 'Primary Demo';
+    if (isPrimary) {
       // For default primary wallet, fetch both explicitly marked trades and unassigned trades
       query = query.or(`wallet_id.eq.${activeWallet.id},wallet_id.is.null`);
     } else {
@@ -224,9 +225,9 @@ export async function GET(request) {
     }
 
     // Filter by status if not 'all'
-    let filtered = trades;
+    let filtered = trades || [];
     if (status !== 'all') {
-      filtered = trades.filter(t => t.status === status);
+      filtered = filtered.filter(t => t.status === status);
     }
     
     // Sort
@@ -264,9 +265,10 @@ export async function GET(request) {
     const db = readLocalDb();
     const { activeWallet } = await getActiveWallet(user.id);
 
+    const isPrimary = activeWallet.id === user.id || activeWallet.account_name === 'Primary Demo';
     const userTrades = db.trades.filter(t => 
       t.user_id === user.id && 
-      (t.wallet_id === activeWallet.id || (!t.wallet_id && activeWallet.id === user.id))
+      (t.wallet_id === activeWallet.id || (!t.wallet_id && isPrimary))
     );
     
     let filtered = userTrades;

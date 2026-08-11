@@ -48,10 +48,11 @@ export default async function TradePage() {
     if (fs.existsSync(localDbPath)) {
       try {
         const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
+        const isPrimary = activeWallet.id === user.id || activeWallet.account_name === 'Primary Demo';
         const localPositions = db.trades.filter(t => 
           t.user_id === user.id && 
           t.status === 'open' && 
-          (t.wallet_id === activeWallet.id || (!t.wallet_id && activeWallet.id === user.id))
+          (t.wallet_id === activeWallet.id || (!t.wallet_id && isPrimary))
         );
         positions = localPositions.map(pos => {
           const parsedSize = parseFloat(pos.quantity) || parseFloat(pos.size) || 0;
@@ -80,7 +81,8 @@ export default async function TradePage() {
         .eq('user_id', user.id)
         .eq('status', 'open');
       
-      if (activeWallet.id === user.id) {
+      const isPrimary = activeWallet.id === user.id || activeWallet.account_name === 'Primary Demo';
+      if (isPrimary) {
         query = query.or(`wallet_id.eq.${activeWallet.id},wallet_id.is.null`);
       } else {
         query = query.eq('wallet_id', activeWallet.id);

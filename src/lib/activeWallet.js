@@ -137,10 +137,12 @@ export async function getActiveWallet(userId) {
     };
   });
 
-  // Sort wallets so the primary one (id === userId) is always first
+  // Sort wallets so the primary one (id === userId or account_name === 'Primary Demo') is always first
   wallets.sort((a, b) => {
-    if (a.id === userId) return -1;
-    if (b.id === userId) return 1;
+    const aIsPrimary = a.id === userId || a.account_name === 'Primary Demo';
+    const bIsPrimary = b.id === userId || b.account_name === 'Primary Demo';
+    if (aIsPrimary && !bIsPrimary) return -1;
+    if (!aIsPrimary && bIsPrimary) return 1;
     return 0;
   });
 

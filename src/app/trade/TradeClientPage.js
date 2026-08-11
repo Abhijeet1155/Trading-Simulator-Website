@@ -1663,7 +1663,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 {/* ─ Account info strip ─ */}
                 <div className="bg-gray-50 border border-gray-100 rounded-md px-2.5 py-1.5 flex justify-between items-center">
                   <span className="text-[9px] text-gray-400 font-bold">Account Equity</span>
-                  <span className="text-[9px] font-extrabold text-gray-800 font-mono">${(balance + activeMargin).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                  <span className="text-[9px] font-extrabold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                 </div>
 
                 {/* ─ Risk % ─ */}
@@ -1825,7 +1825,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
           <div className="text-[10px] space-y-1 text-gray-400 font-bold">
             <div className="flex justify-between">
               <span>Available Balance:</span>
-              <span className="text-gray-700 font-mono">{(balance + activeMargin).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+              <span className="text-gray-700 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
             </div>
             <div className="flex justify-between">
               <span>Margin Required:</span>
@@ -2958,7 +2958,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
                         <div className="bg-gray-50 border border-gray-100 rounded-md px-2.5 py-1.5 flex justify-between items-center">
                           <span className="text-[9px] text-gray-400 font-bold">Account Equity</span>
-                          <span className="text-[9px] font-extrabold text-gray-800 font-mono">${(balance + activeMargin).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                          <span className="text-[9px] font-extrabold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                         </div>
 
                         {/* Risk % */}
@@ -3092,7 +3092,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   <div className="text-[10px] space-y-1 text-gray-400 font-bold">
                     <div className="flex justify-between">
                       <span>Available Balance:</span>
-                      <span className="text-gray-700 font-mono">{(balance + activeMargin).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                      <span className="text-gray-700 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Margin Required:</span>

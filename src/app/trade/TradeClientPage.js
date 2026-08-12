@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { 
   TrendingUp, TrendingDown, User, AlertCircle, Info, CheckCircle2, Search,
   Settings, HelpCircle, ChevronDown, Maximize2, Plus, Minus, Lock, Unlock,
-  Eye, EyeOff, Trash2, RefreshCw, Sliders, X, Menu, RotateCcw, Pencil, Wallet, ShieldAlert
+  Eye, EyeOff, Trash2, RefreshCw, Sliders, X, Menu, RotateCcw, Pencil, Wallet, ShieldAlert,
+  ArrowDownCircle, Check
 } from 'lucide-react';
 import UserDropdown from '../dashboard/UserDropdown';
 import { formatLotSize } from '../../lib/account';
@@ -1240,14 +1241,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
       <div className="flex flex-col h-full overflow-hidden select-none bg-white font-sans">
         {/* Watchlist Main Header */}
         <div className="px-3.5 py-3 bg-[#FAFAFA] border-b border-gray-100 flex flex-col gap-2.5 shrink-0 select-none">
-          <span className="font-extrabold text-xs text-gray-900 uppercase tracking-wider">Watchlist</span>
-          <div className="text-[9.5px] font-bold flex gap-3.5 text-gray-400 pt-1.5 border-t border-gray-100 select-none">
+          <span className="font-semibold text-xs text-gray-900 capitalize ">Watchlist</span>
+          <div className="text-[9.5px] font-semibold flex gap-3.5 text-gray-400 pt-1.5 border-t border-gray-100 select-none">
             {['All', 'Forex', 'Stocks', 'Crypto'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setWatchlistTab(tab)}
-                className={`cursor-pointer transition-all uppercase tracking-wider ${
-                  watchlistTab === tab ? 'text-[#2563EB] font-extrabold' : 'hover:text-gray-600'
+                className={`cursor-pointer transition-all capitalize  ${
+                  watchlistTab === tab ? 'text-[#2563EB] font-semibold' : 'hover:text-gray-600'
                 }`}
               >
                 {tab}
@@ -1280,7 +1281,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         <div className="flex-grow overflow-y-auto px-2">
           <table className="w-full text-left border-collapse text-[10px] font-sans">
             <thead>
-              <tr className="border-b border-gray-100 text-[#9CA3AF] font-bold uppercase text-[7.5px] tracking-wider sticky top-0 bg-white z-10 py-1">
+              <tr className="border-b border-gray-100 text-[#9CA3AF] font-semibold capitalize text-[7.5px]  sticky top-0 bg-white z-10 py-1">
                 <th className="py-1">Symbol</th>
                 <th className="py-1 text-right">Last</th>
                 <th className="py-1 text-right">% Chg</th>
@@ -1305,16 +1306,16 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                       key={item.symbol}
                       onClick={() => handleAssetChange(item.symbol)}
                       className={`cursor-pointer border-b border-gray-50 hover:bg-gray-50 transition-colors ${
-                        isSelected ? 'bg-[#2563EB]/5 font-bold border-l-2 border-l-[#2563EB]' : ''
+                        isSelected ? 'bg-[#2563EB]/5 font-semibold border-l-2 border-l-[#2563EB]' : ''
                       }`}
                     >
-                      <td className="py-1.5 px-1 font-bold text-gray-900">
+                      <td className="py-1.5 px-1 font-semibold text-gray-900">
                         <div>{item.symbol}/USDT</div>
                       </td>
                       <td className="py-1.5 text-right font-mono text-gray-700 tabular-nums">
                         {formatAssetPrice(buyPrice, item.symbol)}
                       </td>
-                      <td className={`py-1.5 text-right font-mono font-bold tabular-nums ${
+                      <td className={`py-1.5 text-right font-mono font-semibold tabular-nums ${
                         isUp ? 'text-[#089981]' : 'text-[#f23645]'
                       }`}>
                         {isUp ? '+' : ''}{changePct.toFixed(2)}%
@@ -1358,10 +1359,10 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         <div className="p-3 pb-2 shrink-0 border-b border-gray-100 flex flex-col gap-2.5">
           <div className="flex items-center justify-between select-none">
             <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0" style={{ backgroundColor: getAssetColor(selectedAsset) }}>
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-semibold text-white shrink-0" style={{ backgroundColor: getAssetColor(selectedAsset) }}>
                 {selectedAsset[0]}
               </span>
-              <span className="font-extrabold text-xs text-gray-900 tracking-wide">{selectedAsset}</span>
+              <span className="font-semibold text-xs text-gray-900 ">{selectedAsset}</span>
             </div>
             <button 
               type="button"
@@ -1386,8 +1387,8 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     : 'bg-transparent text-[#f23645] border-[#f23645]/30 hover:bg-[#f23645]/5'
                 }`}
               >
-                <span className={`text-[8px] uppercase font-bold tracking-wider ${orderType === 'sell' ? 'text-white/80' : 'text-gray-400'}`}>Sell</span>
-                <span className="font-mono font-bold text-xs tabular-nums">{formatAssetPrice(sellPrice)}</span>
+                <span className={`text-[8px] capitalize font-semibold  ${orderType === 'sell' ? 'text-white/80' : 'text-gray-400'}`}>Sell</span>
+                <span className="font-mono font-semibold text-xs tabular-nums">{formatAssetPrice(sellPrice)}</span>
               </button>
 
               {/* Buy Button */}
@@ -1400,14 +1401,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     : 'bg-transparent text-[#2563EB] border-[#2563EB]/30 hover:bg-[#2563EB]/5'
                 }`}
               >
-                <span className={`text-[8px] uppercase font-bold tracking-wider ${orderType === 'buy' ? 'text-white/80' : 'text-gray-400'}`}>Buy</span>
-                <span className="font-mono font-bold text-xs tabular-nums">{formatAssetPrice(buyPrice)}</span>
+                <span className={`text-[8px] capitalize font-semibold  ${orderType === 'buy' ? 'text-white/80' : 'text-gray-400'}`}>Buy</span>
+                <span className="font-mono font-semibold text-xs tabular-nums">{formatAssetPrice(buyPrice)}</span>
               </button>
             </div>
 
             {/* Spread Badge centered */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none mt-2.5">
-              <span className="bg-white border border-[#E0E3EB] text-gray-700 text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full shadow-sm font-mono tabular-nums">
+              <span className="bg-white border border-[#E0E3EB] text-gray-700 text-[8px] font-semibold capitalize  px-2 py-0.5 rounded-full shadow-sm font-mono tabular-nums">
                 {spreadStr} USD
               </span>
             </div>
@@ -1423,7 +1424,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
               <div className="bg-[#f23645]" style={{ width: '62%' }} />
               <div className="bg-[#2563EB]" style={{ width: '38%' }} />
             </div>
-            <div className="flex justify-between text-[8px] font-extrabold text-gray-400 mt-1 font-mono tracking-wider">
+            <div className="flex justify-between text-[8px] font-semibold text-gray-400 mt-1 font-mono ">
               <span className="text-[#f23645]">SELL 62%</span>
               <span className="text-[#2563EB]">BUY 38%</span>
             </div>
@@ -1434,7 +1435,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button
               type="button"
               onClick={() => setFormModeDropdownOpen(o => !o)}
-              className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+              className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
             >
               <span>
                 {orderFormMode === 'regular' && 'Regular Form'}
@@ -1452,7 +1453,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     onClick={() => { setOrderFormMode(mode); setFormModeDropdownOpen(false); setErrorMsg(''); }}
                     className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 ${ orderFormMode === mode ? 'bg-blue-50' : '' }`}
                   >
-                    <div className={`text-[10px] font-bold ${orderFormMode === mode ? 'text-[#2563EB]' : 'text-gray-800'}`}>{label}</div>
+                    <div className={`text-[10px] font-semibold ${orderFormMode === mode ? 'text-[#2563EB]' : 'text-gray-800'}`}>{label}</div>
                     <div className="text-[9px] text-gray-400 mt-0.5">{desc}</div>
                   </button>
                 ))}
@@ -1467,14 +1468,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <div className="flex flex-col gap-3">
               {/* ORDER TYPE TABS */}
               <div className="bg-gray-100 p-0.5 rounded-lg flex select-none">
-                <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1 rounded-md text-center font-bold text-[9.5px] uppercase tracking-wider cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Market</button>
-                <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1 rounded-md text-center font-bold text-[9.5px] uppercase tracking-wider cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Pending</button>
+                <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize  cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Market</button>
+                <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize  cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Pending</button>
               </div>
 
               {orderSubtype !== 'Market' && (
                 <div className="flex gap-2 items-center justify-between select-none">
-                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Pending Type</span>
-                  <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] border border-[#E0E3EB] text-gray-700 text-[10px] font-bold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
+                  <span className="text-[9px] font-semibold text-gray-400 capitalize ">Pending Type</span>
+                  <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] border border-[#E0E3EB] text-gray-700 text-[10px] font-semibold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
                     <option value="Limit">Limit Order</option>
                     <option value="Stop-Limit">Stop-Limit Order</option>
                   </select>
@@ -1482,24 +1483,24 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
               )}
               {orderSubtype !== 'Market' && (
                 <div className="flex flex-col gap-1">
-                  <label className="block text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Price (USDT)</label>
+                  <label className="block text-[9px] text-gray-400 capitalize  font-semibold">Price (USDT)</label>
                   <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                    <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                      <button type="button" onClick={() => adjustPrice('limit', true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustPrice('limit', true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                     </div>
                   </div>
                 </div>
               )}
               {orderSubtype === 'Stop-Limit' && (
                 <div className="flex flex-col gap-1">
-                  <label className="block text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Stop Price (USDT)</label>
+                  <label className="block text-[9px] text-gray-400 capitalize  font-semibold">Stop Price (USDT)</label>
                   <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                    <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                      <button type="button" onClick={() => adjustPrice('stop', true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustPrice('stop', true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                     </div>
                   </div>
                 </div>
@@ -1507,46 +1508,46 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
               {/* Volume */}
               <div className="flex flex-col gap-1">
-                <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold"><span>Volume</span></div>
+                <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold"><span>Volume</span></div>
                 <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                  <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                  <span className="text-[10px] font-bold text-gray-400 mr-2 select-none">Lots</span>
+                  <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                  <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
                   <div className="flex items-center gap-2 select-none">
-                    <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                    <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
+                    <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                    <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
               </div>
 
               {/* TP */}
               <div className="flex flex-col gap-1 border-t border-gray-100 pt-2.5">
-                <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">
+                <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold">
                   <span className="flex items-center gap-1">Take Profit <button type="button" onClick={() => showToast('Take Profit triggers automatically to lock gains.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                 </div>
                 <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                  <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                  <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                   <div className="flex items-center gap-2 select-none">
-                    <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                    <button type="button" onClick={() => adjustTp(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                    <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                    <button type="button" onClick={() => adjustTp(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                   </div>
                 </div>
               </div>
 
               {/* SL */}
               <div className="flex flex-col gap-1">
-                <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">
+                <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold">
                   <span className="flex items-center gap-1">Stop Loss <button type="button" onClick={() => showToast('Stop Loss triggers automatically to protect your capital.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                 </div>
                 <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                  <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                  <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                   <div className="flex items-center gap-2 select-none">
-                    <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                    <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                    <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                    <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                   </div>
                 </div>
               </div>
 
-              {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+              {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
             </div>
           )}
 
@@ -1564,7 +1565,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     key={preset}
                     type="button"
                     onClick={() => { setVol(preset); syncTotalFromVol(parseFloat(preset), limitPrice); setOrderSubtype('Market'); }}
-                    className={`py-2 rounded-md border text-[10px] font-bold transition-all cursor-pointer ${
+                    className={`py-2 rounded-md border text-[10px] font-semibold transition-all cursor-pointer ${
                       vol === preset
                         ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm'
                         : 'bg-[#FAFAFA] border-[#E0E3EB] text-gray-600 hover:border-[#2563EB] hover:text-[#2563EB]'
@@ -1574,38 +1575,38 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   </button>
                 ))}
               </div>
-              <div className="text-[9px] text-gray-400 font-bold text-center select-none">lots</div>
+              <div className="text-[9px] text-gray-400 font-semibold text-center select-none">lots</div>
 
               {/* Custom vol */}
               <div className="flex flex-col gap-1">
-                <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Custom Volume</label>
+                <label className="text-[9px] text-gray-400 capitalize  font-semibold">Custom Volume</label>
                 <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                  <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                  <span className="text-[10px] font-bold text-gray-400 mr-2 select-none">Lots</span>
+                  <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                  <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
                   <div className="flex items-center gap-2 select-none">
-                    <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                    <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
+                    <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                    <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
               </div>
 
               {/* Summary */}
               <div className="bg-gray-50 border border-gray-100 rounded-md p-2.5 space-y-1.5">
-                <div className="flex justify-between text-[9px] font-bold">
+                <div className="flex justify-between text-[9px] font-semibold">
                   <span className="text-gray-400">Order Value</span>
                   <span className="text-gray-800 font-mono">${getOrderValueUSD().toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                 </div>
-                <div className="flex justify-between text-[9px] font-bold">
+                <div className="flex justify-between text-[9px] font-semibold">
                   <span className="text-gray-400">Margin Required</span>
                   <span className="text-gray-800 font-mono">${(getOrderValueUSD()/leverage).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                 </div>
-                <div className="flex justify-between text-[9px] font-bold">
+                <div className="flex justify-between text-[9px] font-semibold">
                   <span className="text-gray-400">Leverage</span>
                   <span className="text-[#2563EB] font-mono">{leverage}x</span>
                 </div>
               </div>
 
-              {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+              {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
             </div>
           )}
 
@@ -1655,7 +1656,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
             const inputH = 'h-8';
             const fieldCls = `flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 ${inputH} focus-within:border-[#2563EB] transition-colors`;
-            const rowCls  = 'flex justify-between text-[9px] font-bold py-1';
+            const rowCls  = 'flex justify-between text-[9px] font-semibold py-1';
 
             return (
               <div className="flex flex-col gap-2.5">
@@ -1664,32 +1665,32 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   <div className="w-4 h-4 rounded bg-gradient-to-br from-[#2563EB] to-indigo-500 flex items-center justify-center shrink-0">
                     <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                   </div>
-                  <span className="text-[9px] font-extrabold text-gray-700 uppercase tracking-wider">Position Size Calculator</span>
+                  <span className="text-[9px] font-semibold text-gray-700 capitalize ">Position Size Calculator</span>
                 </div>
                 <p className="text-[9px] text-gray-400 font-semibold leading-relaxed -mt-1">Enter your risk % and stop-loss — lot size is calculated automatically using professional position-sizing formulas.</p>
 
                 {/* ─ Account info strip ─ */}
                 <div className="bg-gray-50 border border-gray-100 rounded-md px-2.5 py-1.5 flex justify-between items-center">
-                  <span className="text-[9px] text-gray-400 font-bold">Account Equity</span>
-                  <span className="text-[9px] font-extrabold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                  <span className="text-[9px] text-gray-400 font-semibold">Account Equity</span>
+                  <span className="text-[9px] font-semibold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                 </div>
 
                 {/* ─ Risk % ─ */}
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
-                    <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Risk per Trade</label>
-                    <span className="text-[9px] font-extrabold text-[#2563EB] font-mono">
+                    <label className="text-[9px] text-gray-400 capitalize  font-semibold">Risk per Trade</label>
+                    <span className="text-[9px] font-semibold text-[#2563EB] font-mono">
                       {riskAmt > 0 ? `= $${riskAmt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}` : ''}
                     </span>
                   </div>
                   <div className={fieldCls}>
-                    <input type="number" min="0.1" max="100" step="0.1" value={riskPct} onChange={(e) => setRiskPct(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                    <span className="text-[10px] font-bold text-gray-400 select-none">%</span>
+                    <input type="number" min="0.1" max="100" step="0.1" value={riskPct} onChange={(e) => setRiskPct(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                    <span className="text-[10px] font-semibold text-gray-400 select-none">%</span>
                   </div>
                   <div className="grid grid-cols-4 gap-1">
                     {['0.5','1','2','5'].map(p => (
                       <button key={p} type="button" onClick={() => setRiskPct(p)}
-                        className={`py-1 rounded text-[9px] font-bold border transition-all cursor-pointer ${riskPct === p ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-gray-50 text-gray-500 border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]'}`}
+                        className={`py-1 rounded text-[9px] font-semibold border transition-all cursor-pointer ${riskPct === p ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-gray-50 text-gray-500 border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]'}`}
                       >{p}%</button>
                     ))}
                   </div>
@@ -1698,32 +1699,32 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 {/* ─ Entry Price ─ */}
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
-                    <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Entry Price</label>
+                    <label className="text-[9px] text-gray-400 capitalize  font-semibold">Entry Price</label>
                     <button type="button" onClick={() => setCalcEntryPrice(livePrice.toFixed(isForex ? 4 : 2))}
-                      className="text-[8px] font-bold text-[#2563EB] hover:text-blue-800 cursor-pointer transition-colors">
+                      className="text-[8px] font-semibold text-[#2563EB] hover:text-blue-800 cursor-pointer transition-colors">
                       ↺ Use Live
                     </button>
                   </div>
                   <div className={fieldCls}>
                     <input type="text" value={calcEntryPrice} placeholder={livePrice.toFixed(isForex ? 4 : 2)}
                       onChange={(e) => setCalcEntryPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                      className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                      className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                   </div>
                 </div>
 
                 {/* ─ Stop-Loss ─ */}
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
-                    <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Stop-Loss Price <span className="text-gray-300 normal-case font-semibold">(required)</span></label>
-                    {slValid && <span className="text-[8px] font-bold text-[#f23645] font-mono">{slDistPips.toFixed(1)} {unitLabel}</span>}
+                    <label className="text-[9px] text-gray-400 capitalize  font-semibold">Stop-Loss Price <span className="text-gray-300 normal-case font-semibold">(required)</span></label>
+                    {slValid && <span className="text-[8px] font-semibold text-[#f23645] font-mono">{slDistPips.toFixed(1)} {unitLabel}</span>}
                   </div>
                   <div className={fieldCls}>
                     <input type="text" value={slPrice} placeholder={`e.g. ${(entryPx * 0.99).toFixed(isForex ? 4 : 2)}`}
                       onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                      className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                      className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                     <div className="flex items-center gap-1 select-none">
-                      <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                      <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                     </div>
                   </div>
                 </div>
@@ -1731,21 +1732,21 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 {/* ─ Take-Profit (optional, for R:R) ─ */}
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-center">
-                    <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Take-Profit <span className="text-gray-300 normal-case font-semibold">(optional · R:R)</span></label>
-                    {tpValid && <span className="text-[8px] font-bold text-[#2563EB] font-mono">{tpDistPips.toFixed(1)} {unitLabel}</span>}
+                    <label className="text-[9px] text-gray-400 capitalize  font-semibold">Take-Profit <span className="text-gray-300 normal-case font-semibold">(optional · R:R)</span></label>
+                    {tpValid && <span className="text-[8px] font-semibold text-[#2563EB] font-mono">{tpDistPips.toFixed(1)} {unitLabel}</span>}
                   </div>
                   <div className={fieldCls}>
                     <input type="text" value={calcTpPrice} placeholder={`e.g. ${(entryPx * 1.01).toFixed(isForex ? 4 : 2)}`}
                       onChange={(e) => setCalcTpPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                      className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
-                    {calcTpPrice && <button type="button" onClick={() => setCalcTpPrice('')} className="text-gray-300 hover:text-gray-500 text-[9px] font-bold ml-1 cursor-pointer">✕</button>}
+                      className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                    {calcTpPrice && <button type="button" onClick={() => setCalcTpPrice('')} className="text-gray-300 hover:text-gray-500 text-[9px] font-semibold ml-1 cursor-pointer">✕</button>}
                   </div>
                 </div>
 
                 {/* ─ Calculation result card ─ */}
                 {slValid ? (
                   <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100 rounded-md p-2.5">
-                    <div className="text-[8.5px] font-extrabold text-[#2563EB] uppercase tracking-widest mb-2">📐 Calculated Position</div>
+                    <div className="text-[8.5px] font-semibold text-[#2563EB] capitalize  mb-2">📐 Calculated Position</div>
                     <div className="space-y-0">
                       <div className={`${rowCls} border-b border-blue-50`}>
                         <span className="text-gray-500">Risk Amount</span>
@@ -1761,7 +1762,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                       </div>
                       <div className={`${rowCls} border-b border-blue-50`}>
                         <span className="text-gray-500">Suggested Lots</span>
-                        <span className={`font-mono font-extrabold text-[10px] ${calcLots > 0 ? 'text-[#2563EB]' : 'text-gray-300'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span>
+                        <span className={`font-mono font-semibold text-[10px] ${calcLots > 0 ? 'text-[#2563EB]' : 'text-gray-300'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span>
                       </div>
                       <div className={`${rowCls} border-b border-blue-50`}>
                         <span className="text-gray-500">Max Loss</span>
@@ -1775,7 +1776,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                           </div>
                           <div className={rowCls}>
                             <span className="text-gray-500">Risk : Reward</span>
-                            <span className={`font-mono font-extrabold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600' : 'text-[#f23645]'}`}>1 : {rrRatio}</span>
+                            <span className={`font-mono font-semibold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600' : 'text-[#f23645]'}`}>1 : {rrRatio}</span>
                           </div>
                         </>
                       )}
@@ -1791,12 +1792,12 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 {calcLots > 0 && (
                   <button type="button"
                     onClick={() => { const lots = calcLots.toFixed(2); setVol(lots); syncTotalFromVol(parseFloat(lots), limitPrice); setOrderSubtype('Market'); showToast(`Lot size set to ${lots} (${riskPct}% risk · ${rrRatio ? `1:${rrRatio} R:R` : 'no TP set'})`, 'success'); }}
-                    className="w-full py-2 bg-gradient-to-r from-[#2563EB] to-indigo-600 text-white text-[10px] font-bold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer uppercase tracking-wider shadow-sm"
+                    className="w-full py-2 bg-gradient-to-r from-[#2563EB] to-indigo-600 text-white text-[10px] font-semibold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer capitalize  shadow-sm"
                   >
                     ✓ Apply {calcLots.toFixed(2)} Lots &amp; Go to Order
                   </button>
                 )}
-                {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+                {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
               </div>
             );
           })()}
@@ -1806,14 +1807,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         </div>
 
         {/* SUBMIT BUTTON & FOOTER STATS (Pinned at bottom) */}
-        <div className="p-3 pt-2 border-t border-gray-100 select-none font-bold bg-[#FAFAFA] shrink-0">
+        <div className="p-3 pt-2 border-t border-gray-100 select-none font-semibold bg-[#FAFAFA] shrink-0">
 
           {/* Active Account Indicator */}
-          <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-2.5 pb-2 border-b border-gray-100 select-none">
+          <div className="flex justify-between items-center text-[10px] font-semibold text-gray-400 mb-2.5 pb-2 border-b border-gray-100 select-none">
             <span>Trading Account</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-gray-900 font-mono font-bold">Demo #{accountNumber}</span>
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase bg-green-50 text-green-700 border border-green-200 select-none tracking-wider">Active</span>
+              <span className="text-gray-900 font-mono font-semibold">Demo #{accountNumber}</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-semibold capitalize bg-green-50 text-green-700 border border-green-200 select-none ">Active</span>
             </div>
           </div>
 
@@ -1821,7 +1822,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             type="button"
             onClick={handlePlaceOrder}
             disabled={isPlacingOrder || !!errorMsg || isInsufficientMargin || !totalUSDT || parseFloat(totalUSDT) <= 0}
-            className="w-full text-white py-2 rounded-md font-bold mb-2.5 transition-colors cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider min-h-[44px] flex items-center justify-center animate-fade-in"
+            className="w-full text-white py-2 rounded-md font-semibold mb-2.5 transition-colors cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed capitalize  min-h-[44px] flex items-center justify-center animate-fade-in"
             style={{
               backgroundColor: isInsufficientMargin ? '#9CA3AF' : (orderType === 'buy' ? '#2563EB' : '#f23645')
             }}
@@ -1830,7 +1831,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
           </button>
           
           {/* Account/Margin details */}
-          <div className="text-[10px] space-y-1 text-gray-400 font-bold">
+          <div className="text-[10px] space-y-1 text-gray-400 font-semibold">
             <div className="flex justify-between">
               <span>Available Balance:</span>
               <span className="text-gray-700 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
@@ -1936,7 +1937,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-[500px] rounded-brand border border-gray-200 shadow-xl flex flex-col overflow-hidden animate-fade-in max-h-[80vh]">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-bold text-sm text-gray-900">Search Symbols</h3>
+              <h3 className="font-semibold text-sm text-gray-900">Search Symbols</h3>
               <button 
                 onClick={() => setIsSearchOpen(false)}
                 className="p-1 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition-colors"
@@ -1978,13 +1979,13 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         <div className="flex items-center gap-3">
                           <span className={`w-2 h-2 rounded-full ${isUp ? 'bg-[#089981]' : 'bg-[#f23645]'}`} />
                           <div>
-                            <div className="font-bold text-xs text-gray-900 group-hover:text-[#2563EB] transition-colors">{item.symbol}/USDT</div>
+                            <div className="font-semibold text-xs text-gray-900 group-hover:text-[#2563EB] transition-colors">{item.symbol}/USDT</div>
                             <div className="text-[10px] text-gray-400 font-medium">{item.name} • {item.type}</div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="font-bold text-xs font-mono">{formatAssetPrice(buyPrice, item.symbol)}</div>
-                          <div className={`text-[10px] font-bold font-mono ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                          <div className="font-semibold text-xs font-mono">{formatAssetPrice(buyPrice, item.symbol)}</div>
+                          <div className={`text-[10px] font-semibold font-mono ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                             {isUp ? '+' : ''}{changePct.toFixed(2)}%
                           </div>
                         </div>
@@ -1999,116 +2000,135 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
       {/* Top Navbar */}
       <header className="border-b border-[#E0E3EB] bg-white sticky top-0 z-40 h-12 flex items-center shrink-0">
-        <div className="w-full px-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="w-full px-4 flex items-center justify-between">
+          {/* Left Brand + Left-Aligned Navigation Links */}
+          <div className="flex items-center gap-6">
             <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <div className="w-7 h-7 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm">
                 <TrendingUp className="text-white w-4 h-4" />
               </div>
-              <span className="font-bold text-base tracking-tight text-[#111111]">PaperPulse</span>
+              <span className="font-semibold text-base text-[#111111]">PaperPulse</span>
             </Link>
             
-            <div className="h-6 w-[1px] bg-gray-200 mx-1 hidden sm:block" />
+            <div className="h-5 w-[1px] bg-gray-200" />
 
-            {/* Quick Symbol Switcher */}
-            <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-1.5 px-2 py-1 hover:bg-gray-100 rounded-md transition-colors text-xs font-bold text-gray-700"
-            >
-              <span className="text-[#2563EB] font-mono">{selectedAsset}/USDT</span>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-            </button>
-
-            {!isLiveData && (
-              <span className="hidden sm:flex items-center gap-1 text-[9.5px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 px-2.5 py-0.5 rounded-full select-none" title="Live REST price feeds unavailable. Displaying fallback prices.">
-                <ShieldAlert className="w-3 h-3 text-amber-600 shrink-0" />
-                <span>Price data delayed</span>
-              </span>
-            )}
+            <nav className="hidden md:flex items-center gap-5">
+              <Link 
+                href="/dashboard" 
+                className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors capitalize"
+              >
+                Dashboard
+              </Link>
+              <Link 
+                href="/trade" 
+                className="text-xs font-semibold text-[#2563EB] transition-colors capitalize"
+              >
+                Trade
+              </Link>
+              <Link 
+                href="/history" 
+                className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors capitalize"
+              >
+                History
+              </Link>
+              <Link 
+                href="/leaderboard" 
+                className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors capitalize"
+              >
+                Leaderboard
+              </Link>
+              <Link 
+                href="/competitions" 
+                className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors capitalize"
+              >
+                Competitions
+              </Link>
+            </nav>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link 
-              href="/dashboard" 
-              className="text-[11px] font-bold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider"
-            >
-              Dashboard
-            </Link>
-            <Link 
-              href="/trade" 
-              className="text-[11px] font-bold text-[#2563EB] transition-colors uppercase tracking-wider"
-            >
-              Trade
-            </Link>
-            <Link 
-              href="/history" 
-              className="text-[11px] font-bold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider"
-            >
-              History
-            </Link>
-            <Link 
-              href="/leaderboard" 
-              className="text-[11px] font-bold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider"
-            >
-              Leaderboard
-            </Link>
-            <Link 
-              href="/competitions" 
-              className="text-[11px] font-bold text-gray-500 hover:text-gray-900 transition-colors uppercase tracking-wider"
-            >
-              Competitions
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            {/* Wallet Balance Display */}
-            {accountData && (
-              <button
-                onClick={() => {
-                  const currentBal = accountData.balance || 10000;
-                  if ([1000, 5000, 10000, 25000, 50000, 100000].includes(currentBal)) {
-                    setSelectedAdjustPreset(currentBal);
-                    setCustomAdjustAmount('');
-                  } else {
-                    setSelectedAdjustPreset(0);
-                    setCustomAdjustAmount(String(currentBal));
-                  }
-                  setAdjustError('');
-                  setIsBalanceSettingsOpen(true);
-                }}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] rounded-md text-[10px] font-bold transition-all cursor-pointer border border-[#2563EB]/10 select-none"
-                title="Adjust Balance"
-              >
-                <Wallet className="w-3.5 h-3.5 text-[#2563EB]" />
-                <span>
-                  ${accountData.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                </span>
-              </button>
-            )}
-
-            {/* Account Details Dropdown */}
+          {/* Right Icon Actions Bar */}
+          <div className="flex items-center gap-2">
+            {/* Wallet / Account Popover Menu Icon */}
             <div className="relative" ref={accountDropdownRef}>
               <button 
                 onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-md text-[10px] text-gray-600 font-bold hover:bg-gray-100 cursor-pointer select-none"
+                className={`p-1.5 rounded-md border transition-all cursor-pointer select-none flex items-center justify-center ${
+                  isAccountDropdownOpen 
+                    ? 'bg-[#2563EB]/10 border-[#2563EB]/30 text-[#2563EB]' 
+                    : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-600 hover:text-gray-900'
+                }`}
+                title="Account & Balance Menu"
               >
-                <span>
-                  {accountData && accountData.accountName ? `${accountData.accountName} — ` : ''}Demo Account #{accountNumber}
-                </span>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${isAccountDropdownOpen ? 'rotate-180' : ''}`} />
+                <Wallet className="w-4 h-4" />
               </button>
 
               {isAccountDropdownOpen && accountData && (
-                <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] p-4 z-[100] animate-in fade-in slide-in-from-top-2 duration-200 select-none">
+                <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] p-4 z-[100] animate-in fade-in slide-in-from-top-2 duration-200 select-none">
                   
+                  {/* Account Balance Summary */}
+                  <div className="bg-gray-50 border border-gray-200/80 rounded-lg p-3 mb-3">
+                    <div className="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+                      <span className="font-semibold">{accountData.accountName || `Demo Account`} #{accountNumber}</span>
+                      <span className="text-[10px] bg-[#2563EB]/10 text-[#2563EB] font-semibold px-2 py-0.5 rounded-full">Active</span>
+                    </div>
+                    <div className="text-lg font-semibold text-gray-900 font-mono">
+                      ${accountData.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    </div>
+                  </div>
+
+                  {/* Quick Action Grid */}
+                  <div className="grid grid-cols-3 gap-1.5 mb-3">
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        showToast('Deposit function coming soon!', 'info');
+                      }}
+                      className="flex flex-col items-center justify-center p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors cursor-pointer text-gray-700"
+                    >
+                      <ArrowDownCircle className="w-4 h-4 text-[#2563EB] mb-1" />
+                      <span className="text-[10px] font-semibold">Deposit</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        const currentBal = accountData.balance || 10000;
+                        if ([1000, 5000, 10000, 25000, 50000, 100000].includes(currentBal)) {
+                          setSelectedAdjustPreset(currentBal);
+                          setCustomAdjustAmount('');
+                        } else {
+                          setSelectedAdjustPreset(0);
+                          setCustomAdjustAmount(String(currentBal));
+                        }
+                        setAdjustError('');
+                        setIsBalanceSettingsOpen(true);
+                      }}
+                      className="flex flex-col items-center justify-center p-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors cursor-pointer text-gray-700"
+                    >
+                      <Sliders className="w-4 h-4 text-[#2563EB] mb-1" />
+                      <span className="text-[10px] font-semibold">Adjust</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        handleResetBalance();
+                      }}
+                      className="flex flex-col items-center justify-center p-2 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-lg transition-colors cursor-pointer text-gray-700 hover:text-[#DC2626]"
+                    >
+                      <RotateCcw className="w-4 h-4 text-[#DC2626] mb-1" />
+                      <span className="text-[10px] font-semibold">Reset</span>
+                    </button>
+                  </div>
+
                   {/* Account Switcher Header */}
                   <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Trading Accounts</span>
+                    <span className="text-[10px] font-semibold text-gray-400 capitalize">Trading Accounts</span>
                     <span className="text-[10px] font-semibold text-gray-500">{accountData.accounts?.length} / {accountData.maxLimit}</span>
                   </div>
 
                   {/* Accounts List */}
-                  <div className="space-y-1 mb-3 max-h-40 overflow-y-auto pr-1">
+                  <div className="space-y-1 mb-3 max-h-36 overflow-y-auto pr-1">
                     {accountData.accounts?.map((acc) => (
                       <div
                         key={acc.id}
@@ -2119,84 +2139,68 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             : 'hover:bg-gray-50 border-transparent text-gray-700 cursor-pointer'
                         }`}
                       >
-                        <div className="flex flex-col">
-                          <span className="text-[11px] font-bold font-mono">
-                            {acc.accountName ? `${acc.accountName} — ` : ''}Demo #{acc.accountNumber}
-                          </span>
-                          <span className={`text-[10px] font-semibold font-mono ${acc.isActive ? 'text-[#2563EB]/80' : 'text-gray-500'}`}>
-                            ${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </span>
+                        <div className="flex items-center gap-2">
+                          {acc.isActive ? (
+                            <Check className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                          ) : (
+                            <div className="w-3.5 h-3.5 shrink-0" />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-semibold font-mono">
+                              {acc.accountName ? `${acc.accountName} — ` : ''}Demo #{acc.accountNumber}
+                            </span>
+                            <span className={`text-[10px] font-semibold font-mono ${acc.isActive ? 'text-[#2563EB]/80' : 'text-gray-500'}`}>
+                              ${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            </span>
+                          </div>
                         </div>
                         
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsAccountDropdownOpen(false);
-                              setRenamingWalletId(acc.id);
-                              setRenameValue(acc.accountName || "");
-                              setRenameError('');
-                              setIsRenameModalOpen(true);
-                            }}
-                            className="p-1 hover:bg-gray-200/50 rounded text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                            title="Rename Account"
-                          >
-                            <Pencil className="w-3 h-3 pointer-events-none" />
-                          </button>
-                          {acc.isActive && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>
-                          )}
-                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsAccountDropdownOpen(false);
+                            setRenamingWalletId(acc.id);
+                            setRenameValue(acc.accountName || "");
+                            setRenameError('');
+                            setIsRenameModalOpen(true);
+                          }}
+                          className="p-1 hover:bg-gray-200/50 rounded text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                          title="Rename Account"
+                        >
+                          <Pencil className="w-3 h-3 pointer-events-none" />
+                        </button>
                       </div>
                     ))}
                   </div>
 
-                  {/* Buttons Section */}
-                  <div className="space-y-1.5 pt-2 border-t border-gray-100">
-                    {/* "+ New Demo Account" option */}
+                  {/* New Account Action Button */}
+                  <div className="pt-2 border-t border-gray-100">
                     {!accountData.limitReached ? (
                       <button
                         onClick={() => {
                           setIsAccountDropdownOpen(false);
                           setIsCreateModalOpen(true);
                         }}
-                        className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg text-[10px] font-bold text-[#2563EB] transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 border border-[#2563EB]/20 rounded-lg text-[11px] font-semibold text-[#2563EB] transition-all cursor-pointer"
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus className="w-3.5 h-3.5" />
                         New Demo Account
                       </button>
                     ) : (
                       <div className="text-[9px] font-semibold text-amber-600 bg-amber-50 border border-amber-200/50 rounded-lg p-1.5 text-center">
-                        Account limit reached
+                        Account limit reached ({accountData.maxLimit})
                       </div>
                     )}
-
-                    {/* "Reset Balance" option */}
-                    <button
-                      onClick={handleResetBalance}
-                      className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 bg-red-50 hover:bg-red-100 border border-red-100 hover:border-red-200 rounded-lg text-[10px] font-bold text-[#DC2626] transition-all cursor-pointer"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                      Reset Balance
-                    </button>
                   </div>
 
                 </div>
               )}
             </div>
 
-            <button 
-              type="button"
-              onClick={() => showToast('Deposit function coming soon!', 'info')}
-              className="bg-black text-white px-3 py-1 rounded-md text-[10px] font-bold hover:bg-gray-800 transition-colors cursor-pointer uppercase tracking-wider h-7 flex items-center justify-center"
-            >
-              Deposit
-            </button>
-            
             {/* User Profile dropdown */}
             <UserDropdown userName={userName} />
             
-            <button title="Support" onClick={() => showToast('Live support chat coming soon!', 'info')} className="p-1 text-gray-400 hover:text-gray-900 rounded-md hover:bg-gray-100 cursor-pointer">
+            <button title="Support" onClick={() => showToast('Live support chat coming soon!', 'info')} className="p-1.5 text-gray-400 hover:text-gray-900 rounded-md hover:bg-gray-100 cursor-pointer">
               <HelpCircle className="w-4 h-4" />
             </button>
 
@@ -2251,14 +2255,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 onClick={() => handleAssetChange(item.symbol)}
                 className="flex items-center gap-1.5 shrink-0 hover:opacity-80 transition-opacity cursor-pointer text-left"
               >
-                <span className="font-bold text-[#111111]">{item.symbol}</span>
+                <span className="font-semibold text-[#111111]">{item.symbol}</span>
                 <span className="text-gray-500 font-semibold tabular-nums">
                   {FOREX_SYMBOLS.includes(item.symbol) 
                     ? currentPrice.toFixed(4) 
                     : currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })
                   }
                 </span>
-                <span className={`text-[9px] font-bold tabular-nums flex items-center gap-0.5 ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                <span className={`text-[9px] font-semibold tabular-nums flex items-center gap-0.5 ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                   {isUp ? '▲' : '▼'} {isUp ? '+' : ''}{changePct.toFixed(2)}%
                 </span>
               </button>
@@ -2276,7 +2280,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button 
               title="Crosshair Cursor" 
               onClick={() => { setActiveDrawingTool('cursor'); showToast('Crosshair active', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'cursor' ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'cursor' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
             </button>
@@ -2284,7 +2288,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button 
               title="Trend Line" 
               onClick={() => { setActiveDrawingTool('trend'); showToast('Trend line tool selected. Click on chart to draw.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'trend' ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'trend' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1"/><circle cx="20" cy="4" r="1"/></svg>
             </button>
@@ -2292,7 +2296,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button 
               title="Fibonacci Retracement" 
               onClick={() => { setActiveDrawingTool('fib'); showToast('Fibonacci Retracement tool selected.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'fib' ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'fib' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -2300,7 +2304,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button 
               title="Brush Tool" 
               onClick={() => { setActiveDrawingTool('brush'); showToast('Brush tool selected. Click and drag to draw.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'brush' ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'brush' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </button>
@@ -2308,7 +2312,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             <button 
               title="Text Annotation" 
               onClick={() => { setActiveDrawingTool('text'); showToast('Text tool selected. Click on chart to place text.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'text' ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'text' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
             </button>
@@ -2385,10 +2389,17 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   onClick={() => setIsSearchOpen(true)}
                   className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded-md transition-colors text-left"
                 >
-                  <span className="font-bold text-sm text-gray-900">{selectedAsset}/USDT</span>
-                  <span className="text-[10px] text-gray-400 font-semibold uppercase">{asset.name}</span>
+                  <span className="font-semibold text-sm text-gray-900">{selectedAsset}/USDT</span>
+                  <span className="text-[10px] text-gray-400 font-semibold capitalize">{asset.name}</span>
                   <ChevronDown className="w-3 h-3 text-gray-400" />
                 </button>
+                
+                {!isLiveData && (
+                  <span className="flex items-center gap-1 text-[9.5px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60 px-2 py-0.5 rounded-full select-none" title="Live REST price feeds unavailable. Displaying fallback prices.">
+                    <ShieldAlert className="w-3 h-3 text-amber-600 shrink-0" />
+                    <span className="hidden sm:inline">Price data delayed</span>
+                  </span>
+                )}
                 
                 <div className="h-4 w-[1px] bg-gray-200" />
 
@@ -2398,7 +2409,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     <button
                       key={tf}
                       onClick={() => setTimeframe(tf)}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${
                         timeframe === tf
                           ? 'bg-[#2563EB]/10 text-[#2563EB]'
                           : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
@@ -2436,7 +2447,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 {/* Indicators button */}
                 <button 
                   onClick={() => showToast('Indicators list coming soon!', 'info')}
-                  className="flex items-center gap-1 px-2 py-0.5 hover:bg-gray-100 rounded text-[10px] font-bold text-gray-500 hover:text-gray-900 transition-colors"
+                  className="flex items-center gap-1 px-2 py-0.5 hover:bg-gray-100 rounded text-[10px] font-semibold text-gray-500 hover:text-gray-900 transition-colors"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
                   <span>Indicators</span>
@@ -2448,12 +2459,12 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 
                 {/* Live values with flash */}
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs font-bold font-mono transition-colors duration-300 ${
+                  <span className={`text-xs font-semibold font-mono transition-colors duration-300 ${
                     priceFlash === 'up' ? 'text-[#089981]' : priceFlash === 'down' ? 'text-[#f23645]' : 'text-gray-900'
                   }`}>
                     {formatAssetPrice(livePrice)}
                   </span>
-                  <span className={`font-mono text-[9px] px-1 py-0.2 rounded font-bold ${
+                  <span className={`font-mono text-[9px] px-1 py-0.2 rounded font-semibold ${
                     selectedIsUp ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
                   }`}>
                     {selectedIsUp ? '+' : ''}{selectedChangePct.toFixed(2)}%
@@ -2461,10 +2472,10 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 </div>
 
                 <div className="hidden lg:flex items-center gap-2.5 text-gray-400 border-l border-gray-100 pl-3">
-                  <div>O: <span className="font-bold text-gray-600 font-mono">{formatAssetPrice(openVal)}</span></div>
-                  <div>H: <span className="font-bold text-[#089981] font-mono">{formatAssetPrice(highVal)}</span></div>
-                  <div>L: <span className="font-bold text-[#f23645] font-mono">{formatAssetPrice(lowVal)}</span></div>
-                  <div>C: <span className="font-bold text-gray-600 font-mono">{formatAssetPrice(closeVal)}</span></div>
+                  <div>O: <span className="font-semibold text-gray-600 font-mono">{formatAssetPrice(openVal)}</span></div>
+                  <div>H: <span className="font-semibold text-[#089981] font-mono">{formatAssetPrice(highVal)}</span></div>
+                  <div>L: <span className="font-semibold text-[#f23645] font-mono">{formatAssetPrice(lowVal)}</span></div>
+                  <div>C: <span className="font-semibold text-gray-600 font-mono">{formatAssetPrice(closeVal)}</span></div>
                 </div>
 
                 <div className="flex items-center gap-1 border-l border-gray-100 pl-3">
@@ -2499,14 +2510,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
           {/* Positions / Terminal Section */}
           <div style={{ height: `${terminalHeight}px` }} className="bg-white overflow-hidden flex flex-col shrink-0">
             {/* Header Tabs */}
-            <div className="text-[11px] font-bold border-b border-gray-100 bg-[#FAFAFA] text-gray-400 shrink-0 flex justify-between items-center px-4 py-1">
+            <div className="text-[11px] font-semibold border-b border-gray-100 bg-[#FAFAFA] text-gray-400 shrink-0 flex justify-between items-center px-4 py-1">
               <div className="flex gap-4 select-none">
                 {['positions', 'pending', 'history'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setTableTab(tab)}
-                    className={`cursor-pointer transition-all py-1.5 relative uppercase tracking-wider text-[10px] ${
-                      tableTab === tab ? 'text-[#2563EB] font-bold border-b-2 border-[#2563EB]' : 'text-gray-400 hover:text-gray-700'
+                    className={`cursor-pointer transition-all py-1.5 relative capitalize  text-[10px] ${
+                      tableTab === tab ? 'text-[#2563EB] font-semibold border-b-2 border-[#2563EB]' : 'text-gray-400 hover:text-gray-700'
                     }`}
                   >
                     {tab === 'positions' ? `Positions (${positions.length})` : tab === 'pending' ? 'Pending Orders (0)' : 'Order History'}
@@ -2525,7 +2536,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 positions.length > 0 ? (
                   <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
                     <thead>
-                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-bold uppercase text-[8px] tracking-wider sticky top-0">
+                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
                         <th className="px-3 py-1.5">Symbol</th>
                         <th className="px-3 py-1.5">Side</th>
                         <th className="px-3 py-1.5">Vol (Lots)</th>
@@ -2544,9 +2555,9 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
                         return (
                           <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                            <td className="px-3 py-1.5 font-bold text-gray-900">{pos.symbol}/USDT</td>
+                            <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
                             <td className="px-3 py-1.5">
-                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                                 pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
                               }`}>
                                 {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
@@ -2566,7 +2577,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
                               {FOREX_SYMBOLS.includes(pos.symbol) ? currentVal.toFixed(4) : `$${currentVal.toLocaleString()}`}
                             </td>
-                            <td className={`px-3 py-1.5 text-right font-mono font-bold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                               {isUp ? '+' : ''}{pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                             </td>
                             <td className="px-3 py-1.5 text-right">
@@ -2574,14 +2585,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                                 <button
                                   type="button"
                                   onClick={() => showToast('Close By execution is not available on this instrument.', 'info')}
-                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-bold text-gray-500 cursor-pointer"
+                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
                                 >
                                   Close By
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => showToast('Reverse position execution requested', 'info')}
-                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-bold text-gray-500 cursor-pointer"
+                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
                                 >
                                   Reverse
                                 </button>
@@ -2589,7 +2600,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                                   type="button"
                                   disabled={isClosingId !== null}
                                   onClick={() => handleClosePosition(pos.id, pos.symbol, pos.entry)}
-                                  className="px-2 py-0.5 bg-black text-white hover:bg-gray-800 rounded text-[9px] font-bold uppercase transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-2 py-0.5 bg-black text-white hover:bg-gray-800 rounded text-[9px] font-semibold capitalize transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {isClosingId === pos.id ? 'Closing...' : 'Close'}
                                 </button>
@@ -2607,7 +2618,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                       </svg>
                     </div>
-                    <h3 className="font-bold text-xs text-gray-700">No open positions</h3>
+                    <h3 className="font-semibold text-xs text-gray-700">No open positions</h3>
                     <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
                       Your trades will appear here once you place an order.
                     </p>
@@ -2621,7 +2632,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 ) : historyTrades.length > 0 ? (
                   <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
                     <thead>
-                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-bold uppercase text-[8px] tracking-wider sticky top-0">
+                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
                         <th className="px-3 py-1.5">Symbol</th>
                         <th className="px-3 py-1.5">Side</th>
                         <th className="px-3 py-1.5">Vol (Lots)</th>
@@ -2636,9 +2647,9 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         const isUp = pos.pnl >= 0;
                         return (
                           <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                            <td className="px-3 py-1.5 font-bold text-gray-900">{pos.symbol}/USDT</td>
+                            <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
                             <td className="px-3 py-1.5">
-                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                                 pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
                               }`}>
                                 {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
@@ -2651,7 +2662,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
                               {FOREX_SYMBOLS.includes(pos.symbol) ? pos.exit?.toFixed(4) : `$${pos.exit?.toLocaleString()}`}
                             </td>
-                            <td className={`px-3 py-1.5 text-right font-mono font-bold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                               {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                             </td>
                             <td className="px-3 py-1.5 text-right text-gray-500 font-semibold">{pos.closed_time}</td>
@@ -2667,7 +2678,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
-                    <h3 className="font-bold text-xs text-gray-700">No closed orders yet</h3>
+                    <h3 className="font-semibold text-xs text-gray-700">No closed orders yet</h3>
                     <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
                       Your completed trades will be logged here for tracking.
                     </p>
@@ -2720,10 +2731,10 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   {/* HEADER ROW */}
                   <div className="flex items-center justify-between pb-1.5 select-none">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0" style={{ backgroundColor: getAssetColor(selectedAsset) }}>
+                      <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-semibold text-white shrink-0" style={{ backgroundColor: getAssetColor(selectedAsset) }}>
                         {selectedAsset[0]}
                       </span>
-                      <span className="font-extrabold text-xs text-gray-900 tracking-wide">{selectedAsset}</span>
+                      <span className="font-semibold text-xs text-gray-900 ">{selectedAsset}</span>
                     </div>
                     <button 
                       type="button"
@@ -2750,8 +2761,8 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             : 'bg-transparent text-[#f23645] border-[#f23645]/30 hover:bg-[#f23645]/5'
                         }`}
                       >
-                        <span className={`text-[8.5px] uppercase font-bold tracking-wider ${orderType === 'sell' ? 'text-white/80' : 'text-gray-400'}`}>Sell</span>
-                        <span className="font-mono font-bold text-xs tabular-nums">{formatAssetPrice(sellPrice)}</span>
+                        <span className={`text-[8.5px] capitalize font-semibold  ${orderType === 'sell' ? 'text-white/80' : 'text-gray-400'}`}>Sell</span>
+                        <span className="font-mono font-semibold text-xs tabular-nums">{formatAssetPrice(sellPrice)}</span>
                       </button>
 
                       {/* Buy Button */}
@@ -2764,14 +2775,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             : 'bg-transparent text-[#2563EB] border-[#2563EB]/30 hover:bg-[#2563EB]/5'
                         }`}
                       >
-                        <span className={`text-[8.5px] uppercase font-bold tracking-wider ${orderType === 'buy' ? 'text-white/80' : 'text-gray-400'}`}>Buy</span>
-                        <span className="font-mono font-bold text-xs tabular-nums">{formatAssetPrice(buyPrice)}</span>
+                        <span className={`text-[8.5px] capitalize font-semibold  ${orderType === 'buy' ? 'text-white/80' : 'text-gray-400'}`}>Buy</span>
+                        <span className="font-mono font-semibold text-xs tabular-nums">{formatAssetPrice(buyPrice)}</span>
                       </button>
                     </div>
 
                     {/* Spread Badge centered, overlapping the bottom edge */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none mt-3.5">
-                      <span className="bg-white border border-[#E0E3EB] text-gray-700 text-[8px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded-full shadow-sm font-mono tabular-nums">
+                      <span className="bg-white border border-[#E0E3EB] text-gray-700 text-[8px] font-semibold capitalize  px-2 py-0.5 rounded-full shadow-sm font-mono tabular-nums">
                         {spreadStr} USD
                       </span>
                     </div>
@@ -2783,7 +2794,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                       <div className="bg-[#f23645]" style={{ width: '62%' }} />
                       <div className="bg-[#2563EB]" style={{ width: '38%' }} />
                     </div>
-                    <div className="flex justify-between text-[8px] font-extrabold text-gray-400 mt-1 font-mono tracking-wider">
+                    <div className="flex justify-between text-[8px] font-semibold text-gray-400 mt-1 font-mono ">
                       <span className="text-[#f23645]">SELL 62%</span>
                       <span className="text-[#2563EB]">BUY 38%</span>
                     </div>
@@ -2794,7 +2805,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     <button
                       type="button"
                       onClick={() => setFormModeDropdownOpen(o => !o)}
-                      className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 font-bold hover:bg-gray-50 transition-colors cursor-pointer"
+                      className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
                     >
                       <span>
                         {orderFormMode === 'regular' && 'Regular Form'}
@@ -2810,7 +2821,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             onClick={() => { setOrderFormMode(mode); setFormModeDropdownOpen(false); setErrorMsg(''); }}
                             className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 ${orderFormMode === mode ? 'bg-blue-50' : ''}`}
                           >
-                            <div className={`text-[10px] font-bold ${orderFormMode === mode ? 'text-[#2563EB]' : 'text-gray-800'}`}>{label}</div>
+                            <div className={`text-[10px] font-semibold ${orderFormMode === mode ? 'text-[#2563EB]' : 'text-gray-800'}`}>{label}</div>
                             <div className="text-[9px] text-gray-400 mt-0.5">{desc}</div>
                           </button>
                         ))}
@@ -2822,13 +2833,13 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   {orderFormMode === 'regular' && (
                     <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
                       <div className="bg-gray-100 p-0.5 rounded-lg flex select-none">
-                        <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1.5 rounded-md text-center font-bold text-[10px] uppercase tracking-wider cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Market</button>
-                        <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1.5 rounded-md text-center font-bold text-[10px] uppercase tracking-wider cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Pending</button>
+                        <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1.5 rounded-md text-center font-semibold text-[10px] capitalize  cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Market</button>
+                        <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1.5 rounded-md text-center font-semibold text-[10px] capitalize  cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Pending</button>
                       </div>
                       {orderSubtype !== 'Market' && (
                         <div className="flex gap-2 items-center justify-between select-none">
-                          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Pending Type</span>
-                          <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] border border-[#E0E3EB] text-gray-700 text-[10px] font-bold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
+                          <span className="text-[9px] font-semibold text-gray-400 capitalize ">Pending Type</span>
+                          <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] border border-[#E0E3EB] text-gray-700 text-[10px] font-semibold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
                             <option value="Limit">Limit Order</option>
                             <option value="Stop-Limit">Stop-Limit Order</option>
                           </select>
@@ -2836,64 +2847,64 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                       )}
                       {orderSubtype !== 'Market' && (
                         <div className="flex flex-col gap-1">
-                          <label className="block text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Price (USDT)</label>
+                          <label className="block text-[9px] text-gray-400 capitalize  font-semibold">Price (USDT)</label>
                           <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                            <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                            <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
                             <div className="flex items-center gap-2 select-none">
-                              <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                              <button type="button" onClick={() => adjustPrice('limit', true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustPrice('limit', true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
                             </div>
                           </div>
                         </div>
                       )}
                       {orderSubtype === 'Stop-Limit' && (
                         <div className="flex flex-col gap-1">
-                          <label className="block text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Stop Price (USDT)</label>
+                          <label className="block text-[9px] text-gray-400 capitalize  font-semibold">Stop Price (USDT)</label>
                           <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                            <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                            <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
                             <div className="flex items-center gap-2 select-none">
-                              <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                              <button type="button" onClick={() => adjustPrice('stop', true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustPrice('stop', true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
                             </div>
                           </div>
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold"><span>Volume</span></div>
+                        <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold"><span>Volume</span></div>
                         <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                          <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                          <span className="text-[10px] font-bold text-gray-400 mr-2 select-none">Lots</span>
+                          <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                          <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
                           <div className="flex items-center gap-2 select-none">
-                            <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                            <button type="button" onClick={() => adjustVol(true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3.5 h-3.5" /></button>
+                            <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                            <button type="button" onClick={() => adjustVol(true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3.5 h-3.5" /></button>
                           </div>
                         </div>
                       </div>
                       <div className="flex flex-col gap-1 border-t border-gray-100 pt-2.5">
-                        <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">
+                        <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold">
                           <span className="flex items-center gap-1">Take Profit <button type="button" onClick={() => showToast('Take Profit triggers automatically to lock gains.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                         </div>
                         <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                          <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                          <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                           <div className="flex items-center gap-2 select-none">
-                            <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                            <button type="button" onClick={() => adjustTp(true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
+                            <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                            <button type="button" onClick={() => adjustTp(true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
                           </div>
                         </div>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <div className="flex justify-between items-center text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">
+                        <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize  font-semibold">
                           <span className="flex items-center gap-1">Stop Loss <button type="button" onClick={() => showToast('Stop Loss triggers automatically to protect your capital.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                         </div>
                         <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                          <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                          <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                           <div className="flex items-center gap-2 select-none">
-                            <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                            <button type="button" onClick={() => adjustSl(true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
+                            <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                            <button type="button" onClick={() => adjustSl(true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3 h-3" /></button>
                           </div>
                         </div>
                       </div>
-                      {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+                      {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
                     </form>
                   )}
 
@@ -2905,28 +2916,28 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         {['0.01','0.05','0.10','0.25','0.50','1.00'].map(preset => (
                           <button key={preset} type="button"
                             onClick={() => { setVol(preset); syncTotalFromVol(parseFloat(preset), limitPrice); setOrderSubtype('Market'); }}
-                            className={`py-2 rounded-md border text-[10px] font-bold transition-all cursor-pointer ${ vol === preset ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm' : 'bg-[#FAFAFA] border-[#E0E3EB] text-gray-600 hover:border-[#2563EB] hover:text-[#2563EB]' }`}
+                            className={`py-2 rounded-md border text-[10px] font-semibold transition-all cursor-pointer ${ vol === preset ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm' : 'bg-[#FAFAFA] border-[#E0E3EB] text-gray-600 hover:border-[#2563EB] hover:text-[#2563EB]' }`}
                           >{preset}</button>
                         ))}
                       </div>
-                      <div className="text-[9px] text-gray-400 font-bold text-center select-none">lots</div>
+                      <div className="text-[9px] text-gray-400 font-semibold text-center select-none">lots</div>
                       <div className="flex flex-col gap-1">
-                        <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Custom Volume</label>
+                        <label className="text-[9px] text-gray-400 capitalize  font-semibold">Custom Volume</label>
                         <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors">
-                          <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                          <span className="text-[10px] font-bold text-gray-400 mr-2 select-none">Lots</span>
+                          <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                          <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
                           <div className="flex items-center gap-2 select-none">
-                            <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                            <button type="button" onClick={() => adjustVol(true)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus className="w-3.5 h-3.5" /></button>
+                            <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                            <button type="button" onClick={() => adjustVol(true)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus className="w-3.5 h-3.5" /></button>
                           </div>
                         </div>
                       </div>
                       <div className="bg-gray-50 border border-gray-100 rounded-md p-2.5 space-y-1.5">
-                        <div className="flex justify-between text-[9px] font-bold"><span className="text-gray-400">Order Value</span><span className="text-gray-800 font-mono">${getOrderValueUSD().toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
-                        <div className="flex justify-between text-[9px] font-bold"><span className="text-gray-400">Margin Required</span><span className="text-gray-800 font-mono">${(getOrderValueUSD()/leverage).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
-                        <div className="flex justify-between text-[9px] font-bold"><span className="text-gray-400">Leverage</span><span className="text-[#2563EB] font-mono">{leverage}x</span></div>
+                        <div className="flex justify-between text-[9px] font-semibold"><span className="text-gray-400">Order Value</span><span className="text-gray-800 font-mono">${getOrderValueUSD().toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
+                        <div className="flex justify-between text-[9px] font-semibold"><span className="text-gray-400">Margin Required</span><span className="text-gray-800 font-mono">${(getOrderValueUSD()/leverage).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
+                        <div className="flex justify-between text-[9px] font-semibold"><span className="text-gray-400">Leverage</span><span className="text-[#2563EB] font-mono">{leverage}x</span></div>
                       </div>
-                      {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+                      {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
                     </div>
                   )}
 
@@ -2959,7 +2970,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     const rrRatio    = slDistPips > 0 && tpDistPips > 0 ? (tpDistPips / slDistPips).toFixed(2) : null;
 
                     const fieldCls = 'flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-9 focus-within:border-[#2563EB] transition-colors';
-                    const rowCls   = 'flex justify-between text-[9px] font-bold py-1';
+                    const rowCls   = 'flex justify-between text-[9px] font-semibold py-1';
 
                     return (
                       <div className="flex flex-col gap-2.5">
@@ -2967,29 +2978,29 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                           <div className="w-4 h-4 rounded bg-gradient-to-br from-[#2563EB] to-indigo-500 flex items-center justify-center shrink-0">
                             <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                           </div>
-                          <span className="text-[9px] font-extrabold text-gray-700 uppercase tracking-wider">Position Size Calculator</span>
+                          <span className="text-[9px] font-semibold text-gray-700 capitalize ">Position Size Calculator</span>
                         </div>
                         <p className="text-[9px] text-gray-400 font-semibold leading-relaxed -mt-1">Enter your risk % and stop-loss — lot size is calculated automatically using professional position-sizing formulas.</p>
 
                         <div className="bg-gray-50 border border-gray-100 rounded-md px-2.5 py-1.5 flex justify-between items-center">
-                          <span className="text-[9px] text-gray-400 font-bold">Account Equity</span>
-                          <span className="text-[9px] font-extrabold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                          <span className="text-[9px] text-gray-400 font-semibold">Account Equity</span>
+                          <span className="text-[9px] font-semibold text-gray-800 font-mono">${activeEquity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                         </div>
 
                         {/* Risk % */}
                         <div className="flex flex-col gap-1">
                           <div className="flex justify-between items-center">
-                            <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Risk per Trade</label>
-                            <span className="text-[9px] font-extrabold text-[#2563EB] font-mono">{riskAmt > 0 ? `= $${riskAmt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}` : ''}</span>
+                            <label className="text-[9px] text-gray-400 capitalize  font-semibold">Risk per Trade</label>
+                            <span className="text-[9px] font-semibold text-[#2563EB] font-mono">{riskAmt > 0 ? `= $${riskAmt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}` : ''}</span>
                           </div>
                           <div className={fieldCls}>
-                            <input type="number" min="0.1" max="100" step="0.1" value={riskPct} onChange={(e) => setRiskPct(e.target.value)} className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                            <span className="text-[10px] font-bold text-gray-400 select-none">%</span>
+                            <input type="number" min="0.1" max="100" step="0.1" value={riskPct} onChange={(e) => setRiskPct(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                            <span className="text-[10px] font-semibold text-gray-400 select-none">%</span>
                           </div>
                           <div className="grid grid-cols-4 gap-1">
                             {['0.5','1','2','5'].map(p => (
                               <button key={p} type="button" onClick={() => setRiskPct(p)}
-                                className={`py-1 rounded text-[9px] font-bold border transition-all cursor-pointer ${riskPct === p ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-gray-50 text-gray-500 border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]'}`}>{p}%
+                                className={`py-1 rounded text-[9px] font-semibold border transition-all cursor-pointer ${riskPct === p ? 'bg-[#2563EB] text-white border-[#2563EB]' : 'bg-gray-50 text-gray-500 border-gray-200 hover:border-[#2563EB] hover:text-[#2563EB]'}`}>{p}%
                               </button>
                             ))}
                           </div>
@@ -2998,30 +3009,30 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         {/* Entry Price */}
                         <div className="flex flex-col gap-1">
                           <div className="flex justify-between items-center">
-                            <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Entry Price</label>
+                            <label className="text-[9px] text-gray-400 capitalize  font-semibold">Entry Price</label>
                             <button type="button" onClick={() => setCalcEntryPrice(livePrice.toFixed(isForex ? 4 : 2))}
-                              className="text-[8px] font-bold text-[#2563EB] hover:text-blue-800 cursor-pointer transition-colors">↺ Use Live</button>
+                              className="text-[8px] font-semibold text-[#2563EB] hover:text-blue-800 cursor-pointer transition-colors">↺ Use Live</button>
                           </div>
                           <div className={fieldCls}>
                             <input type="text" value={calcEntryPrice} placeholder={livePrice.toFixed(isForex ? 4 : 2)}
                               onChange={(e) => setCalcEntryPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                              className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                              className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                           </div>
                         </div>
 
                         {/* Stop-Loss */}
                         <div className="flex flex-col gap-1">
                           <div className="flex justify-between items-center">
-                            <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Stop-Loss Price <span className="text-gray-300 normal-case font-semibold">(required)</span></label>
-                            {slValid && <span className="text-[8px] font-bold text-[#f23645] font-mono">{slDistPips.toFixed(1)} {unitLabel}</span>}
+                            <label className="text-[9px] text-gray-400 capitalize  font-semibold">Stop-Loss Price <span className="text-gray-300 normal-case font-semibold">(required)</span></label>
+                            {slValid && <span className="text-[8px] font-semibold text-[#f23645] font-mono">{slDistPips.toFixed(1)} {unitLabel}</span>}
                           </div>
                           <div className={fieldCls}>
                             <input type="text" value={slPrice} placeholder={`e.g. ${(entryPx * 0.99).toFixed(isForex ? 4 : 2)}`}
                               onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                              className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                              className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
                             <div className="flex items-center gap-1 select-none">
-                              <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                              <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-bold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                              <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                             </div>
                           </div>
                         </div>
@@ -3029,31 +3040,31 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         {/* Take-Profit */}
                         <div className="flex flex-col gap-1">
                           <div className="flex justify-between items-center">
-                            <label className="text-[9px] text-gray-400 uppercase tracking-wider font-extrabold">Take-Profit <span className="text-gray-300 normal-case font-semibold">(optional · R:R)</span></label>
-                            {tpValid && <span className="text-[8px] font-bold text-[#2563EB] font-mono">{tpDistPips.toFixed(1)} {unitLabel}</span>}
+                            <label className="text-[9px] text-gray-400 capitalize  font-semibold">Take-Profit <span className="text-gray-300 normal-case font-semibold">(optional · R:R)</span></label>
+                            {tpValid && <span className="text-[8px] font-semibold text-[#2563EB] font-mono">{tpDistPips.toFixed(1)} {unitLabel}</span>}
                           </div>
                           <div className={fieldCls}>
                             <input type="text" value={calcTpPrice} placeholder={`e.g. ${(entryPx * 1.01).toFixed(isForex ? 4 : 2)}`}
                               onChange={(e) => setCalcTpPrice(e.target.value.replace(/[^0-9.]/g,''))}
-                              className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
-                            {calcTpPrice && <button type="button" onClick={() => setCalcTpPrice('')} className="text-gray-300 hover:text-gray-500 text-[9px] font-bold ml-1 cursor-pointer">✕</button>}
+                              className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                            {calcTpPrice && <button type="button" onClick={() => setCalcTpPrice('')} className="text-gray-300 hover:text-gray-500 text-[9px] font-semibold ml-1 cursor-pointer">✕</button>}
                           </div>
                         </div>
 
                         {/* Result card */}
                         {slValid ? (
                           <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-100 rounded-md p-2.5">
-                            <div className="text-[8.5px] font-extrabold text-[#2563EB] uppercase tracking-widest mb-2">📐 Calculated Position</div>
+                            <div className="text-[8.5px] font-semibold text-[#2563EB] capitalize  mb-2">📐 Calculated Position</div>
                             <div className="space-y-0">
                               <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">Risk Amount</span><span className="text-gray-800 font-mono">${riskAmt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
                               <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">SL Distance</span><span className="text-gray-800 font-mono">{slDistPips.toFixed(1)} {unitLabel} ({slDistRaw.toFixed(isForex ? 4 : 2)})</span></div>
                               <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">Pip Value / Lot</span><span className="text-gray-800 font-mono">${pipValuePerLot.toFixed(2)}</span></div>
-                              <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">Suggested Lots</span><span className={`font-mono font-extrabold text-[10px] ${calcLots > 0 ? 'text-[#2563EB]' : 'text-gray-300'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span></div>
+                              <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">Suggested Lots</span><span className={`font-mono font-semibold text-[10px] ${calcLots > 0 ? 'text-[#2563EB]' : 'text-gray-300'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span></div>
                               <div className={`${rowCls} ${tpValid ? 'border-b border-blue-50' : ''}`}><span className="text-gray-500">Max Loss</span><span className="text-[#f23645] font-mono">-${potLoss.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
                               {tpValid && (
                                 <>
                                   <div className={`${rowCls} border-b border-blue-50`}><span className="text-gray-500">Potential Profit</span><span className="text-green-600 font-mono">+${potProfit.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
-                                  <div className={rowCls}><span className="text-gray-500">Risk : Reward</span><span className={`font-mono font-extrabold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600' : 'text-[#f23645]'}`}>1 : {rrRatio}</span></div>
+                                  <div className={rowCls}><span className="text-gray-500">Risk : Reward</span><span className={`font-mono font-semibold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600' : 'text-[#f23645]'}`}>1 : {rrRatio}</span></div>
                                 </>
                               )}
                             </div>
@@ -3067,10 +3078,10 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         {calcLots > 0 && (
                           <button type="button"
                             onClick={() => { const lots = calcLots.toFixed(2); setVol(lots); syncTotalFromVol(parseFloat(lots), limitPrice); setOrderSubtype('Market'); showToast(`Lot size set to ${lots} (${riskPct}% risk${rrRatio ? ` · 1:${rrRatio} R:R` : ''})`, 'success'); }}
-                            className="w-full py-2 bg-gradient-to-r from-[#2563EB] to-indigo-600 text-white text-[10px] font-bold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer uppercase tracking-wider shadow-sm"
+                            className="w-full py-2 bg-gradient-to-r from-[#2563EB] to-indigo-600 text-white text-[10px] font-semibold rounded-md hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer capitalize  shadow-sm"
                           >✓ Apply {calcLots.toFixed(2)} Lots &amp; Go to Order</button>
                         )}
-                        {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-bold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
+                        {errorMsg && (<div className="flex items-center gap-1 text-[9px] text-[#f23645] font-semibold mt-0.5"><AlertCircle className="w-3.5 h-3.5 shrink-0" /><span>{errorMsg}</span></div>)}
                       </div>
                     );
                   })()}
@@ -3083,11 +3094,11 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 <div className="mt-3.5 pt-3.5 border-t border-gray-100 select-none">
 
                   {/* Active Account Indicator */}
-                  <div className="flex justify-between items-center text-[10px] font-bold text-gray-400 mb-2.5 pb-2 border-b border-gray-100 select-none">
+                  <div className="flex justify-between items-center text-[10px] font-semibold text-gray-400 mb-2.5 pb-2 border-b border-gray-100 select-none">
                     <span>Trading Account</span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-gray-900 font-mono font-bold">Demo #{accountNumber}</span>
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase bg-green-50 text-green-700 border border-green-200 select-none tracking-wider">Active</span>
+                      <span className="text-gray-900 font-mono font-semibold">Demo #{accountNumber}</span>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-semibold capitalize bg-green-50 text-green-700 border border-green-200 select-none ">Active</span>
                     </div>
                   </div>
 
@@ -3095,7 +3106,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                     type="button"
                     onClick={handlePlaceOrder}
                     disabled={isPlacingOrder || !!errorMsg || isInsufficientMargin || !totalUSDT || parseFloat(totalUSDT) <= 0}
-                    className="w-full text-white py-2 rounded-md font-bold mb-3 transition-colors cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider min-h-[44px] flex items-center justify-center"
+                    className="w-full text-white py-2 rounded-md font-semibold mb-3 transition-colors cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed capitalize  min-h-[44px] flex items-center justify-center"
                     style={{
                       backgroundColor: isInsufficientMargin ? '#9CA3AF' : (orderType === 'buy' ? '#2563EB' : '#f23645')
                     }}
@@ -3104,7 +3115,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   </button>
                   
                   {/* Account/Margin details */}
-                  <div className="text-[10px] space-y-1 text-gray-400 font-bold">
+                  <div className="text-[10px] space-y-1 text-gray-400 font-semibold">
                     <div className="flex justify-between">
                       <span>Available Balance:</span>
                       <span className="text-gray-700 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
@@ -3133,7 +3144,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
       {isRenameModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-gray-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in scale-in duration-200">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Rename Account</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Rename Account</h3>
             <form onSubmit={submitRenameAccount} className="space-y-4">
               {renameError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
@@ -3154,13 +3165,13 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 <button
                   type="button"
                   onClick={() => setIsRenameModalOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-bold shadow-sm cursor-pointer"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm cursor-pointer"
                 >
                   Save
                 </button>
@@ -3175,7 +3186,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-base font-semibold text-[#111111] flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-[#2563EB]" />
                 New Practice Account
               </h2>
@@ -3197,7 +3208,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
               {/* Account Name */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Account Name (Optional)</label>
+                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Account Name (Optional)</label>
                 <input
                   type="text"
                   maxLength="50"
@@ -3210,7 +3221,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
               {/* Preset Balances */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Starting Capital</label>
+                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Starting Capital</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: 1000, label: '$1,000' },
@@ -3230,7 +3241,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                           setCustomAmount('');
                           setCreateError('');
                         }}
-                        className={`py-1.5 px-2 border rounded-xl font-mono font-bold text-[10px] transition-all cursor-pointer text-center ${
+                        className={`py-1.5 px-2 border rounded-xl font-mono font-semibold text-[10px] transition-all cursor-pointer text-center ${
                           isSelected
                             ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB] shadow-sm'
                             : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
@@ -3245,9 +3256,9 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
               {/* Custom Starting Capital */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Or Custom Amount (USD)</label>
+                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Or Custom Amount (USD)</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-mono font-bold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -3269,14 +3280,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="flex-1 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer text-center"
+                  className="flex-1 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-xs rounded-xl transition-all cursor-pointer text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="flex-1 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer text-center"
+                  className="flex-1 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer text-center"
                 >
                   {creating ? 'Creating Account...' : 'Create Account'}
                 </button>
@@ -3290,7 +3301,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
       {isBalanceSettingsOpen && accountData && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[300] p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-gray-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200 select-none">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Adjust Account Balance</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Adjust Account Balance</h3>
             <p className="text-xs text-gray-400 font-semibold mb-4">
               Set a new virtual capital for {accountData.accountName || `Demo #${accountData.accountNumber}`}.
             </p>
@@ -3313,7 +3324,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                         setSelectedAdjustPreset(presetVal);
                         setCustomAdjustAmount('');
                       }}
-                      className={`py-2 px-1 border rounded-lg font-mono font-bold text-xs transition-all cursor-pointer text-center ${
+                      className={`py-2 px-1 border rounded-lg font-mono font-semibold text-xs transition-all cursor-pointer text-center ${
                         isSelected
                           ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]'
                           : 'border-gray-200 hover:border-gray-300 text-gray-600'
@@ -3326,9 +3337,9 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
               </div>
               {/* Custom Input */}
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Custom Amount</label>
+                <label className="text-[10px] font-semibold text-gray-400 capitalize ">Custom Amount</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-mono font-bold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -3348,14 +3359,14 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                 <button
                   type="button"
                   onClick={() => setIsBalanceSettingsOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={adjusting}
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {adjusting ? 'Saving...' : 'Save'}
                 </button>

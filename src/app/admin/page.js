@@ -110,7 +110,7 @@ export default async function AdminPage() {
     const walletBalanceMap = {};
     if (dbWallets) {
       dbWallets.forEach(w => {
-        walletBalanceMap[w.user_id] = parseFloat(w.virtual_balance);
+        walletBalanceMap[w.user_id] = (walletBalanceMap[w.user_id] || 0) + parseFloat(w.virtual_balance || 0);
       });
     }
 

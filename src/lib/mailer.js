@@ -82,14 +82,14 @@ export async function sendPasswordResetEmail({ toEmail, name, resetUrl }) {
       text-align: center;
       line-height: 36px;
       color: #FFFFFF;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 18px;
     }
     .brand-name {
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 600;
       color: #111111;
-      letter-spacing: -0.5px;
+      
       vertical-align: middle;
     }
     .content {
@@ -97,10 +97,10 @@ export async function sendPasswordResetEmail({ toEmail, name, resetUrl }) {
     }
     h1 {
       font-size: 22px;
-      font-weight: 700;
+      font-weight: 600;
       color: #111111;
       margin: 0 0 16px;
-      letter-spacing: -0.3px;
+      
     }
     p {
       font-size: 15px;
@@ -236,7 +236,7 @@ export async function sendWelcomeEmail({ toEmail, name }) {
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #FAFAFA; margin: 0; padding: 0; color: #111111; }
     .container { max-width: 520px; margin: 40px auto; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-    h1 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 600; color: #111; margin-bottom: 16px; }
     p { font-size: 15px; line-height: 1.6; color: #4B5563; }
     .btn { display: inline-block; background: #2563EB; color: #fff !important; font-size: 15px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 10px; margin-top: 20px; }
   </style>

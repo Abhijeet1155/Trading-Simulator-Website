@@ -113,7 +113,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
       <main className="max-w-6xl mx-auto px-6 py-10 flex-grow w-full">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#111111] tracking-tight">
+          <h1 className="text-3xl font-semibold text-[#111111] ">
             Trade History
           </h1>
           <p className="text-sm text-[#6B7280] mt-1.5 font-medium">
@@ -126,13 +126,13 @@ export default function HistoryClientPage({ userName, trades = [] }) {
           {/* Total Trades */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Trades</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Total Trades</span>
               <div className="p-1.5 bg-[#F3F4F6] rounded-lg text-gray-500">
                 <Briefcase className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-xl font-extrabold text-[#111111]">{totalTradesCount}</p>
-            <span className="text-[10px] text-gray-400 font-bold mt-0.5 block">
+            <p className="text-xl font-semibold text-[#111111]">{totalTradesCount}</p>
+            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
               Completed executions
             </span>
           </div>
@@ -140,13 +140,13 @@ export default function HistoryClientPage({ userName, trades = [] }) {
           {/* Win Rate */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Win Rate</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Win Rate</span>
               <div className="p-1.5 bg-blue-50 rounded-lg text-[#2563EB]">
                 <Percent className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-xl font-extrabold text-[#111111]">{winRate.toFixed(1)}%</p>
-            <span className="text-[10px] text-[#2563EB] font-bold mt-0.5 block">
+            <p className="text-xl font-semibold text-[#111111]">{winRate.toFixed(1)}%</p>
+            <span className="text-[10px] text-[#2563EB] font-semibold mt-0.5 block">
               Profitable positions
             </span>
           </div>
@@ -154,15 +154,15 @@ export default function HistoryClientPage({ userName, trades = [] }) {
           {/* Total P&L */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total P&L</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Total P&L</span>
               <div className={`p-1.5 rounded-lg ${totalPnLSum >= 0 ? 'bg-[#16A34A]/10 text-[#16A34A]' : 'bg-[#DC2626]/10 text-[#DC2626]'}`}>
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
-            <p className={`text-xl font-extrabold ${totalPnLSum >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+            <p className={`text-xl font-semibold ${totalPnLSum >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
               {totalPnLSum >= 0 ? '+' : ''}${totalPnLSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <span className="text-[10px] text-gray-400 font-bold mt-0.5 block">
+            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
               Net balance changes
             </span>
           </div>
@@ -170,15 +170,15 @@ export default function HistoryClientPage({ userName, trades = [] }) {
           {/* Best Trade */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Best Trade</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Best Trade</span>
               <div className="p-1.5 bg-amber-50 rounded-lg text-amber-500">
                 <Trophy className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-xl font-extrabold text-[#16A34A]">
+            <p className="text-xl font-semibold text-[#16A34A]">
               +${bestTrade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <span className="text-[10px] text-gray-400 font-bold mt-0.5 block">
+            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
               Highest single gain
             </span>
           </div>
@@ -188,13 +188,13 @@ export default function HistoryClientPage({ userName, trades = [] }) {
         <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] mb-6 select-none flex flex-wrap gap-4 items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-gray-400" />
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Filters</span>
+            <span className="text-xs font-semibold text-gray-500 capitalize ">Filters</span>
           </div>
 
           <div className="flex flex-wrap gap-4 items-center">
             {/* Filter Asset */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Asset</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Asset</span>
               <select
                 value={assetFilter}
                 onChange={(e) => setAssetFilter(e.target.value)}
@@ -212,7 +212,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
 
             {/* Filter Side */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Side</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Side</span>
               <select
                 value={sideFilter}
                 onChange={(e) => setSideFilter(e.target.value)}
@@ -226,7 +226,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
 
             {/* Filter Time */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Time</span>
+              <span className="text-[10px] font-semibold text-gray-400 capitalize ">Time</span>
               <select
                 value={timeFilter}
                 onChange={(e) => setTimeFilter(e.target.value)}
@@ -246,13 +246,13 @@ export default function HistoryClientPage({ userName, trades = [] }) {
             /* Loading Shimmer State */
             <div className="py-20 text-center flex flex-col items-center justify-center select-none animate-pulse">
               <Loader2 className="w-8 h-8 text-[#2563EB] animate-spin mb-3" />
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Applying filters...</span>
+              <span className="text-xs font-semibold text-gray-400 capitalize ">Applying filters...</span>
             </div>
           ) : paginatedTrades.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs font-sans min-w-[800px]">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-bold uppercase text-[9px] tracking-wider select-none">
+                  <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
                     <th className="py-3.5 px-4">Symbol</th>
                     <th className="py-3.5 px-4">Side</th>
                     <th className="py-3.5 px-4">Volume</th>
@@ -269,9 +269,9 @@ export default function HistoryClientPage({ userName, trades = [] }) {
                     const isUp = pos.pnl >= 0;
                     return (
                       <tr key={pos.id} className="hover:bg-gray-50/50">
-                        <td className="py-3.5 px-4 font-bold text-gray-900">{pos.symbol}/USDT</td>
+                        <td className="py-3.5 px-4 font-semibold text-gray-900">{pos.symbol}/USDT</td>
                         <td className="py-3.5 px-4">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                             pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
                           }`}>
                             {pos.side?.toLowerCase() === 'buy' ? 'Buy' : 'Sell'}
@@ -284,12 +284,12 @@ export default function HistoryClientPage({ userName, trades = [] }) {
                         <td className="py-3.5 px-4 font-mono font-medium">
                           {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.exit.toFixed(4) : `$${pos.exit.toLocaleString()}`}
                         </td>
-                        <td className={`py-3.5 px-4 text-right font-mono font-bold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                        <td className={`py-3.5 px-4 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                           {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                         </td>
                         <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.opened_at)}</td>
                         <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.closed_at)}</td>
-                        <td className="py-3.5 px-4 text-right text-gray-500 font-bold">{getDurationString(pos.opened_at, pos.closed_at)}</td>
+                        <td className="py-3.5 px-4 text-right text-gray-500 font-semibold">{getDurationString(pos.opened_at, pos.closed_at)}</td>
                       </tr>
                     );
                   })}
@@ -299,7 +299,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
               {/* Pagination Controls */}
               {totalPages > 1 && (
                 <div className="border-t border-gray-100 px-4 py-3.5 flex items-center justify-between select-none">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">
+                  <span className="text-[10px] font-semibold text-gray-400 capitalize ">
                     Page {currentPage} of {totalPages} &bull; {filteredTrades.length} records
                   </span>
                   
@@ -308,7 +308,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
                       type="button"
                       disabled={currentPage === 1}
                       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                      className="px-2.5 py-1.5 border border-gray-200 hover:bg-gray-50 rounded-lg text-xs font-bold text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 transition-all"
+                      className="px-2.5 py-1.5 border border-gray-200 hover:bg-gray-50 rounded-lg text-xs font-semibold text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 transition-all"
                     >
                       <ChevronLeft className="w-3.5 h-3.5" /> Previous
                     </button>
@@ -316,7 +316,7 @@ export default function HistoryClientPage({ userName, trades = [] }) {
                       type="button"
                       disabled={currentPage === totalPages}
                       onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                      className="px-2.5 py-1.5 border border-gray-200 hover:bg-gray-50 rounded-lg text-xs font-bold text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 transition-all"
+                      className="px-2.5 py-1.5 border border-gray-200 hover:bg-gray-50 rounded-lg text-xs font-semibold text-gray-500 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1 transition-all"
                     >
                       Next <ChevronRight className="w-3.5 h-3.5" />
                     </button>
@@ -330,14 +330,14 @@ export default function HistoryClientPage({ userName, trades = [] }) {
               <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-sm">
                 <History className="w-7 h-7 text-gray-400" />
               </div>
-              <h3 className="font-extrabold text-sm text-gray-700 tracking-tight">No trade history yet</h3>
+              <h3 className="font-semibold text-sm text-gray-700 ">No trade history yet</h3>
               <p className="text-xs text-gray-400 mt-1.5 max-w-xs leading-relaxed font-semibold">
                 Your completed trades will show up here once you close a position.
               </p>
               <div className="mt-6">
                 <Link 
                   href="/trade" 
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
                 >
                   Go to Trading Terminal <ArrowRight className="w-3.5 h-3.5" />
                 </Link>

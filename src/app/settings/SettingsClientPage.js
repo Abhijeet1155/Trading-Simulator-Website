@@ -204,7 +204,7 @@ export default function SettingsClientPage({
       <main className="max-w-3xl mx-auto px-6 py-10 flex-grow w-full">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#111111] tracking-tight">
+          <h1 className="text-3xl font-semibold text-[#111111] ">
             Settings
           </h1>
           <p className="text-sm text-[#6B7280] mt-1.5 font-medium">
@@ -215,12 +215,12 @@ export default function SettingsClientPage({
         <div className="space-y-6">
           {/* 1. PROFILE SECTION CARD */}
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[#111111] capitalize  mb-4 flex items-center gap-2">
               <User className="w-4 h-4 text-[#2563EB]" /> Profile Settings
             </h2>
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-gray-400 capitalize  mb-1.5">
                   Full Name
                 </label>
                 <input 
@@ -233,7 +233,7 @@ export default function SettingsClientPage({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-gray-400 capitalize  mb-1.5">
                   Email Address
                 </label>
                 <div className="relative group">
@@ -276,27 +276,27 @@ export default function SettingsClientPage({
 
           {/* 2. ACCOUNT & PLAN SECTION CARD */}
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[#111111] capitalize  mb-4 flex items-center gap-2">
               <Award className="w-4 h-4 text-[#2563EB]" /> Account & Plan
             </h2>
             <div className="space-y-4">
               <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Account Details</span>
-                <span className="text-sm font-mono font-bold text-gray-900">
+                <span className="text-xs font-semibold text-gray-400 capitalize ">Account Details</span>
+                <span className="text-sm font-mono font-semibold text-gray-900">
                   {accountName ? `${accountName} — ` : ''}Demo #{accountNumber}
                 </span>
               </div>
 
               <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Current Plan</span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-[#2563EB] border border-blue-100 select-none">
+                <span className="text-xs font-semibold text-gray-400 capitalize ">Current Plan</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold capitalize  bg-blue-50 text-[#2563EB] border border-blue-100 select-none">
                   {initialPlanType === 'free' ? 'Free User' : 'Premium'}
                 </span>
               </div>
 
               <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Account Balance</span>
-                <span className="text-sm font-mono font-bold text-gray-900">
+                <span className="text-xs font-semibold text-gray-400 capitalize ">Account Balance</span>
+                <span className="text-sm font-mono font-semibold text-gray-900">
                   ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
                 </span>
               </div>
@@ -316,7 +316,7 @@ export default function SettingsClientPage({
           {/* MY ACCOUNTS SECTION CARD */}
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
-              <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wider flex items-center gap-2">
+              <h2 className="text-sm font-semibold text-[#111111] capitalize  flex items-center gap-2">
                 <Wallet className="w-4 h-4 text-[#2563EB]" /> My Practice Accounts
               </h2>
               <span className="text-xs font-semibold text-gray-500">
@@ -339,11 +339,11 @@ export default function SettingsClientPage({
                   >
                     <div className="flex flex-col mb-3 sm:mb-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-gray-900">
+                        <span className="text-sm font-semibold text-gray-900">
                           {w.account_name || 'Primary Demo'}
                         </span>
                         {isCurrentActive && (
-                          <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20 select-none">
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold capitalize  bg-[#2563EB]/10 text-[#2563EB] border border-[#2563EB]/20 select-none">
                             Active
                           </span>
                         )}
@@ -354,7 +354,7 @@ export default function SettingsClientPage({
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end gap-4">
-                      <span className="text-sm font-mono font-bold text-gray-900">
+                      <span className="text-sm font-mono font-semibold text-gray-900">
                         ${parseFloat(w.virtual_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </span>
                       
@@ -370,7 +370,7 @@ export default function SettingsClientPage({
                         {!isCurrentActive && (
                           <button
                             onClick={() => handleSwitchAccount(w.id)}
-                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 font-bold text-xs rounded-lg transition-all cursor-pointer shadow-sm select-none"
+                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition-all cursor-pointer shadow-sm select-none"
                           >
                             Switch
                           </button>
@@ -385,12 +385,12 @@ export default function SettingsClientPage({
 
           {/* 3. TRADING PREFERENCES CARD */}
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[#111111] capitalize  mb-4 flex items-center gap-2">
               <Settings className="w-4 h-4 text-[#2563EB]" /> Trading Preferences
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">
+                <label className="block text-xs font-semibold text-gray-400 capitalize  mb-1.5">
                   Default Order Type
                 </label>
                 <select
@@ -405,7 +405,7 @@ export default function SettingsClientPage({
 
               <div className="flex items-center justify-between pt-2">
                 <div className="space-y-0.5 pr-4">
-                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wide select-none cursor-pointer" htmlFor="tpsl-toggle">
+                  <label className="text-xs font-semibold text-gray-700 capitalize  select-none cursor-pointer" htmlFor="tpsl-toggle">
                     Show TP/SL by default in trade panel
                   </label>
                   <p className="text-[10px] text-gray-400 font-semibold select-none">
@@ -425,7 +425,7 @@ export default function SettingsClientPage({
 
           {/* 4. DANGER ZONE SECTION CARD */}
           <div className="bg-white border border-red-200 rounded-2xl p-6 shadow-[0_2px_8px_rgba(220,38,38,0.04)] select-none">
-            <h2 className="text-sm font-bold text-red-600 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-red-600 capitalize  mb-4 flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-red-500" /> Danger Zone
             </h2>
             <p className="text-xs text-gray-400 font-semibold mb-4">
@@ -434,7 +434,7 @@ export default function SettingsClientPage({
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 py-3 border-b border-gray-50">
                 <div className="space-y-0.5">
-                  <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">Reset Virtual Balance</span>
+                  <span className="text-xs font-semibold text-gray-900 capitalize ">Reset Virtual Balance</span>
                   <p className="text-[10px] text-gray-400 font-semibold">
                     Set your account back to ${initialConfiguredBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} and close all open positions.
                   </p>
@@ -443,7 +443,7 @@ export default function SettingsClientPage({
                   type="button"
                   onClick={() => setShowResetModal(true)}
                   disabled={resettingBalance}
-                  className="bg-white hover:bg-red-50 text-red-600 border border-red-200 font-bold text-xs px-4 py-2 rounded-lg transition-all cursor-pointer"
+                  className="bg-white hover:bg-red-50 text-red-600 border border-red-200 font-semibold text-xs px-4 py-2 rounded-lg transition-all cursor-pointer"
                 >
                   {resettingBalance ? 'Resetting...' : 'Reset Balance'}
                 </button>
@@ -451,7 +451,7 @@ export default function SettingsClientPage({
 
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 py-3">
                 <div className="space-y-0.5">
-                  <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">Delete Account</span>
+                  <span className="text-xs font-semibold text-gray-900 capitalize ">Delete Account</span>
                   <p className="text-[10px] text-gray-400 font-semibold">
                     Permanently delete all your virtual trades, profile, and settings from PaperPulse.
                   </p>
@@ -459,7 +459,7 @@ export default function SettingsClientPage({
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(true)}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors cursor-pointer shadow-sm"
+                  className="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors cursor-pointer shadow-sm"
                 >
                   Delete Account
                 </button>
@@ -488,7 +488,7 @@ export default function SettingsClientPage({
             <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-2">Reset Account?</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Reset Account?</h3>
             <p className="text-xs text-gray-500 font-medium leading-relaxed mb-6">
               This will reset your balance to ${initialConfiguredBalance.toLocaleString('en-US')} and close all open positions. This cannot be undone. Are you sure?
             </p>
@@ -496,14 +496,14 @@ export default function SettingsClientPage({
               <button
                 type="button"
                 onClick={() => setShowResetModal(false)}
-                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleResetBalance}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold shadow-sm cursor-pointer"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold shadow-sm cursor-pointer"
               >
                 Confirm
               </button>
@@ -519,7 +519,7 @@ export default function SettingsClientPage({
             <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-4">
               <ShieldAlert className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-2">Delete Account?</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Delete Account?</h3>
             <p className="text-xs text-gray-500 font-medium leading-relaxed mb-6">
               Contact support to delete your account. To prevent accidental data loss, standard accounts cannot be deleted directly during this development stage.
             </p>
@@ -527,7 +527,7 @@ export default function SettingsClientPage({
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-lg text-xs font-bold cursor-pointer"
+                className="px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-lg text-xs font-semibold cursor-pointer"
               >
                 Close
               </button>
@@ -539,7 +539,7 @@ export default function SettingsClientPage({
       {isRenameModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[300] p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in zoom-in-95 duration-200">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Rename Account</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Rename Account</h3>
             <form onSubmit={submitRenameAccount} className="space-y-4">
               {renameError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
@@ -560,14 +560,14 @@ export default function SettingsClientPage({
                 <button
                   type="button"
                   onClick={() => setIsRenameModalOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={renaming}
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {renaming ? 'Saving...' : 'Save'}
                 </button>

@@ -204,7 +204,7 @@ export default function LeaderboardClientPage({
           <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 items-start select-none">
             <Info className="w-5 h-5 text-[#2563EB] shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-blue-900">SQL View Required for Live Leaderboard</h4>
+              <h4 className="text-xs font-semibold text-blue-900">SQL View Required for Live Leaderboard</h4>
               <p className="text-[10px] text-blue-800 font-semibold leading-relaxed">
                 Currently running in local sandbox database mode. Run the view script in `leaderboard_view.sql` in your Supabase SQL editor to link real-time rankings across all platform users.
               </p>
@@ -215,7 +215,7 @@ export default function LeaderboardClientPage({
         {/* Page Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 select-none">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#111111] tracking-tight">
+            <h1 className="text-3xl font-semibold text-[#111111] ">
               Leaderboard
             </h1>
             <p className="text-sm text-[#6B7280] mt-1.5 font-medium">
@@ -231,7 +231,7 @@ export default function LeaderboardClientPage({
                   key={tab}
                   type="button"
                   onClick={() => setTimeTab(tab)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     timeTab === tab 
                       ? 'bg-white text-[#111111] shadow-[0_2px_4px_rgba(0,0,0,0.04)]' 
                       : 'text-gray-400 hover:text-gray-700'
@@ -248,7 +248,7 @@ export default function LeaderboardClientPage({
         <div className="flex border-b border-[#E5E7EB] mb-8 overflow-x-auto gap-8 text-sm select-none">
           <button
             onClick={() => setSelectedLeaderboardTab('Global')}
-            className={`pb-4 font-bold border-b-2 transition-all cursor-pointer ${
+            className={`pb-4 font-semibold border-b-2 transition-all cursor-pointer ${
               selectedLeaderboardTab === 'Global'
                 ? 'border-[#2563EB] text-[#2563EB]'
                 : 'border-transparent text-[#6B7280] hover:text-[#111111]'
@@ -261,7 +261,7 @@ export default function LeaderboardClientPage({
             <button
               key={comp.id}
               onClick={() => setSelectedLeaderboardTab(comp.id)}
-              className={`pb-4 font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+              className={`pb-4 font-semibold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
                 selectedLeaderboardTab === comp.id
                   ? 'border-[#2563EB] text-[#2563EB]'
                   : 'border-transparent text-[#6B7280] hover:text-[#111111]'
@@ -278,7 +278,7 @@ export default function LeaderboardClientPage({
           loading ? (
             <div className="py-32 text-center flex flex-col items-center justify-center select-none animate-pulse">
               <Loader2 className="w-8 h-8 text-[#2563EB] animate-spin mb-3" />
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Recalculating standings...</span>
+              <span className="text-xs font-semibold text-gray-400 capitalize ">Recalculating standings...</span>
             </div>
           ) : rankedUsers.length > 0 ? (
             <div className="space-y-10">
@@ -289,22 +289,22 @@ export default function LeaderboardClientPage({
                 {secondPlace ? (
                   <div className="flex flex-col items-center w-28 md:w-36 text-center animate-in slide-in-from-bottom-3 duration-300 order-2 sm:order-1">
                     <div className="relative mb-3">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center text-gray-500 font-bold shadow-md">
+                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center text-gray-500 font-semibold shadow-md">
                         <User className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
                       </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gray-300 border border-white text-gray-700 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-gray-300 border border-white text-gray-700 rounded-full flex items-center justify-center text-[10px] font-semibold shadow-sm">
                         2
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-[#111111] truncate max-w-full">
+                    <span className="text-xs font-semibold text-[#111111] truncate max-w-full">
                       {getMaskedName(secondPlace.user_name, secondPlace.user_id)}
                     </span>
-                    <span className={`text-[10px] font-bold mt-0.5 ${secondPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                    <span className={`text-[10px] font-semibold mt-0.5 ${secondPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                       {formatPnL(secondPlace.total_pnl)}
                     </span>
                     
                     <div className="w-full bg-[#E5E7EB] border-t-2 border-gray-300 rounded-t-xl h-20 mt-4 hidden sm:flex items-center justify-center shadow-inner">
-                      <span className="text-2xl font-black text-gray-400 select-none">🥈</span>
+                      <span className="text-2xl font-semibold text-gray-400 select-none">🥈</span>
                     </div>
                   </div>
                 ) : (
@@ -315,22 +315,22 @@ export default function LeaderboardClientPage({
                 {firstPlace ? (
                   <div className="flex flex-col items-center w-32 md:w-44 text-center z-10 animate-in slide-in-from-bottom-5 duration-300 order-1 sm:order-2">
                     <div className="relative mb-3">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-50 border-4 border-amber-400 flex items-center justify-center text-amber-500 font-bold shadow-lg">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-50 border-4 border-amber-400 flex items-center justify-center text-amber-500 font-semibold shadow-lg">
                         <Trophy className="w-8 h-8 md:w-10 md:h-10 text-amber-500 animate-bounce" />
                       </div>
-                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-amber-400 border border-white text-white rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+                      <div className="absolute -top-2 -right-2 w-7 h-7 bg-amber-400 border border-white text-white rounded-full flex items-center justify-center text-xs font-semibold shadow-sm">
                         1
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-[#111111] truncate max-w-full">
+                    <span className="text-sm font-semibold text-[#111111] truncate max-w-full">
                       {getMaskedName(firstPlace.user_name, firstPlace.user_id)}
                     </span>
-                    <span className={`text-xs font-extrabold mt-0.5 ${firstPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                    <span className={`text-xs font-semibold mt-0.5 ${firstPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                       {formatPnL(firstPlace.total_pnl)}
                     </span>
                     
                     <div className="w-full bg-[#FCD34D] border-t-2 border-amber-400 rounded-t-xl h-28 mt-4 hidden sm:flex items-center justify-center shadow-inner">
-                      <span className="text-3xl font-black text-amber-600 select-none">🏆</span>
+                      <span className="text-3xl font-semibold text-amber-600 select-none">🏆</span>
                     </div>
                   </div>
                 ) : (
@@ -341,22 +341,22 @@ export default function LeaderboardClientPage({
                 {thirdPlace ? (
                   <div className="flex flex-col items-center w-28 md:w-36 text-center animate-in slide-in-from-bottom-3 duration-300 order-3 sm:order-3">
                     <div className="relative mb-3">
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#FFFBEB] border-2 border-amber-600 flex items-center justify-center text-amber-700 font-bold shadow-md">
+                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#FFFBEB] border-2 border-amber-600 flex items-center justify-center text-amber-700 font-semibold shadow-md">
                         <User className="w-6 h-6 md:w-8 md:h-8 text-amber-700/60" />
                       </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-600 border border-white text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
+                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-600 border border-white text-white rounded-full flex items-center justify-center text-[10px] font-semibold shadow-sm">
                         3
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-[#111111] truncate max-w-full">
+                    <span className="text-xs font-semibold text-[#111111] truncate max-w-full">
                       {getMaskedName(thirdPlace.user_name, thirdPlace.user_id)}
                     </span>
-                    <span className={`text-[10px] font-bold mt-0.5 ${thirdPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                    <span className={`text-[10px] font-semibold mt-0.5 ${thirdPlace.total_pnl >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                       {formatPnL(thirdPlace.total_pnl)}
                     </span>
                     
                     <div className="w-full bg-[#E5D5C5] border-t-2 border-amber-600 rounded-t-xl h-16 mt-4 hidden sm:flex items-center justify-center shadow-inner">
-                      <span className="text-2xl font-black text-amber-700 select-none">🥉</span>
+                      <span className="text-2xl font-semibold text-amber-700 select-none">🥉</span>
                     </div>
                   </div>
                 ) : (
@@ -369,7 +369,7 @@ export default function LeaderboardClientPage({
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
                     <thead>
-                      <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-bold uppercase text-[9px] tracking-wider select-none">
+                      <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
                         <th className="py-3.5 px-6">Rank</th>
                         <th className="py-3.5 px-6">Trader</th>
                         <th className="py-3.5 px-6">Total P&L</th>
@@ -389,25 +389,25 @@ export default function LeaderboardClientPage({
                               isSelf ? 'bg-blue-50/40 hover:bg-blue-50/60 font-semibold' : ''
                             }`}
                           >
-                            <td className="py-4 px-6 font-bold text-gray-900">
+                            <td className="py-4 px-6 font-semibold text-gray-900">
                               {user.rank === 1 ? '🥇 1' : user.rank === 2 ? '🥈 2' : user.rank === 3 ? '🥉 3' : `#${user.rank}`}
                             </td>
                             <td className="py-4 px-6 flex items-center gap-2">
-                              <span className="font-bold text-gray-900 truncate">
+                              <span className="font-semibold text-gray-900 truncate">
                                 {getMaskedName(user.user_name, user.user_id)}
                               </span>
                               {isSelf && (
-                                <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-bold uppercase select-none">
+                                <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-semibold capitalize select-none">
                                   You
                                 </span>
                               )}
                             </td>
-                            <td className={`py-4 px-6 font-mono font-bold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                            <td className={`py-4 px-6 font-mono font-semibold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                               {formatPnL(user.total_pnl)}
                             </td>
                             <td className="py-4 px-6 text-center font-mono font-semibold">{user.win_rate.toFixed(1)}%</td>
                             <td className="py-4 px-6 text-center font-mono font-semibold">{user.total_trades}</td>
-                            <td className="py-4 px-6 text-right font-mono font-bold text-[#16A34A]">
+                            <td className="py-4 px-6 text-right font-mono font-semibold text-[#16A34A]">
                               +${user.best_trade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </td>
                           </tr>
@@ -424,14 +424,14 @@ export default function LeaderboardClientPage({
               <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-sm">
                 <Trophy className="w-7 h-7 text-gray-400" />
               </div>
-              <h3 className="font-extrabold text-sm text-gray-700 tracking-tight">No rankings yet</h3>
+              <h3 className="font-semibold text-sm text-gray-700 ">No rankings yet</h3>
               <p className="text-xs text-gray-400 mt-1.5 max-w-xs leading-relaxed font-semibold">
                 Be the first to complete a trade and top the leaderboard!
               </p>
               <div className="mt-6">
                 <Link 
                   href="/trade" 
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
                 >
                   Go to Trading Terminal <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
@@ -443,14 +443,14 @@ export default function LeaderboardClientPage({
           compDetailLoading ? (
             <div className="py-32 text-center flex flex-col items-center justify-center select-none animate-pulse">
               <Loader2 className="w-8 h-8 text-[#2563EB] animate-spin mb-3" />
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Loading competition standings...</span>
+              <span className="text-xs font-semibold text-gray-400 capitalize ">Loading competition standings...</span>
             </div>
           ) : compRankings.length > 0 ? (
             <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-bold uppercase text-[9px] tracking-wider select-none">
+                    <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
                       <th className="py-3.5 px-6">Rank</th>
                       <th className="py-3.5 px-6">Trader</th>
                       <th className="py-3.5 px-6 text-right">P&L (%)</th>
@@ -469,26 +469,26 @@ export default function LeaderboardClientPage({
                             isSelf ? 'bg-blue-50/40 hover:bg-blue-50/60 font-semibold' : ''
                           }`}
                         >
-                          <td className="py-4 px-6 font-bold text-gray-900">
+                          <td className="py-4 px-6 font-semibold text-gray-900">
                             {user.rank === 1 ? '🥇 1' : user.rank === 2 ? '🥈 2' : user.rank === 3 ? '🥉 3' : `#${user.rank}`}
                           </td>
                           <td className="py-4 px-6 flex items-center gap-2">
-                            <span className="font-bold text-gray-900 truncate">
+                            <span className="font-semibold text-gray-900 truncate">
                               {getMaskedName(user.name, user.user_id)}
                             </span>
                             {isSelf && (
-                              <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-bold uppercase select-none">
+                              <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-semibold capitalize select-none">
                                 You
                               </span>
                             )}
                           </td>
-                          <td className={`py-4 px-6 text-right font-mono font-bold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                          <td className={`py-4 px-6 text-right font-mono font-semibold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                             {isWinner ? '+' : ''}{user.pnl_percent.toFixed(2)}%
                           </td>
                           <td className="py-4 px-6 text-right font-mono font-semibold text-gray-400">
                             ${parseFloat(user.starting_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </td>
-                          <td className="py-4 px-6 text-right font-mono font-bold text-gray-950">
+                          <td className="py-4 px-6 text-right font-mono font-semibold text-gray-950">
                             ${parseFloat(user.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </td>
                         </tr>
@@ -504,14 +504,14 @@ export default function LeaderboardClientPage({
               <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-sm">
                 <Trophy className="w-7 h-7 text-gray-400" />
               </div>
-              <h3 className="font-extrabold text-sm text-gray-700 tracking-tight">No participants yet</h3>
+              <h3 className="font-semibold text-sm text-gray-700 ">No participants yet</h3>
               <p className="text-xs text-gray-400 mt-1.5 max-w-xs leading-relaxed font-semibold">
                 Be the first to join this competition and claim the top spot!
               </p>
               <div className="mt-6">
                 <Link 
                   href="/competitions" 
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
                 >
                   Go to Competitions Panel <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
@@ -529,7 +529,7 @@ export default function LeaderboardClientPage({
               <span className="p-1 bg-blue-50 text-blue-600 rounded-lg">
                 <Star className="w-4 h-4 text-[#2563EB] fill-[#2563EB]/25" />
               </span>
-              <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+              <span className="text-xs font-semibold text-gray-900 capitalize ">
                 Your Standings ({selectedLeaderboardTab === 'Global' ? timeTab : 'Competition'})
               </span>
             </div>
@@ -537,13 +537,13 @@ export default function LeaderboardClientPage({
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
                 <span className="text-xs text-gray-400 font-semibold">Rank:</span>
-                <span className="text-xs font-extrabold text-gray-900">
+                <span className="text-xs font-semibold text-gray-900">
                   #{displayRank}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-xs text-gray-400 font-semibold">P&L:</span>
-                <span className={`text-xs font-extrabold ${displayPnLIsPositive ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                <span className={`text-xs font-semibold ${displayPnLIsPositive ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                   {displayPnLText}
                 </span>
               </div>

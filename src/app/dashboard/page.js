@@ -131,10 +131,10 @@ export default async function DashboardPage() {
         <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-3xl font-extrabold text-[#111111] tracking-tight">
+              <h1 className="text-3xl font-semibold text-[#111111] ">
                 Welcome back, {displayName}
               </h1>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9] select-none">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9] select-none">
                 🔥 5-day streak
               </span>
             </div>
@@ -149,12 +149,12 @@ export default async function DashboardPage() {
           {/* Virtual Balance */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.08)] hover:-translate-y-0.5 transition-all">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Virtual Balance</span>
+              <span className="text-xs font-semibold text-[#6B7280] capitalize ">Virtual Balance</span>
               <div className="p-2 bg-[#2563EB]/10 rounded-lg text-[#2563EB]">
                 <Wallet className="w-4 h-4" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-[#111111] tracking-tight font-mono">
+            <h3 className="text-2xl font-semibold text-[#111111]  font-mono">
               ${balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </h3>
             <p className="text-[10px] font-semibold text-[#6B7280] mt-1">
@@ -165,12 +165,12 @@ export default async function DashboardPage() {
           {/* Active Positions */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.08)] hover:-translate-y-0.5 transition-all">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Active Trades</span>
+              <span className="text-xs font-semibold text-[#6B7280] capitalize ">Active Trades</span>
               <div className="p-2 bg-[#10B981]/10 rounded-lg text-[#10B981]">
                 <TrendingUp className="w-4 h-4" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-[#111111] tracking-tight">
+            <h3 className="text-2xl font-semibold text-[#111111] ">
               {openPositionsCount}
             </h3>
             <p className="text-[10px] font-semibold text-green-600 mt-1 flex items-center gap-0.5">
@@ -181,17 +181,17 @@ export default async function DashboardPage() {
           {/* Closed PnL */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.08)] hover:-translate-y-0.5 transition-all">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Total PnL (Closed)</span>
+              <span className="text-xs font-semibold text-[#6B7280] capitalize ">Total PnL (Closed)</span>
               <div className={`p-2 rounded-lg ${pnlIsNegative ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                 <BarChart3 className="w-4 h-4" />
               </div>
             </div>
-            <h3 className={`text-2xl font-bold tracking-tight font-mono ${
+            <h3 className={`text-2xl font-semibold  font-mono ${
               pnlIsPositive ? 'text-green-600' : pnlIsNegative ? 'text-red-600' : 'text-gray-500'
             }`}>
               {pnlIsPositive ? '+' : ''}${totalClosedPnL.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </h3>
-            <p className={`text-[10px] font-bold mt-1 ${
+            <p className={`text-[10px] font-semibold mt-1 ${
               pnlIsPositive ? 'text-green-600' : pnlIsNegative ? 'text-red-600' : 'text-gray-500'
             }`}>
               {formatPercent(pnlPercent)} of balance
@@ -201,12 +201,12 @@ export default async function DashboardPage() {
           {/* Account Plan Status */}
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.08)] hover:-translate-y-0.5 transition-all">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Practice Plan</span>
+              <span className="text-xs font-semibold text-[#6B7280] capitalize ">Practice Plan</span>
               <div className="p-2 bg-[#F59E0B]/10 rounded-lg text-[#F59E0B]">
                 <Award className="w-4 h-4" />
               </div>
             </div>
-            <h3 className="text-2xl font-extrabold text-[#111111] tracking-tight uppercase">
+            <h3 className="text-2xl font-semibold text-[#111111]  capitalize">
               {planType}
             </h3>
             <p className="text-[10px] font-semibold text-[#6B7280] mt-1">
@@ -221,13 +221,13 @@ export default async function DashboardPage() {
             <div className="w-16 h-16 bg-[#2563EB]/5 rounded-full flex items-center justify-center text-[#2563EB] mx-auto mb-5 shadow-sm border border-[#2563EB]/10">
               <TrendingUp className="w-7 h-7" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">No Trades Recorded Yet</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">No Trades Recorded Yet</h2>
             <p className="text-sm font-semibold text-gray-500 max-w-sm mx-auto mb-6 leading-relaxed">
               Open the Trade Terminal to start practicing trading. Execute orders on live simulated crypto, stock, or forex rates.
             </p>
             <Link
               href="/trade"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold text-sm rounded-xl shadow-[0_2px_4px_rgba(37,99,235,0.1)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.2)] transition-all group"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold text-sm rounded-xl shadow-[0_2px_4px_rgba(37,99,235,0.1)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.2)] transition-all group"
             >
               Start Trading Now
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -237,7 +237,7 @@ export default async function DashboardPage() {
           /* Recent Activity Section */
           <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)] mb-8 max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-[#111111] tracking-tight">Recent Activity</h2>
+              <h2 className="text-lg font-semibold text-[#111111] ">Recent Activity</h2>
               <Link href="/trade" className="text-xs font-semibold text-[#2563EB] hover:underline">
                 New Trade
               </Link>
@@ -246,7 +246,7 @@ export default async function DashboardPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs font-sans min-w-[650px] md:min-w-0">
                 <thead>
-                  <tr className="border-b border-gray-200 text-gray-400 font-bold uppercase text-[9px] tracking-wider">
+                  <tr className="border-b border-gray-200 text-gray-400 font-semibold capitalize text-[9px] ">
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Symbol</th>
                     <th className="py-2.5 px-3">Side</th>
@@ -267,9 +267,9 @@ export default async function DashboardPage() {
                         <td className="py-3 px-3 font-semibold text-gray-500 font-mono">
                           {new Date(t.created_at).toLocaleDateString()}
                         </td>
-                        <td className="py-3 px-3 font-bold text-gray-900">{t.symbol}/USDT</td>
+                        <td className="py-3 px-3 font-semibold text-gray-900">{t.symbol}/USDT</td>
                         <td className="py-3 px-3">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                             t.side?.toLowerCase() === 'buy' ? 'bg-[#16A34A]/10 text-[#16A34A]' : 'bg-[#DC2626]/10 text-[#DC2626]'
                           }`}>
                             {t.side?.charAt(0).toUpperCase() + t.side?.slice(1)}
@@ -282,13 +282,13 @@ export default async function DashboardPage() {
                           ${parseFloat(t.entry_price).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </td>
                         <td className="py-3 px-3">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
+                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize ${
                             isClosed ? 'bg-gray-100 text-gray-600 border border-gray-200' : 'bg-green-50 text-green-600 border border-green-200'
                           }`}>
                             {t.status}
                           </span>
                         </td>
-                        <td className={`py-3 px-3 font-mono tabular-nums text-right font-bold ${
+                        <td className={`py-3 px-3 font-mono tabular-nums text-right font-semibold ${
                           !isClosed ? 'text-gray-500' : isUp ? 'text-green-600' : 'text-red-600'
                         }`}>
                           {!isClosed ? '--' : `${isUp ? '+' : ''}${tradePnL.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}

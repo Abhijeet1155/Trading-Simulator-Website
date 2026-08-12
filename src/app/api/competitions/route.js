@@ -37,8 +37,8 @@ export async function GET(req) {
     const walletsMap = {};
     const walletsConfiguredMap = {};
     dbWallets.forEach(w => {
-      walletsMap[w.user_id] = parseFloat(w.virtual_balance);
-      walletsConfiguredMap[w.user_id] = w.balance_configured || false;
+      walletsMap[w.user_id] = (walletsMap[w.user_id] || 0) + parseFloat(w.virtual_balance || 0);
+      walletsConfiguredMap[w.user_id] = walletsConfiguredMap[w.user_id] || w.balance_configured || false;
     });
 
     const usersMap = {};

@@ -68,7 +68,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
           <Wallet className="w-5.5 h-5.5" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#111111] flex items-center gap-1.5">
+          <h2 className="text-xl font-semibold text-[#111111] flex items-center gap-1.5">
             Set Your Starting Balance
             <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
           </h2>
@@ -87,7 +87,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
 
         {/* Account Name */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Account Name (Optional)</label>
+          <label className="text-xs font-semibold text-gray-500 capitalize  block">Account Name (Optional)</label>
           <input
             type="text"
             maxLength="30"
@@ -100,7 +100,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
 
         {/* Preset Selectors */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Presets</label>
+          <label className="text-xs font-semibold text-gray-500 capitalize  block">Presets</label>
           <div className="grid grid-cols-3 gap-3">
             {presets.map((preset) => {
               const isSelected = selectedPreset === preset.value && !customAmount;
@@ -113,7 +113,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
                     setCustomAmount('');
                     setError('');
                   }}
-                  className={`py-3 px-4 border rounded-xl font-mono font-bold text-sm transition-all cursor-pointer text-center ${
+                  className={`py-3 px-4 border rounded-xl font-mono font-semibold text-sm transition-all cursor-pointer text-center ${
                     isSelected
                       ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB] shadow-sm'
                       : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
@@ -128,9 +128,9 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
 
         {/* Custom Input */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Or Enter Custom Amount</label>
+          <label className="text-xs font-semibold text-gray-500 capitalize  block">Or Enter Custom Amount</label>
           <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-mono font-bold">$</span>
+            <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-mono font-semibold">$</span>
             <input
               type="number"
               min="100"
@@ -151,7 +151,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold text-sm rounded-xl shadow-[0_2px_4px_rgba(37,99,235,0.15)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.25)] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
+          className="w-full py-3 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold text-sm rounded-xl shadow-[0_2px_4px_rgba(37,99,235,0.15)] hover:shadow-[0_4px_12px_rgba(37,99,235,0.25)] transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
         >
           {loading ? (
             'Configuring Balance...'

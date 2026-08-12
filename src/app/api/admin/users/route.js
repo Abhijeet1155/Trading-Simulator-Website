@@ -69,13 +69,23 @@ export async function PUT(request) {
     }
 
     if (virtual_balance !== undefined) {
-      const { error: walletUpdateErr } = await supabaseAdmin
+      const { data: primaryWallet } = await supabaseAdmin
         .from('wallets')
-        .update({ virtual_balance: parseFloat(virtual_balance), updated_at: new Date().toISOString() })
-        .eq('user_id', userId);
-      if (walletUpdateErr) {
-        console.error('[Admin Users PUT] Wallet update error:', walletUpdateErr);
-        return NextResponse.json({ error: walletUpdateErr.message || 'Failed to update user wallet' }, { status: 500 });
+        .select('id')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (primaryWallet) {
+        const { error: walletUpdateErr } = await supabaseAdmin
+          .from('wallets')
+          .update({ virtual_balance: parseFloat(virtual_balance), updated_at: new Date().toISOString() })
+          .eq('id', primaryWallet.id);
+        if (walletUpdateErr) {
+          console.error('[Admin Users PUT] Wallet update error:', walletUpdateErr);
+          return NextResponse.json({ error: walletUpdateErr.message || 'Failed to update user wallet' }, { status: 500 });
+        }
       }
     }
 

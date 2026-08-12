@@ -302,7 +302,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
               <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center">
                 <TrendingUp className="text-white w-4.5 h-4.5" />
               </div>
-              <span className="font-bold text-lg tracking-tight text-[#111111]">PaperPulse</span>
+              <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
             </div>
           </div>
         </header>
@@ -342,7 +342,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                 setDetailData(null);
                 setError('');
               }}
-              className="mb-6 inline-flex items-center gap-1.5 font-bold text-sm text-[#2563EB] hover:underline cursor-pointer"
+              className="mb-6 inline-flex items-center gap-1.5 font-semibold text-sm text-[#2563EB] hover:underline cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Competitions
             </button>
@@ -417,12 +417,12 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                       <div className="relative z-10 flex-grow flex flex-col justify-between">
                         <div>
-                          <span className={`text-[10px] font-extrabold tracking-widest uppercase block mb-2 ${
+                          <span className={`text-[10px] font-semibold  capitalize block mb-2 ${
                             useMediaBackground ? 'text-blue-300' : 'text-[#2563EB]'
                           }`}>
                             Trading Tournament
                           </span>
-                          <h2 className={`text-2xl md:text-3xl font-extrabold tracking-tight mb-2 ${
+                          <h2 className={`text-2xl md:text-3xl font-semibold  mb-2 ${
                             useMediaBackground ? 'text-white' : 'text-gray-900'
                           }`}>
                             {comp.title}
@@ -433,12 +433,12 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                           useMediaBackground ? 'border-white/10' : 'border-gray-100'
                         }`}>
                           <div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider block ${
+                            <span className={`text-[10px] font-semibold capitalize  block ${
                               useMediaBackground ? 'text-slate-400' : 'text-gray-400'
                             }`}>
                               Estimated Prize Pool
                             </span>
-                            <span className={`text-2xl md:text-3xl font-black tracking-tight ${
+                            <span className={`text-2xl md:text-3xl font-semibold  ${
                               useMediaBackground ? 'text-white' : 'text-[#2563EB]'
                             }`}>
                               {getPrizePool(comp)}
@@ -454,7 +454,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                   return (
                                     <button
                                       disabled
-                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-200 border border-gray-300 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed select-none"
+                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-200 border border-gray-300 text-gray-400 font-semibold text-xs rounded-xl cursor-not-allowed select-none"
                                       title="This competition hasn't started yet"
                                     >
                                       <Play className="w-3.5 h-3.5 fill-gray-400 text-gray-400" /> Starts Soon
@@ -464,7 +464,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                   return (
                                     <Link
                                       href="/trade"
-                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs rounded-xl shadow-md hover:shadow-lg transition-all"
+                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all"
                                     >
                                       <Play className="w-3.5 h-3.5 fill-white text-white font-semibold" /> Trade in Tournament
                                     </Link>
@@ -473,7 +473,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                   return (
                                     <button
                                       disabled
-                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-100 border border-gray-200 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed select-none"
+                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-100 border border-gray-200 text-gray-400 font-semibold text-xs rounded-xl cursor-not-allowed select-none"
                                     >
                                       <Play className="w-3.5 h-3.5 fill-gray-400 text-gray-400" /> Competition Ended
                                     </button>
@@ -484,7 +484,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                   return (
                                     <button
                                       disabled
-                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-100 border border-gray-200 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed select-none"
+                                      className="inline-flex items-center gap-2 px-6 py-3.5 bg-gray-100 border border-gray-200 text-gray-400 font-semibold text-xs rounded-xl cursor-not-allowed select-none"
                                     >
                                       <Sparkles className="w-3.5 h-3.5 text-gray-400" /> Competition Ended
                                     </button>
@@ -494,7 +494,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                     <button
                                       onClick={() => triggerJoinFlow(comp)}
                                       disabled={actionLoading || (comp.entry_fee > 0 && userWalletBalance < comp.entry_fee)}
-                                      className={`inline-flex items-center gap-2 px-6 py-3.5 font-bold text-xs rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold ${
+                                      className={`inline-flex items-center gap-2 px-6 py-3.5 font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold ${
                                         useMediaBackground 
                                           ? 'bg-[#2563EB] hover:bg-[#3B82F6] text-white' 
                                           : 'bg-[#2563EB] hover:bg-[#1d4ed8] text-white'
@@ -508,7 +508,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                     <button
                                       onClick={() => triggerJoinFlow(comp)}
                                       disabled={actionLoading || (comp.entry_fee > 0 && userWalletBalance < comp.entry_fee)}
-                                      className={`inline-flex items-center gap-2 px-6 py-3.5 font-bold text-xs rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold ${
+                                      className={`inline-flex items-center gap-2 px-6 py-3.5 font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold ${
                                         useMediaBackground 
                                           ? 'bg-[#2563EB] hover:bg-[#3B82F6] text-white' 
                                           : 'bg-[#2563EB] hover:bg-[#1d4ed8] text-white'
@@ -530,23 +530,23 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                 {/* User's active standing summary (only when joined) */}
                 {detailData.joined && detailData.userProgress && (
                   <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                    <h3 className="font-bold text-gray-900 text-xs uppercase tracking-wider mb-4">Your Tournament Status</h3>
+                    <h3 className="font-semibold text-gray-900 text-xs capitalize  mb-4">Your Tournament Status</h3>
                     <div className="grid grid-cols-3 gap-4 mb-5 text-center">
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Starting Funds</span>
-                        <span className="text-sm font-bold font-mono text-gray-900 mt-1 block">
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Starting Funds</span>
+                        <span className="text-sm font-semibold font-mono text-gray-900 mt-1 block">
                           ${parseFloat(detailData.userProgress.starting_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Current Equity</span>
-                        <span className="text-sm font-bold font-mono text-gray-900 mt-1 block">
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Current Equity</span>
+                        <span className="text-sm font-semibold font-mono text-gray-900 mt-1 block">
                           ${parseFloat(detailData.userProgress.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Leaderboard Rank</span>
-                        <span className="text-sm font-extrabold text-[#2563EB] mt-1 block">
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Leaderboard Rank</span>
+                        <span className="text-sm font-semibold text-[#2563EB] mt-1 block">
                           #{detailData.userRank || '—'}
                         </span>
                       </div>
@@ -555,7 +555,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       <div className="flex justify-between items-center text-xs font-semibold text-[#6B7280] mb-2">
                         <span className="flex items-center gap-1">
                           Target Progress 
-                          <span className={`font-mono font-bold ${detailData.userProgress.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                          <span className={`font-mono font-semibold ${detailData.userProgress.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
                             ({detailData.userProgress.pnl_percent >= 0 ? '+' : ''}{detailData.userProgress.pnl_percent.toFixed(2)}%)
                           </span>
                         </span>
@@ -575,14 +575,14 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                 {/* Competition Leaderboard table */}
                 <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 md:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                  <h3 className="text-base font-bold text-[#111111] mb-5 flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-[#111111] mb-5 flex items-center gap-2">
                     <Trophy className="w-4.5 h-4.5 text-amber-500" /> Competition Standings
                   </h3>
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[500px] sm:min-w-0">
                       <thead>
-                        <tr className="border-b border-[#E5E7EB] text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                        <tr className="border-b border-[#E5E7EB] text-[10px] font-semibold text-gray-400 capitalize ">
                           <th className="pb-3 px-4">Rank</th>
                           <th className="pb-3 px-4">Participant</th>
                           <th className="pb-3 px-4 text-right">P&L (%)</th>
@@ -600,7 +600,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                               }`}
                             >
                               <td className="py-3 px-4">
-                                <span className={`inline-flex items-center justify-center w-5.5 h-5.5 rounded-full font-bold text-[10px] ${
+                                <span className={`inline-flex items-center justify-center w-5.5 h-5.5 rounded-full font-semibold text-[10px] ${
                                   p.rank === 1 ? 'bg-amber-100 text-amber-800 border border-amber-200' :
                                   p.rank === 2 ? 'bg-gray-100 text-gray-800 border border-gray-200' :
                                   p.rank === 3 ? 'bg-orange-100 text-orange-800 border border-orange-200' :
@@ -610,9 +610,9 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                 </span>
                               </td>
                               <td className="py-3 px-4">
-                                <span className="font-semibold text-gray-800">{p.name}</span> {isCurrentUser && <span className="text-[10px] font-extrabold text-[#2563EB] ml-1 bg-[#2563EB]/10 px-1.5 py-0.5 rounded-md">(YOU)</span>}
+                                <span className="font-semibold text-gray-800">{p.name}</span> {isCurrentUser && <span className="text-[10px] font-semibold text-[#2563EB] ml-1 bg-[#2563EB]/10 px-1.5 py-0.5 rounded-md">(YOU)</span>}
                               </td>
-                              <td className={`py-3 px-4 text-right font-mono font-bold ${
+                              <td className={`py-3 px-4 text-right font-mono font-semibold ${
                                 p.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
                               }`}>
                                 {p.pnl_percent >= 0 ? '+' : ''}{p.pnl_percent.toFixed(2)}%
@@ -628,20 +628,20 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                         {detailData.userProgress && detailData.userRank > 5 && (
                           <>
                             <tr className="bg-white">
-                              <td colSpan="4" className="py-1 text-center text-xs text-gray-400 font-bold uppercase tracking-wider bg-gray-50/50 select-none">
+                              <td colSpan="4" className="py-1 text-center text-xs text-gray-400 font-semibold capitalize  bg-gray-50/50 select-none">
                                 •••
                               </td>
                             </tr>
                             <tr className="bg-[#2563EB]/5 font-semibold text-[#2563EB]">
                               <td className="py-3 px-4">
-                                <span className="inline-flex items-center justify-center w-5.5 h-5.5 rounded-full font-bold text-[10px] bg-[#2563EB] text-white">
+                                <span className="inline-flex items-center justify-center w-5.5 h-5.5 rounded-full font-semibold text-[10px] bg-[#2563EB] text-white">
                                   #{detailData.userRank}
                                 </span>
                               </td>
                               <td className="py-3 px-4">
-                                <span className="font-semibold text-[#2563EB]">{detailData.userProgress.name || 'You'}</span> <span className="text-[10px] font-extrabold bg-[#2563EB]/20 px-1.5 py-0.5 rounded-md ml-1">(YOU)</span>
+                                <span className="font-semibold text-[#2563EB]">{detailData.userProgress.name || 'You'}</span> <span className="text-[10px] font-semibold bg-[#2563EB]/20 px-1.5 py-0.5 rounded-md ml-1">(YOU)</span>
                               </td>
-                              <td className={`py-3 px-4 text-right font-mono font-bold ${
+                              <td className={`py-3 px-4 text-right font-mono font-semibold ${
                                 detailData.userProgress.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'
                               }`}>
                                 {detailData.userProgress.pnl_percent >= 0 ? '+' : ''}{detailData.userProgress.pnl_percent.toFixed(2)}%
@@ -680,7 +680,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       }
                       
                       return (
-                        <span className={`px-3 py-1 border rounded-full text-[10px] font-extrabold tracking-wider uppercase ${badgeClass}`}>
+                        <span className={`px-3 py-1 border rounded-full text-[10px] font-semibold  capitalize ${badgeClass}`}>
                           {badgeLabel}
                         </span>
                       );
@@ -704,7 +704,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       })()}
                     </div>
                     
-                    <div className="flex items-center gap-1.5 font-bold text-sm text-[#2563EB]">
+                    <div className="flex items-center gap-1.5 font-semibold text-sm text-[#2563EB]">
                       <Clock className="w-4 h-4 text-[#2563EB] animate-pulse" />
                       <span>{liveCountdown}</span>
                     </div>
@@ -717,7 +717,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                   {/* PARTICIPANTS CARD */}
                   <div className="pt-4 border-t border-gray-100">
-                    <div className="flex justify-between items-center text-xs font-bold text-gray-900 mb-2">
+                    <div className="flex justify-between items-center text-xs font-semibold text-gray-900 mb-2">
                       <span className="flex items-center gap-1">
                         <Users className="w-4 h-4 text-gray-400" /> Participants
                       </span>
@@ -753,7 +753,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       <button
                         key={tab}
                         onClick={() => setRightTab(tab)}
-                        className={`text-xs font-bold transition-colors cursor-pointer select-none pb-1 ${
+                        className={`text-xs font-semibold transition-colors cursor-pointer select-none pb-1 ${
                           rightTab === tab 
                             ? 'text-[#2563EB] border-b-2 border-[#2563EB] pb-3.5 -mb-3.5' 
                             : 'text-gray-400 hover:text-gray-700'
@@ -768,15 +768,15 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                     <div className="space-y-6">
                       {/* Account Details */}
                       <div>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-3">Account Details</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-3">Account Details</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block">Type</span>
-                            <span className="text-xs font-bold text-gray-800 mt-1 block">Standard</span>
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Type</span>
+                            <span className="text-xs font-semibold text-gray-800 mt-1 block">Standard</span>
                           </div>
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block">Initial Equity</span>
-                            <span className="text-xs font-bold text-gray-800 mt-1 block font-mono">
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Initial Equity</span>
+                            <span className="text-xs font-semibold text-gray-800 mt-1 block font-mono">
                               ${(() => {
                                 const initialEquityValue = (detailData.joined && detailData.userProgress) 
                                   ? parseFloat(detailData.userProgress.starting_balance)
@@ -786,8 +786,8 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                             </span>
                           </div>
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider block">Duration</span>
-                            <span className="text-xs font-bold text-gray-800 mt-1 block">
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Duration</span>
+                            <span className="text-xs font-semibold text-gray-800 mt-1 block">
                               {(() => {
                                 const diff = new Date(detailData.competition.end_date) - new Date(detailData.competition.start_date);
                                 const days = Math.round(diff / (1000 * 60 * 60 * 24));
@@ -800,13 +800,13 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                       {/* Competition Rules */}
                       <div>
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-3">Competition Rules</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-3">Competition Rules</span>
                         <div className="space-y-3">
                           <div className="flex items-center justify-between p-3 border border-[#E5E7EB] rounded-xl text-xs font-semibold text-gray-700 bg-[#FAFAFA]">
                             <span className="flex items-center gap-2 text-gray-500">
                               <DollarSign className="w-4 h-4 text-gray-400" /> Entry Fee
                             </span>
-                            <span className="font-bold text-gray-900">
+                            <span className="font-semibold text-gray-900">
                               {detailData.competition.entry_fee === 0 ? 'FREE' : `$${parseFloat(detailData.competition.entry_fee).toFixed(0)} virtual`}
                             </span>
                           </div>
@@ -814,7 +814,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                             <span className="flex items-center gap-2 text-gray-500">
                               <Target className="w-4 h-4 text-gray-400" /> Target Profit
                             </span>
-                            <span className="font-bold text-[#2563EB]">
+                            <span className="font-semibold text-[#2563EB]">
                               +{detailData.competition.target_profit_percent}% Profit
                             </span>
                           </div>
@@ -822,7 +822,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                             <span className="flex items-center gap-2 text-gray-500">
                               <AlertCircle className="w-4 h-4 text-gray-400" /> Re-entry
                             </span>
-                            <span className="font-bold text-gray-900">Not Allowed</span>
+                            <span className="font-semibold text-gray-900">Not Allowed</span>
                           </div>
                         </div>
                       </div>
@@ -830,11 +830,11 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                   ) : (
                     <div className="space-y-5">
                       <div className="text-center p-4 bg-[#2563EB]/5 border border-[#2563EB]/10 rounded-xl">
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Estimated Tournament Pool</span>
-                        <span className="text-2xl font-black text-[#2563EB] mt-1 block">
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Estimated Tournament Pool</span>
+                        <span className="text-2xl font-semibold text-[#2563EB] mt-1 block">
                           {getPrizePool(detailData.competition)}
                         </span>
-                        <span className="text-[9px] text-[#2563EB] font-bold mt-1 block uppercase tracking-wider">
+                        <span className="text-[9px] text-[#2563EB] font-semibold mt-1 block capitalize ">
                           Virtual Recognition Points
                         </span>
                       </div>
@@ -844,25 +844,25 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       </p>
 
                       <div className="space-y-2">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Rewards Breakdown</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-2">Rewards Breakdown</span>
                         
                         <div className="grid grid-cols-3 gap-2">
                           <div className="border border-amber-200 bg-amber-50/50 rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-amber-700 block uppercase">1st Place</span>
-                            <span className="text-xs font-extrabold text-amber-900 mt-1 block">50% Points</span>
+                            <span className="text-[8px] font-semibold text-amber-700 block capitalize">1st Place</span>
+                            <span className="text-xs font-semibold text-amber-900 mt-1 block">50% Points</span>
                           </div>
                           <div className="border border-gray-200 bg-gray-50/50 rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-gray-500 block uppercase">2nd Place</span>
-                            <span className="text-xs font-extrabold text-gray-700 mt-1 block">30% Points</span>
+                            <span className="text-[8px] font-semibold text-gray-500 block capitalize">2nd Place</span>
+                            <span className="text-xs font-semibold text-gray-700 mt-1 block">30% Points</span>
                           </div>
                           <div className="border border-orange-200 bg-orange-50/50 rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-bold text-orange-600 block uppercase">3rd Place</span>
-                            <span className="text-xs font-extrabold text-orange-800 mt-1 block">20% Points</span>
+                            <span className="text-[8px] font-semibold text-orange-600 block capitalize">3rd Place</span>
+                            <span className="text-xs font-semibold text-orange-800 mt-1 block">20% Points</span>
                           </div>
                         </div>
 
                         <div className="border border-gray-100 rounded-xl p-3.5 bg-[#FAFAFA] text-xs font-semibold text-gray-600 mt-3">
-                          <div className="flex justify-between items-center text-gray-500 font-bold uppercase text-[9px] pb-2 border-b border-gray-200/60 mb-2">
+                          <div className="flex justify-between items-center text-gray-500 font-semibold capitalize text-[9px] pb-2 border-b border-gray-200/60 mb-2">
                             <span>Ranks #4 - #10</span>
                             <span>Runner-up Badges</span>
                           </div>
@@ -891,10 +891,10 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
             {/* Redesigned Hero Section */}
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12 mb-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col md:flex-row justify-between items-center gap-6 select-none">
               <div className="max-w-2xl text-center md:text-left">
-                <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#2563EB] uppercase block mb-2">
+                <span className="text-[10px] md:text-xs font-semibold  text-[#2563EB] capitalize block mb-2">
                   DAILY BATTLES. REAL MARKETS. BIG REWARDS
                 </span>
-                <h1 className="text-3xl md:text-4xl font-extrabold text-[#111111] tracking-tight mb-3">
+                <h1 className="text-3xl md:text-4xl font-semibold text-[#111111]  mb-3">
                   Enter the Competitions Arena
                 </h1>
                 <p className="text-sm md:text-base text-[#6B7280] font-medium leading-relaxed">
@@ -923,12 +923,12 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                     }}
                     className={`pb-4 px-1 text-sm font-semibold border-b-2 transition-all cursor-pointer flex items-center gap-2 mr-8 ${
                       isActive 
-                        ? 'text-[#2563EB] border-[#2563EB] font-bold' 
+                        ? 'text-[#2563EB] border-[#2563EB] font-semibold' 
                         : 'text-gray-400 border-transparent hover:text-[#111111] hover:border-gray-200'
                     }`}
                   >
                     <span>{label}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                       isActive 
                         ? 'bg-[#2563EB]/10 text-[#2563EB]' 
                         : 'bg-gray-100 text-gray-400'
@@ -976,12 +976,12 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                     <div className="w-16 h-16 bg-[#EFF6FF] rounded-full flex items-center justify-center mx-auto mb-6 text-[#2563EB]">
                       {icon}
                     </div>
-                    <h2 className="text-xl font-bold text-[#111111] tracking-tight">{title}</h2>
+                    <h2 className="text-xl font-semibold text-[#111111] ">{title}</h2>
                     <p className="text-sm text-[#6B7280] mt-2 max-w-sm mx-auto leading-relaxed">{desc}</p>
                     <div className="mt-8">
                       <button 
                         onClick={action}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold text-white bg-[#2563EB] hover:bg-[#1d4ed8] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer"
                       >
                         {actionText}
                       </button>
@@ -1057,15 +1057,15 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                           {/* Overlaid Title & Fee */}
                           <div className="relative z-20 w-full flex justify-between items-end gap-3">
-                            <h3 className="font-extrabold text-white text-sm tracking-tight line-clamp-1">
+                            <h3 className="font-semibold text-white text-sm  line-clamp-1">
                               {comp.title}
                             </h3>
                             {comp.entry_fee === 0 ? (
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9]/20 uppercase tracking-wider flex-shrink-0">
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9]/20 capitalize  flex-shrink-0">
                                 Free
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-white/20 backdrop-blur-md text-white border border-white/20 uppercase tracking-wider flex-shrink-0">
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-white/20 backdrop-blur-md text-white border border-white/20 capitalize  flex-shrink-0">
                                 ${parseFloat(comp.entry_fee).toFixed(0)}
                               </span>
                             )}
@@ -1081,12 +1081,12 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                           <div className="pt-3 border-t border-[#F3F4F6] mt-auto">
                             <div className="flex justify-between items-baseline mb-3">
                               <div>
-                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Prize Pool</span>
-                                <span className="text-lg font-black text-[#2563EB]">{prizePool}</span>
+                                <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Prize Pool</span>
+                                <span className="text-lg font-semibold text-[#2563EB]">{prizePool}</span>
                               </div>
                               <div className="text-right">
-                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block">Target Profit</span>
-                                <span className="text-xs font-bold text-gray-800">+{comp.target_profit_percent}%</span>
+                                <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Target Profit</span>
+                                <span className="text-xs font-semibold text-gray-800">+{comp.target_profit_percent}%</span>
                               </div>
                             </div>
                             
@@ -1129,7 +1129,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                 <Trophy className="w-5.5 h-5.5" />
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 text-lg">Join {compToJoin.title}</h3>
+                <h3 className="font-semibold text-gray-900 text-lg">Join {compToJoin.title}</h3>
                 <span className="text-xs text-gray-400 font-semibold mt-0.5 block">
                   {compToJoin.entry_fee === 0 ? 'Free Entry' : `Entry Fee: $${parseFloat(compToJoin.entry_fee).toFixed(0)} (virtual funds)`}
                 </span>
@@ -1138,7 +1138,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
             
             <div className="space-y-4">
               <p className="text-xs text-[#6B7280] leading-relaxed">
-                You are about to join this competition. Please confirm that you have read and agree to the <Link href="/terms" className="text-[#2563EB] font-bold hover:underline">Terms and Conditions</Link> for virtual trading tournaments.
+                You are about to join this competition. Please confirm that you have read and agree to the <Link href="/terms" className="text-[#2563EB] font-semibold hover:underline">Terms and Conditions</Link> for virtual trading tournaments.
               </p>
               
               <label className="flex items-start gap-3 p-3.5 border border-[#E5E7EB] rounded-xl bg-[#FAFAFA] hover:bg-gray-50/50 transition-colors cursor-pointer">
@@ -1157,14 +1157,14 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowJoinModal(false)}
-                className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer font-semibold"
+                className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-xl transition-all cursor-pointer font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmAndJoin}
                 disabled={!agreeTerms || actionLoading}
-                className="flex-1 py-2.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
+                className="flex-1 py-2.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer font-semibold"
               >
                 {actionLoading ? 'Joining...' : 'Join Now'}
               </button>

@@ -235,7 +235,7 @@ export default function Navbar({ userName }) {
             <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
               <TrendingUp className="text-white w-4.5 h-4.5" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-[#111111]">PaperPulse</span>
+            <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -273,7 +273,7 @@ export default function Navbar({ userName }) {
                   setAdjustError('');
                   setIsBalanceSettingsOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] rounded-lg text-sm font-bold transition-all cursor-pointer border border-[#2563EB]/10 select-none"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB]/10 hover:bg-[#2563EB]/15 text-[#2563EB] rounded-lg text-sm font-semibold transition-all cursor-pointer border border-[#2563EB]/10 select-none"
                 title="Adjust Balance"
               >
                 <Wallet className="w-4 h-4 text-[#2563EB]" />
@@ -301,7 +301,7 @@ export default function Navbar({ userName }) {
                     
                     {/* Account Switcher Header */}
                     <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-gray-100">
-                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Practice Accounts</span>
+                      <span className="text-[10px] font-semibold text-gray-400 capitalize ">Practice Accounts</span>
                       <span className="text-[10px] font-semibold text-gray-500">{accountData.accounts?.length} / {accountData.maxLimit}</span>
                     </div>
 
@@ -318,7 +318,7 @@ export default function Navbar({ userName }) {
                           }`}
                         >
                           <div className="flex flex-col select-none">
-                            <span className="text-xs font-bold font-mono">
+                            <span className="text-xs font-semibold font-mono">
                               {acc.accountName ? `${acc.accountName} — ` : ''}Demo #{acc.accountNumber}
                             </span>
                             <span className={`text-[10px] font-semibold font-mono ${acc.isActive ? 'text-[#2563EB]/80' : 'text-gray-500'}`}>
@@ -351,7 +351,7 @@ export default function Navbar({ userName }) {
                             setIsAccountDropdownOpen(false);
                             setIsCreateModalOpen(true);
                           }}
-                          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg text-xs font-bold text-[#2563EB] transition-all cursor-pointer"
+                          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg text-xs font-semibold text-[#2563EB] transition-all cursor-pointer"
                         >
                           <Plus className="w-3.5 h-3.5" />
                           New Demo Account
@@ -365,7 +365,7 @@ export default function Navbar({ userName }) {
                       {/* "Reset Balance" option */}
                       <button
                         onClick={handleResetBalance}
-                        className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-red-50 hover:bg-red-100 border border-red-100 hover:border-red-200 rounded-lg text-xs font-bold text-[#DC2626] transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-red-50 hover:bg-red-100 border border-red-100 hover:border-red-200 rounded-lg text-xs font-semibold text-[#DC2626] transition-all cursor-pointer"
                       >
                         <RotateCcw className="w-3.5 h-3.5" />
                         Reset Balance
@@ -427,7 +427,7 @@ export default function Navbar({ userName }) {
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-[#2563EB]" />
                 New Practice Account
               </h2>
@@ -449,7 +449,7 @@ export default function Navbar({ userName }) {
 
               {/* Account Name */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Account Name (Optional)</label>
+                <label className="text-xs font-semibold text-gray-500 capitalize  block">Account Name (Optional)</label>
                 <input
                   type="text"
                   maxLength="50"
@@ -462,7 +462,7 @@ export default function Navbar({ userName }) {
 
               {/* Preset Balances */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Starting Capital</label>
+                <label className="text-xs font-semibold text-gray-500 capitalize  block">Starting Capital</label>
                 <div className="grid grid-cols-3 gap-2.5">
                   {[
                     { value: 1000, label: '$1,000' },
@@ -482,7 +482,7 @@ export default function Navbar({ userName }) {
                           setCustomAmount('');
                           setCreateError('');
                         }}
-                        className={`py-2 px-3 border rounded-xl font-mono font-bold text-xs transition-all cursor-pointer text-center ${
+                        className={`py-2 px-3 border rounded-xl font-mono font-semibold text-xs transition-all cursor-pointer text-center ${
                           isSelected
                             ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB] shadow-sm'
                             : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
@@ -497,9 +497,9 @@ export default function Navbar({ userName }) {
 
               {/* Custom Starting Capital */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Or Custom Amount (USD)</label>
+                <label className="text-xs font-semibold text-gray-500 capitalize  block">Or Custom Amount (USD)</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-mono font-bold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -521,14 +521,14 @@ export default function Navbar({ userName }) {
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="flex-1 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold text-xs rounded-xl transition-all cursor-pointer text-center"
+                  className="flex-1 py-2.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-xs rounded-xl transition-all cursor-pointer text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="flex-1 py-2.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-bold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer text-center"
+                  className="flex-1 py-2.5 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold text-xs rounded-xl shadow-sm transition-all disabled:opacity-50 cursor-pointer text-center"
                 >
                   {creating ? 'Creating Account...' : 'Create Account'}
                 </button>
@@ -542,7 +542,7 @@ export default function Navbar({ userName }) {
       {isRenameModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in scale-in duration-200">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Rename Account</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Rename Account</h3>
             <form onSubmit={submitRenameAccount} className="space-y-4">
               {renameError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
@@ -563,13 +563,13 @@ export default function Navbar({ userName }) {
                 <button
                   type="button"
                   onClick={() => setIsRenameModalOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-bold shadow-sm cursor-pointer"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm cursor-pointer"
                 >
                   Save
                 </button>
@@ -582,7 +582,7 @@ export default function Navbar({ userName }) {
       {isBalanceSettingsOpen && accountData && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[300] p-4 animate-in fade-in duration-200">
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200 select-none">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Adjust Account Balance</h3>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Adjust Account Balance</h3>
             <p className="text-xs text-gray-400 font-semibold mb-4">
               Set a new virtual capital for {accountData.accountName || `Demo #${accountData.accountNumber}`}.
             </p>
@@ -605,7 +605,7 @@ export default function Navbar({ userName }) {
                         setSelectedAdjustPreset(presetVal);
                         setCustomAdjustAmount('');
                       }}
-                      className={`py-2 px-1 border rounded-lg font-mono font-bold text-xs transition-all cursor-pointer text-center ${
+                      className={`py-2 px-1 border rounded-lg font-mono font-semibold text-xs transition-all cursor-pointer text-center ${
                         isSelected
                           ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]'
                           : 'border-gray-200 hover:border-gray-300 text-gray-600'
@@ -618,9 +618,9 @@ export default function Navbar({ userName }) {
               </div>
               {/* Custom Input */}
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Custom Amount</label>
+                <label className="text-[10px] font-semibold text-gray-400 capitalize ">Custom Amount</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-mono font-bold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -640,14 +640,14 @@ export default function Navbar({ userName }) {
                 <button
                   type="button"
                   onClick={() => setIsBalanceSettingsOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={adjusting}
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {adjusting ? 'Saving...' : 'Save'}
                 </button>

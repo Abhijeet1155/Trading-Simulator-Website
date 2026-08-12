@@ -278,7 +278,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
               <TrendingUp className="text-white w-4.5 h-4.5" />
             </div>
-            <span className="font-bold text-lg tracking-tight text-[#111111]">PaperPulse</span>
+            <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#6B7280]">
@@ -318,7 +318,7 @@ export default function Home() {
             <span>Risk-free paper trading platform</span>
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#111111] leading-[1.1] mb-6 max-w-2xl animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold  text-[#111111] leading-[1.1] mb-6 max-w-2xl animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Learn Trading <br />
             <span className="text-[#2563EB]">Without Risking</span> Real Money
           </h1>
@@ -383,11 +383,11 @@ export default function Home() {
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.25 15.5h-2.5v-1.5H12c1.38 0 2.5-1.12 2.5-2.5 0-1.04-.63-1.92-1.53-2.31.72-.42 1.21-1.2 1.21-2.1 0-1.38-1.12-2.5-2.5-2.5h-.43V3.5h2.5v1.5h1v1.5h-1v5h1v1.5h-1v4.5h1v1.5zm-3.5-3v-2.5h2c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25h-2zm0-4.5V8h1.75c.69 0 1.25.56 1.25 1.25s-.56 1.25-1.25 1.25h-1.75z"/>
                       </svg>
                     </div>
-                    <span className="font-bold text-base tracking-wide text-white">BTC/USDT</span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#2B3139] text-[#A0A5AD] font-semibold uppercase tracking-wider">Spot</span>
+                    <span className="font-semibold text-base  text-white">BTC/USDT</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#2B3139] text-[#A0A5AD] font-semibold capitalize ">Spot</span>
                   </div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold tracking-tight font-mono text-white">
+                    <span className="text-2xl font-semibold  font-mono text-white">
                       ${btcPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className={`inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full ${btcPriceDirection === 'up' ? 'bg-[#0ECB81]/15 text-[#0ECB81]' : 'bg-[#F6465D]/15 text-[#F6465D]'}`}>
@@ -402,7 +402,7 @@ export default function Home() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0ECB81] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#0ECB81]"></span>
                   </span>
-                  <span className="text-[10px] font-bold text-[#0ECB81] tracking-wider uppercase">Live</span>
+                  <span className="text-[10px] font-semibold text-[#0ECB81]  capitalize">Live</span>
                 </div>
               </div>
 
@@ -463,7 +463,7 @@ export default function Home() {
 
                   {/* Mid-Market Price (Spread Display) */}
                   <div className="py-1 px-1 my-0.5 border-y border-[#2B3139]/50 bg-[#23292F]/30 text-center flex items-center justify-center gap-1.5">
-                    <span className={`font-bold ${btcPriceDirection === 'up' ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
+                    <span className={`font-semibold ${btcPriceDirection === 'up' ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
                       {btcPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <span className={`text-[9px] ${btcPriceDirection === 'up' ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
@@ -531,7 +531,7 @@ export default function Home() {
       {/* Problem/Solution Section */}
       <section id="problem" className="py-20 bg-[#FAFAFA] border-y border-[#E5E7EB]">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-[#111111] mb-4">Why Paper Trading Matters</h2>
+          <h2 className="text-3xl font-semibold  text-[#111111] mb-4">Why Paper Trading Matters</h2>
           <p className="text-[#6B7280] max-w-xl mx-auto mb-16 leading-relaxed">
             Trading is 90% psychology and risk management. Losing real capital while learning is a costly bottleneck.
           </p>
@@ -541,7 +541,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#DC2626]/10 flex items-center justify-center">
                 <AlertCircle className="text-[#DC2626] w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg text-[#111111]">The Problem</h3>
+              <h3 className="font-semibold text-lg text-[#111111]">The Problem</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 Most new traders lose their first accounts within weeks. Market noise, emotional panic, and structural mistakes erode capital before they can grasp successful portfolio strategies.
               </p>
@@ -551,7 +551,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#16A34A]/10 flex items-center justify-center">
                 <Shield className="text-[#16A34A] w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg text-[#111111]">The Solution</h3>
+              <h3 className="font-semibold text-lg text-[#111111]">The Solution</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 PaperPulse replicates real broker dynamics. Trade in live-simulated markets with $10,000 in virtual credit. Test setups, practice indicators, and build confidence with zero risk.
               </p>
@@ -564,7 +564,7 @@ export default function Home() {
       <section id="features" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-[#111111] mb-4">Features Engineered for Learning</h2>
+            <h2 className="text-3xl font-semibold  text-[#111111] mb-4">Features Engineered for Learning</h2>
             <p className="text-[#6B7280] max-w-xl mx-auto leading-relaxed">
               Designed with a minimal Groww-style fintech UI, focused entirely on clarity and speed.
             </p>
@@ -575,7 +575,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#2563EB]/10 flex items-center justify-center">
                 <BarChart3 className="text-[#2563EB] w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg text-[#111111]">Multi-Asset Platform</h3>
+              <h3 className="font-semibold text-lg text-[#111111]">Multi-Asset Platform</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 Diversify across markets. Trade popular Cryptos, major Forex pairs, and top Stocks (like Tesla, Apple, and Amazon) inside one single wallet.
               </p>
@@ -585,7 +585,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#2563EB]/10 flex items-center justify-center">
                 <TrendingUp className="text-[#2563EB] w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg text-[#111111]">Ticking Price Feeds</h3>
+              <h3 className="font-semibold text-lg text-[#111111]">Ticking Price Feeds</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 Experience real latency-matched pricing fluctuations. Make immediate market buying and selling calls with automatic fee calculations.
               </p>
@@ -595,7 +595,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#2563EB]/10 flex items-center justify-center">
                 <Users className="text-[#2563EB] w-5 h-5" />
               </div>
-              <h3 className="font-bold text-lg text-[#111111]">Competitive Challenges</h3>
+              <h3 className="font-semibold text-lg text-[#111111]">Competitive Challenges</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed">
                 Join weekly challenges. Rise on public leaderboards while keeping personal transaction details strictly anonymous.
               </p>
@@ -608,7 +608,7 @@ export default function Home() {
       <section id="how-it-works" className="py-20 bg-[#FAFAFA] border-y border-[#E5E7EB]">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-[#111111] mb-4">Start Trading in 3 Steps</h2>
+            <h2 className="text-3xl font-semibold  text-[#111111] mb-4">Start Trading in 3 Steps</h2>
             <p className="text-[#6B7280] max-w-xl mx-auto leading-relaxed">
               No deposit required. Skip verification blocks and immediately enter simulated trading.
             </p>
@@ -616,30 +616,30 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-12 relative">
             <div className="flex flex-col items-center text-center relative z-10">
-              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-semibold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                 1
               </div>
-              <h3 className="font-bold text-lg text-[#111111] mb-2">Register Early</h3>
+              <h3 className="font-semibold text-lg text-[#111111] mb-2">Register Early</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
                 Submit your email below to reserve your early account spot on our waitlist.
               </p>
             </div>
 
             <div className="flex flex-col items-center text-center relative z-10">
-              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-semibold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                 2
               </div>
-              <h3 className="font-bold text-lg text-[#111111] mb-2">Get virtual balance</h3>
+              <h3 className="font-semibold text-lg text-[#111111] mb-2">Get virtual balance</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
                 Receive an invitation code to login with a pre-loaded $10,000 paper trading wallet.
               </p>
             </div>
 
             <div className="flex flex-col items-center text-center relative z-10">
-              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-semibold text-lg mb-6 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                 3
               </div>
-              <h3 className="font-bold text-lg text-[#111111] mb-2">Trade & compete</h3>
+              <h3 className="font-semibold text-lg text-[#111111] mb-2">Trade & compete</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
                 Execute paper orders, track portfolio growth, and climb the public standings.
               </p>
@@ -653,7 +653,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-8 md:p-12 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <div className="max-w-xl mx-auto text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-[#111111] mb-4">Join the PaperPulse Waitlist</h2>
+              <h2 className="text-3xl font-semibold  text-[#111111] mb-4">Join the PaperPulse Waitlist</h2>
               <p className="text-[#6B7280] mb-8 leading-relaxed">
                 Reserve your early account access slot. We release beta invite tokens weekly to waitlisted users.
               </p>
@@ -661,7 +661,7 @@ export default function Home() {
               {success ? (
                 <div className="p-6 rounded-xl bg-[#16A34A]/10 border border-[#16A34A]/30 text-center animate-fade-in flex flex-col items-center gap-3">
                   <CheckCircle2 className="w-8 h-8 text-[#16A34A]" />
-                  <h4 className="font-bold text-[#111111]">Successfully Registered!</h4>
+                  <h4 className="font-semibold text-[#111111]">Successfully Registered!</h4>
                   <p className="text-sm text-[#6B7280]">
                     Thank you for signing up. You have been added to the database. We will contact you soon.
                   </p>
@@ -675,7 +675,7 @@ export default function Home() {
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-left">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Full Name</label>
+                    <label className="text-xs font-semibold text-[#6B7280] capitalize ">Full Name</label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
                       <input 
@@ -690,7 +690,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">Email Address</label>
+                    <label className="text-xs font-semibold text-[#6B7280] capitalize ">Email Address</label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
                       <input 
@@ -726,7 +726,7 @@ export default function Home() {
             <div className="mt-12 pt-8 border-t border-[#E5E7EB]">
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h4 className="font-bold text-[#111111]">Live Waitlist Feed</h4>
+                  <h4 className="font-semibold text-[#111111]">Live Waitlist Feed</h4>
                   <span className="text-xs text-[#6B7280]">Real-time registration updates from our backend database.</span>
                 </div>
                 <div className="text-right">
@@ -745,7 +745,7 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-full bg-[#2563EB]/10 flex items-center justify-center mb-4 text-[#2563EB]">
                     <Users className="w-6 h-6" />
                   </div>
-                  <h4 className="font-bold text-[#111111] text-base mb-2">Be the first to join!</h4>
+                  <h4 className="font-semibold text-[#111111] text-base mb-2">Be the first to join!</h4>
                   <p className="text-sm text-[#6B7280] max-w-sm">
                     Reserve your early account access slot. Submit your email above to get started.
                   </p>
@@ -753,7 +753,7 @@ export default function Home() {
               ) : (
                 <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                   {/* Column Headers for Grid Alignment on Desktop */}
-                  <div className="hidden md:grid md:grid-cols-[1.5fr_1.2fr_0.8fr] items-center px-6 py-3 bg-[#FAFAFA] border-b border-[#E5E7EB] text-xs font-semibold text-[#6B7280] uppercase tracking-wider">
+                  <div className="hidden md:grid md:grid-cols-[1.5fr_1.2fr_0.8fr] items-center px-6 py-3 bg-[#FAFAFA] border-b border-[#E5E7EB] text-xs font-semibold text-[#6B7280] capitalize ">
                     <span>Name</span>
                     <span>Email Address</span>
                     <span className="text-right">Joined Date</span>
@@ -770,7 +770,7 @@ export default function Home() {
                         >
                           {/* Name column */}
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${colors.bg} ${colors.text}`}>
+                            <div className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold text-xs shrink-0 ${colors.bg} ${colors.text}`}>
                               {initials}
                             </div>
                             <div className="min-w-0">
@@ -802,7 +802,7 @@ export default function Home() {
 
                   {waitlist.length > 5 && (
                     <div className="bg-[#FAFAFA] px-6 py-3 border-t border-[#E5E7EB] text-center">
-                      <span className="text-xs font-semibold text-[#6B7280] tracking-wide">
+                      <span className="text-xs font-semibold text-[#6B7280] ">
                         + {waitlist.length - 5} more joined the waitlist
                       </span>
                     </div>
@@ -820,11 +820,11 @@ export default function Home() {
           <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12 shadow-[0_1px_3px_rgba(0,0,0,0.06)] grid md:grid-cols-[120px_1fr] gap-8 items-center">
             <div className="flex justify-center">
               <div className="w-20 h-20 rounded-full bg-[#2563EB] flex items-center justify-center border-2 border-white shadow-[0_4px_12px_rgba(37,99,235,0.18)] select-none">
-                <span className="text-white font-extrabold text-2xl tracking-wide">AP</span>
+                <span className="text-white font-semibold text-2xl ">AP</span>
               </div>
             </div>
             <div className="text-left">
-              <h3 className="text-xl font-bold text-[#111111] mb-2">Built by Traders, For Traders</h3>
+              <h3 className="text-xl font-semibold text-[#111111] mb-2">Built by Traders, For Traders</h3>
               <p className="text-sm text-[#6B7280] leading-relaxed mb-4">
                 Managing virtual and live capital for over a decade in major forex and equity market streams. PaperPulse was built to solve the primary hurdle faced by beginner retail accounts: emotional discipline. 
               </p>
@@ -844,7 +844,7 @@ export default function Home() {
             <div className="w-6 h-6 rounded bg-[#2563EB] flex items-center justify-center">
               <TrendingUp className="text-white w-3 h-3" />
             </div>
-            <span className="font-bold text-[#111111]">PaperPulse</span>
+            <span className="font-semibold text-[#111111]">PaperPulse</span>
           </div>
 
           <div className="flex gap-8">

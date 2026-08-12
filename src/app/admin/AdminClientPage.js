@@ -446,9 +446,9 @@ export default function AdminClientPage({
               <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.2)]">
                 <TrendingUp className="text-white w-4.5 h-4.5" />
               </div>
-              <span className="font-bold text-lg tracking-tight text-white">PaperPulse</span>
+              <span className="font-semibold text-lg  text-white">PaperPulse</span>
             </Link>
-            <span className="px-2 py-0.5 bg-[#DC2626]/20 border border-[#DC2626]/40 text-[#EF4444] rounded text-[10px] font-bold uppercase tracking-wider select-none">
+            <span className="px-2 py-0.5 bg-[#DC2626]/20 border border-[#DC2626]/40 text-[#EF4444] rounded text-[10px] font-semibold capitalize  select-none">
               Admin Portal
             </span>
           </div>
@@ -513,7 +513,7 @@ export default function AdminClientPage({
         {/* Top Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#1F2937] pb-6">
           <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl font-semibold text-white ">
               Founder Dashboard
             </h1>
             <p className="text-sm text-slate-400 mt-1">
@@ -531,12 +531,12 @@ export default function AdminClientPage({
           {/* Total Users */}
           <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Users</span>
+              <span className="text-xs font-semibold text-slate-400 capitalize ">Total Users</span>
               <div className="p-2 bg-[#2563EB]/20 text-[#3B82F6] rounded-lg">
                 <Users className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white font-mono">{users.length}</p>
+            <p className="text-2xl font-semibold text-white font-mono">{users.length}</p>
             <span className="text-[10px] text-slate-500 font-medium mt-1 block">
               Registered users
             </span>
@@ -545,12 +545,12 @@ export default function AdminClientPage({
           {/* Active Today */}
           <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Today</span>
+              <span className="text-xs font-semibold text-slate-400 capitalize ">Active Today</span>
               <div className="p-2 bg-[#10B981]/20 text-[#34D399] rounded-lg">
                 <Activity className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white font-mono">{activeToday}</p>
+            <p className="text-2xl font-semibold text-white font-mono">{activeToday}</p>
             <span className="text-[10px] text-[#10B981] font-medium mt-1 block">
               Distinct traded accounts today
             </span>
@@ -559,12 +559,12 @@ export default function AdminClientPage({
           {/* Total Trades Placed */}
           <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Trades</span>
+              <span className="text-xs font-semibold text-slate-400 capitalize ">Total Trades</span>
               <div className="p-2 bg-[#8B5CF6]/20 text-[#A78BFA] rounded-lg">
                 <Activity className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white font-mono">{totalTrades}</p>
+            <p className="text-2xl font-semibold text-white font-mono">{totalTrades}</p>
             <span className="text-[10px] text-slate-500 font-medium mt-1 block">
               Lifetime executions
             </span>
@@ -573,12 +573,12 @@ export default function AdminClientPage({
           {/* Total Trading Volume */}
           <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl p-5 shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Trading Volume</span>
+              <span className="text-xs font-semibold text-slate-400 capitalize ">Trading Volume</span>
               <div className="p-2 bg-[#F59E0B]/20 text-[#FBBF24] rounded-lg">
                 <Wallet className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold text-white font-mono">
+            <p className="text-2xl font-semibold text-white font-mono">
               ${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <span className="text-[10px] text-slate-500 font-medium mt-1 block">
@@ -590,7 +590,7 @@ export default function AdminClientPage({
         {/* Users Oversight Card */}
         <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-[#1F2937] pb-5">
-            <h2 className="text-lg font-bold text-white tracking-tight">Registered Users</h2>
+            <h2 className="text-lg font-semibold text-white ">Registered Users</h2>
             
             {/* Search Input */}
             <div className="relative w-full md:w-72">
@@ -611,7 +611,7 @@ export default function AdminClientPage({
           <div className="overflow-x-auto -mx-6 px-6 sm:-mx-0 sm:px-0">
             <table className="w-full text-left border-collapse text-xs min-w-[500px] sm:min-w-0">
               <thead>
-                <tr className="border-b border-[#1F2937] text-slate-400 font-bold uppercase text-[9px] tracking-wider">
+                <tr className="border-b border-[#1F2937] text-slate-400 font-semibold capitalize text-[9px] ">
                   <th className="py-3 px-4">Name</th>
                   <th className="py-3 px-4 hidden md:table-cell">Email</th>
                   <th className="py-3 px-4 hidden sm:table-cell">Plan</th>
@@ -639,14 +639,14 @@ export default function AdminClientPage({
                         </td>
                         <td className="py-3.5 px-4 text-slate-300 font-mono select-all hidden md:table-cell">{u.email}</td>
                         <td className="py-3.5 px-4 hidden sm:table-cell">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold capitalize ${
                             u.plan_type === 'premium' ? 'bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30' : 'bg-slate-800 text-slate-400'
                           }`}>
                             {u.plan_type}
                           </span>
                         </td>
                         <td className="py-3.5 px-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold capitalize ${
                             isSuspended ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-green-500/20 text-green-400 border border-green-500/30'
                           }`}>
                             {u.status}
@@ -655,7 +655,7 @@ export default function AdminClientPage({
                         <td className="py-3.5 px-4 text-slate-400 font-mono hidden md:table-cell">
                           {new Date(u.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                         </td>
-                        <td className="py-3.5 px-4 text-right font-mono font-bold text-white hidden sm:table-cell">
+                        <td className="py-3.5 px-4 text-right font-mono font-semibold text-white hidden sm:table-cell">
                           {u.trade_count}
                         </td>
                         <td className="py-3.5 px-4">
@@ -673,7 +673,7 @@ export default function AdminClientPage({
                             <button
                               onClick={() => toggleStatus(u.id, u.status)}
                               disabled={loadingUser === u.id}
-                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer ${
+                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-[10px] font-semibold capitalize  transition-colors disabled:opacity-50 cursor-pointer ${
                                 isSuspended
                                   ? 'bg-green-600 hover:bg-green-700 text-white'
                                   : 'bg-[#EF4444]/20 hover:bg-[#EF4444]/30 text-[#F87171] border border-[#EF4444]/30'
@@ -742,34 +742,34 @@ export default function AdminClientPage({
         {/* 1. REVENUE SECTION */}
         <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] p-6 space-y-6">
           <div className="border-b border-[#1F2937] pb-4">
-            <h2 className="text-lg font-bold text-white tracking-tight">Revenue & Signups Analytics</h2>
+            <h2 className="text-lg font-semibold text-white ">Revenue & Signups Analytics</h2>
             <p className="text-xs text-slate-400 mt-1">Ready for subscriptions tracking and signup analytics.</p>
           </div>
 
           {/* Revenue Substats Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="bg-[#172033]/50 border border-[#27354F]/40 rounded-xl p-4">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Total Revenue</span>
-              <span className="text-xl font-bold text-white font-mono mt-1 block">$0.00</span>
+              <span className="text-[10px] font-semibold text-slate-400 capitalize  block">Total Revenue</span>
+              <span className="text-xl font-semibold text-white font-mono mt-1 block">$0.00</span>
               <span className="text-[9px] text-slate-500 mt-1 block">Live transactions</span>
             </div>
 
             <div className="bg-[#172033]/50 border border-[#27354F]/40 rounded-xl p-4">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Active Subscriptions</span>
-              <span className="text-xl font-bold text-white font-mono mt-1 block">{activeSubscriptionsCount}</span>
+              <span className="text-[10px] font-semibold text-slate-400 capitalize  block">Active Subscriptions</span>
+              <span className="text-xl font-semibold text-white font-mono mt-1 block">{activeSubscriptionsCount}</span>
               <span className="text-[9px] text-slate-500 mt-1 block">Paid subscriber accounts</span>
             </div>
 
             <div className="bg-[#172033]/50 border border-[#27354F]/40 rounded-xl p-4">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">MRR (Monthly Recurring)</span>
-              <span className="text-xl font-bold text-white font-mono mt-1 block">$0.00</span>
+              <span className="text-[10px] font-semibold text-slate-400 capitalize  block">MRR (Monthly Recurring)</span>
+              <span className="text-xl font-semibold text-white font-mono mt-1 block">$0.00</span>
               <span className="text-[9px] text-slate-500 mt-1 block">Normalized billing volume</span>
             </div>
           </div>
 
           {/* Signups Chart */}
           <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5">
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-4">User Signups Over Time</h3>
+            <h3 className="text-xs font-semibold text-slate-300 capitalize  mb-4">User Signups Over Time</h3>
             
             {mounted ? (
               <ResponsiveContainer width="100%" height={240}>
@@ -801,7 +801,7 @@ export default function AdminClientPage({
           <div className="bg-blue-600/10 border border-[#2563EB]/30 rounded-xl p-4 flex items-center gap-3">
             <span className="text-xl">💳</span>
             <div>
-              <h4 className="text-xs font-bold text-white">Stripe Checkout Integration Coming Soon</h4>
+              <h4 className="text-xs font-semibold text-white">Stripe Checkout Integration Coming Soon</h4>
               <p className="text-[10px] text-slate-400 mt-0.5">
                 Stripe payment webhooks and revenue logging will automatically activate once premium trading plans launch.
               </p>
@@ -813,7 +813,7 @@ export default function AdminClientPage({
         <div className="bg-[#0E1322] border border-[#1F2937] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] p-6 space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[#1F2937] pb-5">
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">Competitions Management</h2>
+              <h2 className="text-lg font-semibold text-white ">Competitions Management</h2>
               <p className="text-xs text-slate-400 mt-1">Host trading contests, assign targets, and track milestones.</p>
             </div>
             
@@ -832,7 +832,7 @@ export default function AdminClientPage({
               <div className="w-12 h-12 bg-[#2563EB]/10 rounded-full flex items-center justify-center mx-auto mb-4 text-[#3B82F6]">
                 <Award className="w-6 h-6" />
               </div>
-              <h3 className="text-sm font-bold text-white">No Competitions Created Yet</h3>
+              <h3 className="text-sm font-semibold text-white">No Competitions Created Yet</h3>
               <p className="text-xs text-slate-500 mt-2 leading-relaxed">
                 Provide incentives and targets by launching trading contests for your user base.
               </p>
@@ -848,7 +848,7 @@ export default function AdminClientPage({
             <div className="overflow-x-auto -mx-6 px-6 sm:-mx-0 sm:px-0">
               <table className="w-full text-left border-collapse text-xs min-w-[500px] sm:min-w-0">
                 <thead>
-                  <tr className="border-b border-[#1F2937] text-slate-400 font-bold uppercase text-[9px] tracking-wider">
+                  <tr className="border-b border-[#1F2937] text-slate-400 font-semibold capitalize text-[9px] ">
                     <th className="py-3 px-4">Title</th>
                     <th className="py-3 px-4 text-right">Prize Pool</th>
                     <th className="py-3 px-4 text-right hidden sm:table-cell">Entry Fee</th>
@@ -878,7 +878,7 @@ export default function AdminClientPage({
                         </td>
                         
                         {/* Prize Pool */}
-                        <td className="py-3.5 px-4 text-right font-mono text-[#3B82F6] font-bold">
+                        <td className="py-3.5 px-4 text-right font-mono text-[#3B82F6] font-semibold">
                           ${prize.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </td>
 
@@ -895,7 +895,7 @@ export default function AdminClientPage({
 
                         {/* Status */}
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold capitalize  ${
                             isUpcoming ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
                             isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
                             'bg-slate-800 text-slate-400 border border-slate-700'
@@ -949,7 +949,7 @@ export default function AdminClientPage({
           <div className="bg-[#0E1322] border border-[#27354F] rounded-xl w-full max-w-lg shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#1F2937] flex items-center justify-between flex-shrink-0">
-              <h3 className="font-bold text-white text-base flex items-center gap-1.5">
+              <h3 className="font-semibold text-white text-base flex items-center gap-1.5">
                 <Award className="w-5 h-5 text-[#2563EB]" />
                 {editingComp ? 'Edit Competition Settings' : 'Create New Competition'}
               </h3>
@@ -1131,7 +1131,7 @@ export default function AdminClientPage({
 
               {/* Media Settings (Banner Image / Video URL) */}
               <div className="space-y-3 pt-2 border-t border-[#1F2937]/85">
-                <span className="text-[10px] font-extrabold text-[#2563EB] uppercase tracking-wider block">Media Settings</span>
+                <span className="text-[10px] font-semibold text-[#2563EB] capitalize  block">Media Settings</span>
                 
                 {/* Banner Image Upload & Preview Row */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
@@ -1159,13 +1159,13 @@ export default function AdminClientPage({
                         <button
                           type="button"
                           onClick={removeBannerImage}
-                          className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-red-500 text-xs font-bold cursor-pointer"
+                          className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-red-500 text-xs font-semibold cursor-pointer"
                         >
                           Remove
                         </button>
                       </div>
                     ) : (
-                      <div className="w-24 h-14 border border-dashed border-[#27354F] rounded-lg flex items-center justify-center bg-[#172033] text-[9px] text-slate-500 font-semibold uppercase tracking-wider text-center px-1 select-none">
+                      <div className="w-24 h-14 border border-dashed border-[#27354F] rounded-lg flex items-center justify-center bg-[#172033] text-[9px] text-slate-500 font-semibold capitalize  text-center px-1 select-none">
                         No Image
                       </div>
                     )}
@@ -1216,7 +1216,7 @@ export default function AdminClientPage({
           <div className="bg-[#0E1322] border border-[#1F2937] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl relative">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#1F2937] flex items-center justify-between">
-              <h3 className="font-bold text-white text-base flex items-center gap-1.5">
+              <h3 className="font-semibold text-white text-base flex items-center gap-1.5">
                 <Edit className="w-5 h-5 text-[#2563EB]" />
                 Edit User: {editingUser.email}
               </h3>
@@ -1307,7 +1307,7 @@ export default function AdminClientPage({
           <div className="bg-[#0E1322] border border-[#1F2937] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl relative">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#1F2937] flex items-center justify-between">
-              <h3 className="font-bold text-white text-base flex items-center gap-1.5">
+              <h3 className="font-semibold text-white text-base flex items-center gap-1.5">
                 <Trash2 className="w-5 h-5 text-[#EF4444]" />
                 Delete User Account
               </h3>

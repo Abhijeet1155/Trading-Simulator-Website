@@ -25,7 +25,7 @@ export default function TermsPage() {
               <FileText className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-[#111111]">Terms of Service</h1>
+              <h1 className="text-3xl font-semibold  text-[#111111]">Terms of Service</h1>
               <p className="text-sm text-[#6B7280] mt-0.5">Last updated: July 15, 2026</p>
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function TermsPage() {
           <div className="mb-8 flex items-start gap-3.5 text-sm text-[#B45309] bg-[#FFFBEB] p-5 rounded-xl border border-[#FDE68A] leading-relaxed">
             <AlertTriangle className="w-6 h-6 flex-shrink-0 text-[#D97706] mt-0.5" />
             <div>
-              <strong className="font-bold text-[#92400E] block mb-1">Simulated Trading Disclaimer (No Real Funds Involved)</strong>
+              <strong className="font-semibold text-[#92400E] block mb-1">Simulated Trading Disclaimer (No Real Funds Involved)</strong>
               PaperPulse is strictly a <strong>paper trading simulator and educational platform</strong>. All transactions, assets, balances, and orders processed on this platform are 100% virtual. There is <strong>no real money, real cryptocurrency, or real financial assets</strong> used, held, or traded on this website. This platform does not connect to any financial markets or brokerages for real transactions.
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function TermsPage() {
             
             {/* Section 1 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 1. Acceptance of Terms
               </h2>
               <p>
@@ -54,7 +54,7 @@ export default function TermsPage() {
 
             {/* Section 2 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 2. Nature of the Service
               </h2>
               <p>
@@ -64,7 +64,7 @@ export default function TermsPage() {
 
             {/* Section 3 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 3. No Financial Advice
               </h2>
               <p>
@@ -74,7 +74,7 @@ export default function TermsPage() {
 
             {/* Section 4 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 4. User Account Responsibilities
               </h2>
               <p>
@@ -84,7 +84,7 @@ export default function TermsPage() {
 
             {/* Section 5 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 5. System Availability and Accuracy
               </h2>
               <p>
@@ -94,7 +94,7 @@ export default function TermsPage() {
 
             {/* Section 6 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[#111111] flex items-center gap-2">
                 6. Changes to Terms
               </h2>
               <p>

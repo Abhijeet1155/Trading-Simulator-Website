@@ -25,7 +25,7 @@ export default function PrivacyPage() {
               <Shield className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-[#111111]">Privacy Policy</h1>
+              <h1 className="text-3xl font-semibold  text-[#111111]">Privacy Policy</h1>
               <p className="text-sm text-[#6B7280] mt-0.5">Last updated: July 15, 2026</p>
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
           <div className="mb-8 flex items-start gap-3.5 text-sm text-[#B45309] bg-[#FFFBEB] p-5 rounded-xl border border-[#FDE68A] leading-relaxed">
             <AlertTriangle className="w-6 h-6 flex-shrink-0 text-[#D97706] mt-0.5" />
             <div>
-              <strong className="font-bold text-[#92400E] block mb-1">Simulated Educational Service Disclaimer</strong>
+              <strong className="font-semibold text-[#92400E] block mb-1">Simulated Educational Service Disclaimer</strong>
               PaperPulse is an <strong>educational paper trading simulator</strong>. Because no real money, real brokerages, bank accounts, or real assets are connected, we never request or store sensitive financial details (such as credit cards, bank accounts, SSN/national IDs, or real portfolio accounts).
             </div>
           </div>
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
             
             {/* Section 1 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 1. Information We Collect
               </h2>
               <p>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
 
             {/* Section 2 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 2. How We Use Your Information
               </h2>
               <p>
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
 
             {/* Section 3 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 3. Data Storage & Security
               </h2>
               <p>
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
 
             {/* Section 4 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 4. User Rights & Data Deletion
               </h2>
               <p>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
 
             {/* Section 5 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 5. Third-Party Links
               </h2>
               <p>
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
 
             {/* Section 6 */}
             <section className="flex flex-col gap-2">
-              <h2 className="text-lg font-bold text-[#111111]">
+              <h2 className="text-lg font-semibold text-[#111111]">
                 6. Contact Information
               </h2>
               <p>

@@ -10,8 +10,10 @@ export async function GET() {
     const binanceSymbols = encodeURIComponent(JSON.stringify(["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","PAXGUSDT"]));
     const binanceUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${binanceSymbols}`;
 
+    const stockSymbols = ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'META'];
+
     // Fetch live market tickers in parallel with no-store and browser User-Agent
-    const [cryptoRes, forexRes, stockRes] = await Promise.allSettled([
+    const [cryptoRes, forexRes, stocksRes] = await Promise.allSettled([
       fetch(binanceUrl, { headers: commonHeaders, cache: 'no-store' }).then(async r => {
         if (!r.ok) {
           const txt = await r.text();
@@ -23,13 +25,17 @@ export async function GET() {
         if (!r.ok) throw new Error(`ER-API HTTP ${r.status}`);
         return r.json();
       }),
-      fetch('https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL,TSLA,NVDA,MSFT,AMZN,GOOGL,META', { 
-        headers: commonHeaders,
-        cache: 'no-store'
-      }).then(async r => {
-        if (!r.ok) throw new Error(`Yahoo Finance HTTP ${r.status}`);
-        return r.json();
-      })
+      Promise.allSettled(
+        stockSymbols.map(sym =>
+          fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1m&range=1d`, { 
+            headers: commonHeaders,
+            cache: 'no-store'
+          }).then(async r => {
+            if (!r.ok) throw new Error(`Yahoo Finance ${sym} HTTP ${r.status}`);
+            return r.json();
+          })
+        )
+      )
     ]);
 
     let isCryptoLive = false;
@@ -131,22 +137,33 @@ export async function GET() {
       META: { price: 475.20, change: 2.18, high: 482.50, low: 468.90, volume: '18M Shares' }
     };
 
-    if (stockRes.status === 'fulfilled' && stockRes.value && stockRes.value.quoteResponse && Array.isArray(stockRes.value.quoteResponse.result)) {
-      isStockLive = true;
-      stockRes.value.quoteResponse.result.forEach(val => {
-        const sym = val.symbol;
-        if (stockData[sym]) {
-          stockData[sym] = {
-            price: parseFloat(val.regularMarketPrice) || stockData[sym].price,
-            change: parseFloat(val.regularMarketChangePercent) || stockData[sym].change,
-            high: parseFloat(val.regularMarketDayHigh) || stockData[sym].high,
-            low: parseFloat(val.regularMarketDayLow) || stockData[sym].low,
-            volume: `${((val.regularMarketVolume || 10000000) / 1000000).toFixed(1)}M Shares`
-          };
+    let liveStockCount = 0;
+    if (stocksRes.status === 'fulfilled' && Array.isArray(stocksRes.value)) {
+      stocksRes.value.forEach(res => {
+        if (res.status === 'fulfilled' && res.value?.chart?.result?.[0]?.meta) {
+          const meta = res.value.chart.result[0].meta;
+          const sym = meta.symbol;
+          if (sym && stockData[sym] && meta.regularMarketPrice !== undefined) {
+            const price = parseFloat(meta.regularMarketPrice);
+            const prevClose = meta.previousClose || meta.chartPreviousClose;
+            const change = prevClose ? parseFloat((((price - prevClose) / prevClose) * 100).toFixed(2)) : stockData[sym].change;
+            const high = parseFloat(meta.regularMarketDayHigh) || stockData[sym].high;
+            const low = parseFloat(meta.regularMarketDayLow) || stockData[sym].low;
+            const volume = meta.regularMarketVolume ? `${(meta.regularMarketVolume / 1000000).toFixed(1)}M Shares` : stockData[sym].volume;
+
+            stockData[sym] = { price, change, high, low, volume };
+            liveStockCount++;
+          }
+        } else {
+          console.error('[Prices API Stock Symbol Error]:', res.reason || res.value);
         }
       });
     } else {
-      console.error('[Prices API Stock Error]:', stockRes.reason || stockRes.value);
+      console.error('[Prices API Stock Error]:', stocksRes.reason || stocksRes.value);
+    }
+
+    if (liveStockCount > 0) {
+      isStockLive = true;
     }
 
     return NextResponse.json({

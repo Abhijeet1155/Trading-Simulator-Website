@@ -20,31 +20,12 @@ export async function GET(request) {
     const { activeWallet } = await getActiveWallet(user.id);
     const supabaseAdmin = createAdminClient();
 
-    let query = supabaseAdmin
+    // Strictly filter trades by user_id AND active wallet_id
+    const { data: trades, error } = await supabaseAdmin
       .from('trades')
       .select('*')
-      .eq('user_id', user.id);
-    
-    // Filter by wallet_id
-    const isPrimary = activeWallet.id === user.id || activeWallet.account_name === 'Primary Demo';
-    if (isPrimary) {
-      // For default primary wallet, fetch both explicitly marked trades and unassigned trades
-      query = query.or(`wallet_id.eq.${activeWallet.id},wallet_id.is.null`);
-    } else {
-      query = query.eq('wallet_id', activeWallet.id);
-    }
-
-    let { data: trades, error } = await query;
-
-    // Fallback if wallet_id column doesn't exist in trades table yet
-    if (error && (error.message?.includes('column') || error.message?.includes('wallet_id'))) {
-      const fallbackRes = await supabaseAdmin
-        .from('trades')
-        .select('*')
-        .eq('user_id', user.id);
-      trades = fallbackRes.data;
-      error = fallbackRes.error;
-    }
+      .eq('user_id', user.id)
+      .eq('wallet_id', activeWallet.id);
 
     if (error) {
       throw error;
@@ -160,25 +141,11 @@ export async function POST(request) {
       stop_loss: stop_loss ? parseFloat(stop_loss) : null
     };
 
-    let { data: trade, error: insertError } = await supabaseAdmin
+    const { data: trade, error: insertError } = await supabaseAdmin
       .from('trades')
       .insert(insertData)
       .select()
       .single();
-
-    // Fallback if wallet_id column doesn't exist in trades table yet
-    if (insertError && (insertError.message?.includes('column') || insertError.message?.includes('wallet_id'))) {
-      const fallbackInsertData = { ...insertData };
-      delete fallbackInsertData.wallet_id;
-      
-      const fallbackInsert = await supabaseAdmin
-        .from('trades')
-        .insert(fallbackInsertData)
-        .select()
-        .single();
-      trade = fallbackInsert.data;
-      insertError = fallbackInsert.error;
-    }
 
     if (insertError) {
       console.error('[Trades API POST] Trade insert error:', insertError);

@@ -2271,8 +2271,11 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
         </div>
       </div>
 
-      {/* Main Trading Platform Grid */}
-      <div className="flex-grow flex overflow-y-auto lg:overflow-hidden flex-col lg:flex-row w-full relative">
+      {/* Main Trading Platform Outer Container */}
+      <div className="flex-grow flex flex-col w-full h-full min-h-0 overflow-hidden relative">
+        
+        {/* ROW 1: Top Trading Workspace (Watchlist | Chart | Order Panel) */}
+        <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-y-auto lg:overflow-hidden w-full relative">
         
         {/* Far Left Drawing Toolbar (TradingView Style) */}
         <aside className="hidden lg:flex w-11 bg-white border-r border-[#E0E3EB] flex-col items-center py-2 justify-between shrink-0 select-none">
@@ -2499,197 +2502,6 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
             {/* lightweight-charts Canvas Wrapper */}
             <div ref={chartContainerRef} className="flex-grow w-full h-full bg-white relative" />
-          </div>
-
-          {/* Terminal Resize Handle */}
-          <div 
-            onMouseDown={startResizeTerminal}
-            className="h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] border-t border-b border-[#E0E3EB] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10"
-          />
-
-          {/* Positions / Terminal Section */}
-          <div style={{ height: `${terminalHeight}px` }} className="bg-white overflow-hidden flex flex-col shrink-0">
-            {/* Header Tabs */}
-            <div className="text-[11px] font-semibold border-b border-gray-100 bg-[#FAFAFA] text-gray-400 shrink-0 flex justify-between items-center px-4 py-1">
-              <div className="flex gap-4 select-none">
-                {['positions', 'pending', 'history'].map(tab => (
-                  <button
-                    key={tab}
-                    onClick={() => setTableTab(tab)}
-                    className={`cursor-pointer transition-all py-1.5 relative capitalize  text-[10px] ${
-                      tableTab === tab ? 'text-[#2563EB] font-semibold border-b-2 border-[#2563EB]' : 'text-gray-400 hover:text-gray-700'
-                    }`}
-                  >
-                    {tab === 'positions' ? `Positions (${positions.length})` : tab === 'pending' ? 'Pending Orders (0)' : 'Order History'}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="text-[9px] text-gray-400 flex items-center gap-1 font-semibold">
-                <span className="w-2 h-2 rounded-full bg-[#089981] animate-pulse" /> Live connection active
-              </div>
-            </div>
-
-            {/* Terminal Table */}
-            <div className="flex-grow overflow-auto p-2">
-              {tableTab === 'positions' ? (
-                positions.length > 0 ? (
-                  <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
-                    <thead>
-                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
-                        <th className="px-3 py-1.5">Symbol</th>
-                        <th className="px-3 py-1.5">Side</th>
-                        <th className="px-3 py-1.5">Vol (Lots)</th>
-                        <th className="px-3 py-1.5">Entry Price</th>
-                        <th className="px-3 py-1.5">TP/SL</th>
-                        <th className="px-3 py-1.5">Current Price</th>
-                        <th className="px-3 py-1.5 text-right">P&L (USD)</th>
-                        <th className="px-3 py-1.5 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100/60">
-                      {positions.map((pos) => {
-                        const currentVal = prices[pos.symbol] || pos.entry;
-                        const pnl = getPositionPnL(pos);
-                        const isUp = pnl >= 0;
-
-                        return (
-                          <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                            <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
-                            <td className="px-3 py-1.5">
-                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
-                                pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
-                              }`}>
-                                {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
-                              </span>
-                            </td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums">{formatLotSize(pos.size)}</td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums">
-                              {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
-                            </td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums text-gray-500">
-                              {(() => {
-                                const tpText = pos.take_profit ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.take_profit.toFixed(4) : pos.take_profit.toLocaleString()) : '--';
-                                const slText = pos.stop_loss ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.stop_loss.toFixed(4) : pos.stop_loss.toLocaleString()) : '--';
-                                return `${tpText} / ${slText}`;
-                              })()}
-                            </td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
-                              {FOREX_SYMBOLS.includes(pos.symbol) ? currentVal.toFixed(4) : `$${currentVal.toLocaleString()}`}
-                            </td>
-                            <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
-                              {isUp ? '+' : ''}{pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
-                            </td>
-                            <td className="px-3 py-1.5 text-right">
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  type="button"
-                                  onClick={() => showToast('Close By execution is not available on this instrument.', 'info')}
-                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
-                                >
-                                  Close By
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => showToast('Reverse position execution requested', 'info')}
-                                  className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
-                                >
-                                  Reverse
-                                </button>
-                                <button
-                                  type="button"
-                                  disabled={isClosingId !== null}
-                                  onClick={() => handleClosePosition(pos.id, pos.symbol, pos.entry)}
-                                  className="px-2 py-0.5 bg-black text-white hover:bg-gray-800 rounded text-[9px] font-semibold capitalize transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                  {isClosingId === pos.id ? 'Closing...' : 'Close'}
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
-                    <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                      </svg>
-                    </div>
-                    <h3 className="font-semibold text-xs text-gray-700">No open positions</h3>
-                    <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
-                      Your trades will appear here once you place an order.
-                    </p>
-                  </div>
-                )
-              ) : tableTab === 'history' ? (
-                loadingHistory ? (
-                  <div className="text-center py-8 text-gray-400 text-xs font-semibold select-none animate-pulse">
-                    Loading order history...
-                  </div>
-                ) : historyTrades.length > 0 ? (
-                  <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
-                    <thead>
-                      <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
-                        <th className="px-3 py-1.5">Symbol</th>
-                        <th className="px-3 py-1.5">Side</th>
-                        <th className="px-3 py-1.5">Vol (Lots)</th>
-                        <th className="px-3 py-1.5">Entry Price</th>
-                        <th className="px-3 py-1.5">Close Price</th>
-                        <th className="px-3 py-1.5 text-right">P&L (USD)</th>
-                        <th className="px-3 py-1.5 text-right">Close Time</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100/60">
-                      {historyTrades.map((pos) => {
-                        const isUp = pos.pnl >= 0;
-                        return (
-                          <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                            <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
-                            <td className="px-3 py-1.5">
-                              <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
-                                pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
-                              }`}>
-                                {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
-                              </span>
-                            </td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums">{formatLotSize(pos.size)}</td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums">
-                              {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
-                            </td>
-                            <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
-                              {FOREX_SYMBOLS.includes(pos.symbol) ? pos.exit?.toFixed(4) : `$${pos.exit?.toLocaleString()}`}
-                            </td>
-                            <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
-                              {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
-                            </td>
-                            <td className="px-3 py-1.5 text-right text-gray-500 font-semibold">{pos.closed_time}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
-                    <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    </div>
-                    <h3 className="font-semibold text-xs text-gray-700">No closed orders yet</h3>
-                    <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
-                      Your completed trades will be logged here for tracking.
-                    </p>
-                  </div>
-                )
-              ) : (
-                <div className="text-center py-8 text-gray-400 text-xs font-semibold">
-                  No pending orders found.
-                </div>
-              )}
-            </div>
           </div>
         </main>
 
@@ -3138,6 +2950,200 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
             );
           })()}
         </aside>
+
+        </div>
+
+        {/* Terminal Horizontal Resize Handle (Full Width Bar) */}
+        <div 
+          onMouseDown={startResizeTerminal}
+          className="h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] border-t border-b border-[#E0E3EB] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10 w-full"
+        />
+
+        {/* ROW 2: Bottom Terminal (Positions / Pending Orders / Order History) — Full Width */}
+        <div style={{ height: `${terminalHeight}px` }} className="bg-white overflow-hidden flex flex-col shrink-0 w-full border-t border-gray-100">
+          {/* Header Tabs */}
+          <div className="text-[11px] font-semibold border-b border-gray-100 bg-[#FAFAFA] text-gray-400 shrink-0 flex justify-between items-center px-4 py-1">
+            <div className="flex gap-4 select-none">
+              {['positions', 'pending', 'history'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setTableTab(tab)}
+                  className={`cursor-pointer transition-all py-1.5 relative capitalize  text-[10px] ${
+                    tableTab === tab ? 'text-[#2563EB] font-semibold border-b-2 border-[#2563EB]' : 'text-gray-400 hover:text-gray-700'
+                  }`}
+                >
+                  {tab === 'positions' ? `Positions (${positions.length})` : tab === 'pending' ? 'Pending Orders (0)' : 'Order History'}
+                </button>
+              ))}
+            </div>
+            
+            <div className="text-[9px] text-gray-400 flex items-center gap-1 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-[#089981] animate-pulse" /> Live connection active
+            </div>
+          </div>
+
+          {/* Terminal Table */}
+          <div className="flex-grow overflow-auto p-2">
+            {tableTab === 'positions' ? (
+              positions.length > 0 ? (
+                <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
+                  <thead>
+                    <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
+                      <th className="px-3 py-1.5">Symbol</th>
+                      <th className="px-3 py-1.5">Side</th>
+                      <th className="px-3 py-1.5">Vol (Lots)</th>
+                      <th className="px-3 py-1.5">Entry Price</th>
+                      <th className="px-3 py-1.5">TP/SL</th>
+                      <th className="px-3 py-1.5">Current Price</th>
+                      <th className="px-3 py-1.5 text-right">P&L (USD)</th>
+                      <th className="px-3 py-1.5 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100/60">
+                    {positions.map((pos) => {
+                      const currentVal = prices[pos.symbol] || pos.entry;
+                      const pnl = getPositionPnL(pos);
+                      const isUp = pnl >= 0;
+
+                      return (
+                        <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
+                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
+                          <td className="px-3 py-1.5">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
+                              pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
+                            }`}>
+                              {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums">{formatLotSize(pos.size)}</td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums">
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
+                          </td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-500">
+                            {(() => {
+                              const tpText = pos.take_profit ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.take_profit.toFixed(4) : pos.take_profit.toLocaleString()) : '--';
+                              const slText = pos.stop_loss ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.stop_loss.toFixed(4) : pos.stop_loss.toLocaleString()) : '--';
+                              return `${tpText} / ${slText}`;
+                            })()}
+                          </td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? currentVal.toFixed(4) : `$${currentVal.toLocaleString()}`}
+                          </td>
+                          <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            {isUp ? '+' : ''}{pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                          </td>
+                          <td className="px-3 py-1.5 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => showToast('Close By execution is not available on this instrument.', 'info')}
+                                className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
+                              >
+                                Close By
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => showToast('Reverse position execution requested', 'info')}
+                                className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
+                              >
+                                Reverse
+                              </button>
+                              <button
+                                type="button"
+                                disabled={isClosingId !== null}
+                                onClick={() => handleClosePosition(pos.id, pos.symbol, pos.entry)}
+                                className="px-2 py-0.5 bg-black text-white hover:bg-gray-800 rounded text-[9px] font-semibold capitalize transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {isClosingId === pos.id ? 'Closing...' : 'Close'}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
+                  <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-xs text-gray-700">No open positions</h3>
+                  <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
+                    Your trades will appear here once you place an order.
+                  </p>
+                </div>
+              )
+            ) : tableTab === 'history' ? (
+              loadingHistory ? (
+                <div className="text-center py-8 text-gray-400 text-xs font-semibold select-none animate-pulse">
+                  Loading order history...
+                </div>
+              ) : historyTrades.length > 0 ? (
+                <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
+                  <thead>
+                    <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
+                      <th className="px-3 py-1.5">Symbol</th>
+                      <th className="px-3 py-1.5">Side</th>
+                      <th className="px-3 py-1.5">Vol (Lots)</th>
+                      <th className="px-3 py-1.5">Entry Price</th>
+                      <th className="px-3 py-1.5">Close Price</th>
+                      <th className="px-3 py-1.5 text-right">P&L (USD)</th>
+                      <th className="px-3 py-1.5 text-right">Close Time</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100/60">
+                    {historyTrades.map((pos) => {
+                      const isUp = pos.pnl >= 0;
+                      return (
+                        <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
+                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
+                          <td className="px-3 py-1.5">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
+                              pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
+                            }`}>
+                              {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums">{formatLotSize(pos.size)}</td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums">
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
+                          </td>
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? pos.exit?.toFixed(4) : `$${pos.exit?.toLocaleString()}`}
+                          </td>
+                          <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                          </td>
+                          <td className="px-3 py-1.5 text-right text-gray-500 font-semibold">{pos.closed_time}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
+                  <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-xs text-gray-700">No closed orders yet</h3>
+                  <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
+                    Your completed trades will be logged here for tracking.
+                  </p>
+                </div>
+              )
+            ) : (
+              <div className="text-center py-8 text-gray-400 text-xs font-semibold">
+                No pending orders found.
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
 
       {/* Modal for renaming an account */}

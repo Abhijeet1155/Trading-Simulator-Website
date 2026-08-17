@@ -446,58 +446,150 @@ export default function LeaderboardClientPage({
               <span className="text-xs font-semibold text-gray-400 capitalize ">Loading competition standings...</span>
             </div>
           ) : compRankings.length > 0 ? (
-            <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
-                  <thead>
-                    <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
-                      <th className="py-3.5 px-6">Rank</th>
-                      <th className="py-3.5 px-6">Trader</th>
-                      <th className="py-3.5 px-6 text-right">P&L (%)</th>
-                      <th className="py-3.5 px-6 text-right">Starting Balance</th>
-                      <th className="py-3.5 px-6 text-right">Current Balance</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-gray-700">
-                    {compRankings.map((user) => {
-                      const isSelf = user.user_id === currentUserId;
-                      const isWinner = user.pnl_percent >= 0;
-                      return (
-                        <tr 
-                          key={user.id} 
-                          className={`hover:bg-gray-50/50 transition-colors ${
-                            isSelf ? 'bg-blue-50/40 hover:bg-blue-50/60 font-semibold' : ''
-                          }`}
-                        >
-                          <td className="py-4 px-6 font-semibold text-gray-900">
-                            {user.rank === 1 ? '🥇 1' : user.rank === 2 ? '🥈 2' : user.rank === 3 ? '🥉 3' : `#${user.rank}`}
-                          </td>
-                          <td className="py-4 px-6 flex items-center gap-2">
-                            <span className="font-semibold text-gray-900 truncate">
-                              {getMaskedName(user.name, user.user_id)}
-                            </span>
-                            {isSelf && (
-                              <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-semibold capitalize select-none">
-                                You
-                              </span>
-                            )}
-                          </td>
-                          <td className={`py-4 px-6 text-right font-mono font-semibold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
-                            {isWinner ? '+' : ''}{user.pnl_percent.toFixed(2)}%
-                          </td>
-                          <td className="py-4 px-6 text-right font-mono font-semibold text-gray-400">
-                            ${parseFloat(user.starting_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </td>
-                          <td className="py-4 px-6 text-right font-mono font-semibold text-gray-950">
-                            ${parseFloat(user.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            (() => {
+              const cFirst = compRankings.find(u => u.rank === 1);
+              const cSecond = compRankings.find(u => u.rank === 2);
+              const cThird = compRankings.find(u => u.rank === 3);
+
+              return (
+                <div className="space-y-10">
+                  {/* TOP 3 PODIUM SECTION FOR COMPETITION */}
+                  <div className="flex flex-col sm:flex-row justify-center items-center sm:items-end gap-6 sm:gap-4 md:gap-8 max-w-2xl mx-auto pt-6 select-none">
+                    
+                    {/* #2 Place (Silver) */}
+                    {cSecond ? (
+                      <div className="flex flex-col items-center w-28 md:w-36 text-center animate-in slide-in-from-bottom-3 duration-300 order-2 sm:order-1">
+                        <div className="relative mb-3">
+                          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center text-gray-500 font-semibold shadow-md">
+                            <User className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-gray-300 border border-white text-gray-700 rounded-full flex items-center justify-center text-[10px] font-semibold shadow-sm">
+                            2
+                          </div>
+                        </div>
+                        <span className="text-xs font-semibold text-[#111111] truncate max-w-full">
+                          {getMaskedName(cSecond.name || 'Trader', cSecond.user_id)}
+                        </span>
+                        <span className={`text-[10px] font-semibold mt-0.5 ${cSecond.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                          {cSecond.pnl_percent >= 0 ? '+' : ''}{cSecond.pnl_percent.toFixed(2)}%
+                        </span>
+                        
+                        <div className="w-full bg-[#E5E7EB] border-t-2 border-gray-300 rounded-t-xl h-20 mt-4 hidden sm:flex items-center justify-center shadow-inner">
+                          <span className="text-2xl font-semibold text-gray-400 select-none">🥈</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-28 md:w-36 h-20 hidden sm:block"></div>
+                    )}
+
+                    {/* #1 Place (Gold - Center/Larger) */}
+                    {cFirst ? (
+                      <div className="flex flex-col items-center w-32 md:w-44 text-center z-10 animate-in slide-in-from-bottom-5 duration-300 order-1 sm:order-2">
+                        <div className="relative mb-3">
+                          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-50 border-4 border-amber-400 flex items-center justify-center text-amber-500 font-semibold shadow-lg">
+                            <Trophy className="w-8 h-8 md:w-10 md:h-10 text-amber-500 animate-bounce" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 w-7 h-7 bg-amber-400 border border-white text-white rounded-full flex items-center justify-center text-xs font-semibold shadow-sm">
+                            1
+                          </div>
+                        </div>
+                        <span className="text-sm font-semibold text-[#111111] truncate max-w-full">
+                          {getMaskedName(cFirst.name || 'Trader', cFirst.user_id)}
+                        </span>
+                        <span className={`text-xs font-semibold mt-0.5 ${cFirst.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                          {cFirst.pnl_percent >= 0 ? '+' : ''}{cFirst.pnl_percent.toFixed(2)}%
+                        </span>
+                        
+                        <div className="w-full bg-[#FCD34D] border-t-2 border-amber-400 rounded-t-xl h-28 mt-4 hidden sm:flex items-center justify-center shadow-inner">
+                          <span className="text-3xl font-semibold text-amber-600 select-none">🏆</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-32 md:w-44 h-28 hidden sm:block"></div>
+                    )}
+
+                    {/* #3 Place (Bronze) */}
+                    {cThird ? (
+                      <div className="flex flex-col items-center w-28 md:w-36 text-center animate-in slide-in-from-bottom-3 duration-300 order-3 sm:order-3">
+                        <div className="relative mb-3">
+                          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#FFFBEB] border-2 border-amber-600 flex items-center justify-center text-amber-700 font-semibold shadow-md">
+                            <User className="w-6 h-6 md:w-8 md:h-8 text-amber-700/60" />
+                          </div>
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-600 border border-white text-white rounded-full flex items-center justify-center text-[10px] font-semibold shadow-sm">
+                            3
+                          </div>
+                        </div>
+                        <span className="text-xs font-semibold text-[#111111] truncate max-w-full">
+                          {getMaskedName(cThird.name || 'Trader', cThird.user_id)}
+                        </span>
+                        <span className={`text-[10px] font-semibold mt-0.5 ${cThird.pnl_percent >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                          {cThird.pnl_percent >= 0 ? '+' : ''}{cThird.pnl_percent.toFixed(2)}%
+                        </span>
+                        
+                        <div className="w-full bg-[#E5D5C5] border-t-2 border-amber-600 rounded-t-xl h-16 mt-4 hidden sm:flex items-center justify-center shadow-inner">
+                          <span className="text-2xl font-semibold text-amber-700 select-none">🥉</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-28 md:w-36 h-16 hidden sm:block"></div>
+                    )}
+                  </div>
+
+                  <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
+                        <thead>
+                          <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
+                            <th className="py-3.5 px-6">Rank</th>
+                            <th className="py-3.5 px-6">Trader</th>
+                            <th className="py-3.5 px-6 text-right">P&L (%)</th>
+                            <th className="py-3.5 px-6 text-right">Starting Balance</th>
+                            <th className="py-3.5 px-6 text-right">Current Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 text-gray-700">
+                          {compRankings.map((user) => {
+                            const isSelf = user.user_id === currentUserId;
+                            const isWinner = user.pnl_percent >= 0;
+                            return (
+                              <tr 
+                                key={user.id} 
+                                className={`hover:bg-gray-50/50 transition-colors ${
+                                  isSelf ? 'bg-blue-50/40 hover:bg-blue-50/60 font-semibold' : ''
+                                }`}
+                              >
+                                <td className="py-4 px-6 font-semibold text-gray-900">
+                                  {user.rank === 1 ? '🥇 1' : user.rank === 2 ? '🥈 2' : user.rank === 3 ? '🥉 3' : `#${user.rank}`}
+                                </td>
+                                <td className="py-4 px-6 flex items-center gap-2">
+                                  <span className="font-semibold text-gray-900 truncate">
+                                    {getMaskedName(user.name, user.user_id)}
+                                  </span>
+                                  {isSelf && (
+                                    <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-blue-100 text-blue-700 font-semibold capitalize select-none">
+                                      You
+                                    </span>
+                                  )}
+                                </td>
+                                <td className={`py-4 px-6 text-right font-mono font-semibold ${isWinner ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+                                  {isWinner ? '+' : ''}{user.pnl_percent.toFixed(2)}%
+                                </td>
+                                <td className="py-4 px-6 text-right font-mono font-semibold text-gray-400">
+                                  ${parseFloat(user.starting_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                </td>
+                                <td className="py-4 px-6 text-right font-mono font-semibold text-gray-950">
+                                  ${parseFloat(user.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()
           ) : (
             /* Empty State */
             <div className="flex flex-col items-center justify-center py-20 text-center select-none bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm">

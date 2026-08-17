@@ -95,7 +95,7 @@ export default async function LeaderboardPage() {
       const count = 3 + (idx % 3);
       for (let i = 0; i < count; i++) {
         const closedAt = new Date();
-        closedAt.setDate(now.getDate() - (i * 3 + idx * 2));
+        closedAt.setHours(now.getHours() - (i * 12 + idx * 4));
         
         let basePnL = 2200 - idx * 500;
         let randomPnL = Math.random() * 300 - 100;

@@ -494,18 +494,19 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
     }
   };
 
-  useEffect(() => {
-    async function fetchAccountDetails() {
-      try {
-        const res = await fetch('/api/user/account');
-        if (res.ok) {
-          const data = await res.json();
-          setAccountData(data);
-        }
-      } catch (err) {
-        console.error('Failed to fetch account info in trade page:', err);
+  const fetchAccountDetails = async () => {
+    try {
+      const res = await fetch('/api/user/account');
+      if (res.ok) {
+        const data = await res.json();
+        setAccountData(data);
       }
+    } catch (err) {
+      console.error('Failed to fetch account info in trade page:', err);
     }
+  };
+
+  useEffect(() => {
     fetchAccountDetails();
   }, []);
 
@@ -611,7 +612,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
     return initial;
   });
 
-  const livePrice = prices[selectedAsset];
+  const livePrice = prices[selectedAsset] || ASSETS[selectedAsset]?.price || 100;
   const priceDirection = directions[selectedAsset];
 
   // Flashing indicator for real-time tick changes
@@ -756,25 +757,26 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
   // Sync Price defaults and calculate initial Total USDT
   useEffect(() => {
+    if (!livePrice) return;
     const timer = setTimeout(() => {
-      const defaultPriceStr = livePrice.toString();
+      const defaultPriceStr = (livePrice || 0).toString();
       setLimitPrice(defaultPriceStr);
-      setStopPrice((livePrice * 1.01).toFixed(FOREX_SYMBOLS.includes(selectedAsset) ? 4 : 2));
+      setStopPrice(((livePrice || 0) * 1.01).toFixed(FOREX_SYMBOLS.includes(selectedAsset) ? 4 : 2));
       
       const initialVol = parseFloat(vol) || 0;
       const lotMultiplier = FOREX_SYMBOLS.includes(selectedAsset) ? 100000 : selectedAsset === 'XAU/USD' ? 100 : 1;
-      setTotalUSDT((initialVol * livePrice * lotMultiplier).toFixed(2));
+      setTotalUSDT((initialVol * (livePrice || 0) * lotMultiplier).toFixed(2));
     }, 0);
     return () => clearTimeout(timer);
   }, [selectedAsset, livePrice, vol]);
 
   // Re-calculate Total USDT when price ticks if in Market mode
   useEffect(() => {
-    if (orderSubtype === 'Market') {
+    if (orderSubtype === 'Market' && livePrice) {
       const timer = setTimeout(() => {
         const currentVol = parseFloat(vol) || 0;
         const lotMultiplier = FOREX_SYMBOLS.includes(selectedAsset) ? 100000 : selectedAsset === 'XAU/USD' ? 100 : 1;
-        setTotalUSDT((currentVol * livePrice * lotMultiplier).toFixed(2));
+        setTotalUSDT((currentVol * (livePrice || 0) * lotMultiplier).toFixed(2));
       }, 0);
       return () => clearTimeout(timer);
     }
@@ -1160,9 +1162,10 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
   };
 
   const formatAssetPrice = (val, sym = selectedAsset) => {
+    const num = typeof val === 'number' && !isNaN(val) ? val : 0;
     return FOREX_SYMBOLS.includes(sym) 
-      ? val.toFixed(4) 
-      : val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      ? num.toFixed(4) 
+      : num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   // Dynamic script loader for TradingView tv.js
@@ -2335,8 +2338,8 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   onClick={() => setIsSearchOpen(true)}
                   className="flex items-center gap-2 px-2.5 py-1 bg-gray-50 hover:bg-gray-100 border border-gray-200/80 rounded-lg transition-colors text-left cursor-pointer"
                 >
-                  <span className="font-semibold text-sm text-gray-900">{selectedAsset}/USDT</span>
-                  <span className="text-[9.5px] text-gray-400 font-semibold capitalize hidden sm:inline">{asset.name}</span>
+                  <span className="font-semibold text-sm text-gray-900">{selectedAsset?.includes('/') ? selectedAsset : `${selectedAsset}/USDT`}</span>
+                  <span className="text-[9.5px] text-gray-400 font-semibold capitalize hidden sm:inline">{asset?.name || selectedAsset}</span>
                   <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
                 </button>
                 
@@ -2375,7 +2378,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                   </div>
                   <div className="flex flex-col">
                     <span className="text-gray-400 font-semibold text-[8.5px]">24h Vol ({selectedAsset})</span>
-                    <span className="text-gray-700 font-mono font-semibold">{asset.volume24h}</span>
+                    <span className="text-gray-700 font-mono font-semibold">{asset?.volume24h || '--'}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-gray-400 font-semibold text-[8.5px]">24h Turnover</span>
@@ -2507,17 +2510,17 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
 
                       return (
                         <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
+                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol?.includes('/') ? pos.symbol : `${pos.symbol}/USDT`}</td>
                           <td className="px-3 py-1.5">
                             <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                               pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
                             }`}>
-                              {pos.side?.charAt(0).toUpperCase() + pos.side?.slice(1)}
+                              {pos.side ? pos.side.charAt(0).toUpperCase() + pos.side.slice(1) : 'Buy'}
                             </span>
                           </td>
                           <td className="px-3 py-1.5 font-mono tabular-nums">{formatLotSize(pos.size)}</td>
                           <td className="px-3 py-1.5 font-mono tabular-nums">
-                            {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? (pos.entry || 0).toFixed(4) : `$${(pos.entry || 0).toLocaleString()}`}
                           </td>
                           <td className="px-3 py-1.5 font-mono tabular-nums text-gray-500">
                             {(() => {
@@ -2527,7 +2530,7 @@ export default function TradeClientPage({ userName, initialBalance, initialPosit
                             })()}
                           </td>
                           <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
-                            {FOREX_SYMBOLS.includes(pos.symbol) ? currentVal.toFixed(4) : `$${currentVal.toLocaleString()}`}
+                            {FOREX_SYMBOLS.includes(pos.symbol) ? (currentVal || 0).toFixed(4) : `$${(currentVal || 0).toLocaleString()}`}
                           </td>
                           <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                             {isUp ? '+' : ''}{pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD

@@ -146,6 +146,7 @@ export async function GET(req) {
         end_date: c.end_date,
         target_profit_percent: parseFloat(c.target_profit_percent),
         status: c.status,
+        is_premium_only: !!c.is_premium_only,
         participantCount: participants.length,
         joined: !!userPart,
         userProgress
@@ -182,16 +183,39 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Competition ID is required' }, { status: 400 });
     }
 
-    // 1. Get competition details to find entry fee and starting equity
+    // 1. Get competition details to find entry fee, starting equity, and premium-only status
     const { data: comp, error: compErr } = await supabaseAdmin
       .from('competitions')
-      .select('entry_fee, initial_equity')
+      .select('entry_fee, initial_equity, is_premium_only')
       .eq('id', competitionId)
       .single();
 
     if (compErr || !comp) {
       console.error('[Competitions POST] Competition lookup error:', compErr);
       return NextResponse.json({ error: 'Competition not found' }, { status: 404 });
+    }
+
+    // Check if competition is restricted to premium users only
+    if (comp.is_premium_only) {
+      let planType = 'free';
+      try {
+        const { data: dbUser } = await supabaseAdmin
+          .from('users')
+          .select('plan_type')
+          .eq('id', user.id)
+          .single();
+        if (dbUser && dbUser.plan_type) {
+          planType = dbUser.plan_type.toLowerCase();
+        }
+      } catch (e) {
+        // default to free
+      }
+
+      if (planType !== 'premium') {
+        return NextResponse.json({ 
+          error: 'Upgrade to Pro to join this competition' 
+        }, { status: 403 });
+      }
     }
 
     const entryFee = comp ? parseFloat(comp.entry_fee) : 0;

@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS public.wallets (
     currency TEXT DEFAULT 'USD' NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     initial_balance NUMERIC(12, 2) DEFAULT 0.00 NOT NULL,
-    balance_configured BOOLEAN DEFAULT false NOT NULL
+    balance_configured BOOLEAN DEFAULT false NOT NULL,
+    account_type TEXT DEFAULT 'standard' NOT NULL,
+    leverage INTEGER DEFAULT 100 NOT NULL
 );
 
 -- 3. Helper function to check if the current user is an admin without recursion
@@ -83,7 +85,8 @@ CREATE TABLE IF NOT EXISTS public.trades (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     closed_at TIMESTAMP WITH TIME ZONE,
     take_profit NUMERIC(16, 8),
-    stop_loss NUMERIC(16, 8)
+    stop_loss NUMERIC(16, 8),
+    leverage NUMERIC(8, 2) DEFAULT 100.00
 );
 
 

@@ -29,6 +29,27 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Account name cannot exceed 30 characters.' }, { status: 400 });
     }
 
+    // Resolve user plan type
+    let planType = 'free';
+    try {
+      const { data: dbUser } = await supabaseAdmin
+        .from('users')
+        .select('plan_type')
+        .eq('id', user.id)
+        .single();
+      if (dbUser && dbUser.plan_type) {
+        planType = dbUser.plan_type.toLowerCase();
+      }
+    } catch (e) {
+      // default to free
+    }
+
+    if (planType !== 'premium' && numAmount > 10000) {
+      return NextResponse.json({ 
+        error: 'Free plan starting balance is limited to a maximum of $10,000. Upgrade to Pro for higher amounts!' 
+      }, { status: 400 });
+    }
+
     // Resolve active wallet first
     const { activeWallet } = await getActiveWallet(user.id);
 

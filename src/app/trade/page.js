@@ -125,12 +125,21 @@ export default async function TradePage() {
     }
   }
 
+  const { getAccountTypes } = await import('@/lib/accountTypes');
+  const accountTypes = await getAccountTypes();
+  const initialAccountType = activeWallet.account_type || 'standard';
+  const initialLeverage = parseInt(activeWallet.leverage || 100, 10);
+
   return (
     <TradeClientPage 
       userName={displayName}
       initialBalance={balance}
       initialPositions={positions}
       accountNumber={accountNumber}
+      activeAccountId={activeWallet.id}
+      initialAccountType={initialAccountType}
+      initialLeverage={initialLeverage}
+      accountTypes={accountTypes}
     />
   );
 }

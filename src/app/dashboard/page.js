@@ -206,12 +206,22 @@ export default async function DashboardPage() {
                 <Award className="w-4 h-4" />
               </div>
             </div>
-            <h3 className="text-2xl font-semibold text-[#111111]  capitalize">
+            <h3 className="text-2xl font-semibold text-[#111111] capitalize">
               {planType}
             </h3>
-            <p className="text-[10px] font-semibold text-[#6B7280] mt-1">
-              {planType === 'free' ? 'Upgrade for higher limits' : 'Unrestricted practice limits'}
-            </p>
+            {planType === 'free' ? (
+              <Link 
+                href="/pricing"
+                className="text-[10px] font-semibold text-[#2563EB] hover:text-[#1d4ed8] mt-1 inline-flex items-center gap-1 hover:underline transition-colors"
+              >
+                Upgrade for higher limits
+                <ArrowRight className="w-2.5 h-2.5" />
+              </Link>
+            ) : (
+              <p className="text-[10px] font-semibold text-emerald-600 mt-1">
+                Unrestricted practice limits
+              </p>
+            )}
           </div>
         </div>
 
@@ -306,7 +316,7 @@ export default async function DashboardPage() {
         {!balanceConfigured && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-xs z-[45] flex items-center justify-center p-4">
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-2 max-w-xl w-full shadow-2xl animate-in scale-in duration-200">
-              <OnboardingBalanceSelector />
+              <OnboardingBalanceSelector planType={planType} />
             </div>
           </div>
         )}

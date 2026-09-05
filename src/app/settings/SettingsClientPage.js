@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   TrendingUp, User, Wallet, Award, Settings, 
   Lock, AlertTriangle, ShieldAlert, CheckCircle2, 
-  HelpCircle, Eye, EyeOff, Info, ArrowRight, Loader2, Pencil
+  HelpCircle, Eye, EyeOff, Info, ArrowRight, ArrowLeft, Loader2, Pencil
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { getAccountNumber } from '@/lib/account';
@@ -202,6 +202,17 @@ export default function SettingsClientPage({
 
       {/* Main Container */}
       <main className="max-w-3xl mx-auto px-6 py-10 flex-grow w-full">
+        {/* Back Link */}
+        <div className="mb-6">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2563EB] transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Dashboard</span>
+          </Link>
+        </div>
+
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-[#111111] ">

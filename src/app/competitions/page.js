@@ -17,16 +17,18 @@ export default async function CompetitionsPage() {
     redirect('/login');
   }
 
-  // 2. Fetch user profile name
+  // 2. Fetch user profile name & plan_type
   let displayName = 'Trader';
+  let planType = 'free';
   try {
     const { data: dbUser } = await supabase
       .from('users')
-      .select('name')
+      .select('name, plan_type')
       .eq('id', user.id)
       .single();
     if (dbUser) {
       displayName = dbUser.name;
+      planType = dbUser.plan_type || 'free';
     } else {
       displayName = user.user_metadata?.name || user.email?.split('@')[0] || 'Trader';
     }
@@ -39,6 +41,7 @@ export default async function CompetitionsPage() {
       userId={user.id}
       userEmail={user.email}
       initialDisplayName={displayName}
+      initialPlanType={planType}
     />
   );
 }

@@ -22,7 +22,8 @@ CREATE TABLE public.trades (
     size NUMERIC(16, 8) DEFAULT 0.00,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     take_profit NUMERIC(16, 8),
-    stop_loss NUMERIC(16, 8)
+    stop_loss NUMERIC(16, 8),
+    leverage NUMERIC(8, 2) DEFAULT 100.00
 );
 
 -- 3. Enable Row-Level Security (RLS)

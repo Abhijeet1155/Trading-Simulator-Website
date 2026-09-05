@@ -73,7 +73,8 @@ export async function POST(request) {
     const body = await request.json();
     const { 
       title, description, entry_fee, start_date, end_date, target_profit_percent,
-      prize_pool, max_participants, initial_equity, status, banner_image_url, banner_video_url
+      prize_pool, max_participants, initial_equity, status, banner_image_url, banner_video_url,
+      is_premium_only
     } = body;
 
     if (!title || !start_date || !end_date || target_profit_percent === undefined) {
@@ -92,7 +93,8 @@ export async function POST(request) {
       initial_equity: parseFloat(initial_equity || 10000),
       status: status || 'upcoming',
       banner_image_url: banner_image_url || null,
-      banner_video_url: banner_video_url || null
+      banner_video_url: banner_video_url || null,
+      is_premium_only: !!is_premium_only
     };
 
     const supabaseAdmin = createAdminClient();
@@ -125,7 +127,8 @@ export async function PUT(request) {
     const body = await request.json();
     const { 
       id, title, description, entry_fee, start_date, end_date, target_profit_percent, 
-      status, prize_pool, max_participants, initial_equity, banner_image_url, banner_video_url
+      status, prize_pool, max_participants, initial_equity, banner_image_url, banner_video_url,
+      is_premium_only
     } = body;
 
     if (!id) {
@@ -145,6 +148,7 @@ export async function PUT(request) {
     if (initial_equity !== undefined) updates.initial_equity = parseFloat(initial_equity);
     if (banner_image_url !== undefined) updates.banner_image_url = banner_image_url;
     if (banner_video_url !== undefined) updates.banner_video_url = banner_video_url;
+    if (is_premium_only !== undefined) updates.is_premium_only = !!is_premium_only;
 
     const supabaseAdmin = createAdminClient();
     const { data, error } = await supabaseAdmin

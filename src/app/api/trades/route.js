@@ -56,6 +56,7 @@ export async function GET(request) {
         size: parsedSize,
         quantity: parsedSize,
         usd_amount: parseFloat(t.usd_amount || 0),
+        leverage: t.leverage ? parseFloat(t.leverage) : 100,
         pnl: t.pnl ? parseFloat(t.pnl) : 0,
         time: new Date(t.opened_at || t.created_at).toLocaleString(),
         closed_time: t.closed_at ? new Date(t.closed_at).toLocaleString() : null,
@@ -89,32 +90,86 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const { symbol, side, quantity, entry_price, usd_amount, take_profit, stop_loss } = bodyData;
+  const {
+    account_id,
+    wallet_id,
+    symbol,
+    side,
+    quantity,
+    entry_price,
+    usd_amount,
+    leverage = 100,
+    take_profit,
+    stop_loss
+  } = bodyData;
 
   // Basic validation
-  if (!symbol || !side || !quantity || !entry_price || !usd_amount) {
+  if (!symbol || !side || !quantity || !entry_price) {
     return NextResponse.json({ error: 'Missing required trade details' }, { status: 400 });
   }
 
   const numQuantity = parseFloat(quantity);
   const numEntryPrice = parseFloat(entry_price);
-  const numUsdAmount = parseFloat(usd_amount);
+  const numLeverage = parseFloat(leverage) > 0 ? parseFloat(leverage) : 100;
 
-  if (numQuantity <= 0 || numEntryPrice <= 0 || numUsdAmount <= 0) {
-    return NextResponse.json({ error: 'Invalid quantity, price, or amount' }, { status: 400 });
+  if (numQuantity <= 0 || numEntryPrice <= 0) {
+    return NextResponse.json({ error: 'Invalid quantity or price' }, { status: 400 });
+  }
+
+  // Margin calculation: requiredMargin = (lotSize × contractMultiplier × currentPrice) / leverage
+  const FOREX_SYMBOLS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF'];
+  const lotMultiplier = FOREX_SYMBOLS.includes(symbol) ? 100000 : symbol === 'XAU/USD' ? 100 : 1;
+  const calculatedMargin = parseFloat(((numQuantity * numEntryPrice * lotMultiplier) / numLeverage).toFixed(2));
+  const numUsdAmount = usd_amount ? parseFloat(parseFloat(usd_amount).toFixed(2)) : calculatedMargin;
+
+  if (numUsdAmount <= 0) {
+    return NextResponse.json({ error: 'Invalid margin amount calculated' }, { status: 400 });
   }
 
   try {
-    const { activeWallet } = await getActiveWallet(user.id);
     const supabaseAdmin = createAdminClient();
+    const targetWalletId = account_id || wallet_id;
+    let activeWallet = null;
+
+    if (targetWalletId) {
+      const { data: specificWallet } = await supabaseAdmin
+        .from('wallets')
+        .select('*')
+        .eq('id', targetWalletId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (specificWallet) {
+        activeWallet = specificWallet;
+      }
+    }
+
+    if (!activeWallet) {
+      const resolved = await getActiveWallet(user.id);
+      activeWallet = resolved.activeWallet;
+    }
+
+    if (!activeWallet) {
+      return NextResponse.json({ error: 'Active trading account not found' }, { status: 404 });
+    }
+
+    // Validate leverage against account type max leverage and supported levels
+    const { getAccountTypes, validateLeverage } = await import('@/lib/accountTypes');
+    const accountTypes = await getAccountTypes();
+    const activeAccountType = activeWallet.account_type || 'standard';
+    const levValidation = validateLeverage(numLeverage, activeAccountType, accountTypes);
+    if (!levValidation.valid) {
+      return NextResponse.json({ error: levValidation.error }, { status: 400 });
+    }
 
     const balance = parseFloat(activeWallet.virtual_balance) || 0;
     if (balance < numUsdAmount) {
-      return NextResponse.json({ error: 'Required margin/amount exceeds available balance' }, { status: 400 });
+      return NextResponse.json({
+        error: `Insufficient margin. Required: $${numUsdAmount.toFixed(2)}, Available balance: $${balance.toFixed(2)}`
+      }, { status: 400 });
     }
 
     // 3. Deduct committed usd_amount from active wallet virtual_balance
-    const newBalance = balance - numUsdAmount;
+    const newBalance = parseFloat((balance - numUsdAmount).toFixed(2));
     const { error: updateWalletError } = await supabaseAdmin
       .from('wallets')
       .update({ virtual_balance: newBalance, updated_at: new Date().toISOString() })
@@ -136,16 +191,29 @@ export async function POST(request) {
       quantity: numQuantity,
       size: numQuantity, // compatibility
       usd_amount: numUsdAmount,
+      leverage: numLeverage,
       pnl: 0.00,
       take_profit: take_profit ? parseFloat(take_profit) : null,
       stop_loss: stop_loss ? parseFloat(stop_loss) : null
     };
 
-    const { data: trade, error: insertError } = await supabaseAdmin
+    let { data: trade, error: insertError } = await supabaseAdmin
       .from('trades')
       .insert(insertData)
       .select()
       .single();
+
+    // Graceful fallback if leverage column hasn't been added to Supabase table yet
+    if (insertError && (insertError.message?.includes('leverage') || insertError.code === '42703')) {
+      const { leverage: _, ...fallbackData } = insertData;
+      const retry = await supabaseAdmin
+        .from('trades')
+        .insert(fallbackData)
+        .select()
+        .single();
+      trade = retry.data;
+      insertError = retry.error;
+    }
 
     if (insertError) {
       console.error('[Trades API POST] Trade insert error:', insertError);
@@ -225,9 +293,9 @@ export async function PUT(request) {
     const entryPrice = parseFloat(trade.entry_price);
     const usdAmount = parseFloat(trade.usd_amount || 0);
     
-    // Leverage multiplier
+    // Leverage / Contract multiplier
     const getMultiplier = (symbol) => {
-      if (['EUR/USD', 'GBP/USD'].includes(symbol)) return 100000;
+      if (['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF'].includes(symbol)) return 100000;
       if (symbol === 'XAU/USD') return 100;
       if (symbol === 'AAPL') return 100;
       return 1;
@@ -332,6 +400,81 @@ export async function PUT(request) {
     console.error('[Trades API PUT Execution Error]:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to close position. Please try again.' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH: Update TP and SL for an open position
+export async function PATCH(request) {
+  const supabase = await createClient();
+  
+  // 1. Authenticate user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  let bodyData;
+  try {
+    bodyData = await request.json();
+  } catch (e) {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
+
+  const { tradeId, take_profit, stop_loss } = bodyData;
+
+  if (!tradeId) {
+    return NextResponse.json({ error: 'Missing trade ID' }, { status: 400 });
+  }
+
+  try {
+    const supabaseAdmin = createAdminClient();
+
+    // Verify trade belongs to user and is open
+    const { data: trade, error: fetchError } = await supabaseAdmin
+      .from('trades')
+      .select('*')
+      .eq('id', tradeId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (fetchError || !trade) {
+      return NextResponse.json({ error: 'Position not found' }, { status: 404 });
+    }
+
+    if (trade.status === 'closed') {
+      return NextResponse.json({ error: 'Cannot update TP/SL on a closed position' }, { status: 400 });
+    }
+
+    const updates = {};
+    if (take_profit !== undefined) {
+      updates.take_profit = take_profit === null || take_profit === '' ? null : parseFloat(take_profit);
+    }
+    if (stop_loss !== undefined) {
+      updates.stop_loss = stop_loss === null || stop_loss === '' ? null : parseFloat(stop_loss);
+    }
+
+    const { data: updatedTrade, error: updateError } = await supabaseAdmin
+      .from('trades')
+      .update(updates)
+      .eq('id', tradeId)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error('[Trades API PATCH] Update error:', updateError);
+      throw new Error(`Failed to update TP/SL: ${updateError.message}`);
+    }
+
+    return NextResponse.json({
+      message: 'TP/SL updated successfully',
+      trade: updatedTrade
+    });
+  } catch (error) {
+    console.error('[Trades API PATCH Execution Error]:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to update position TP/SL' },
       { status: 500 }
     );
   }

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   TrendingUp, Trophy, Award, Calendar, 
   User, CheckCircle2, ChevronRight, HelpCircle, 
-  Loader2, Info, Star, Percent, Briefcase
+  Loader2, Info, Star, Percent, Briefcase, ArrowLeft
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
@@ -199,6 +199,16 @@ export default function LeaderboardClientPage({
 
       {/* Main leader board area */}
       <main className="max-w-6xl mx-auto px-6 py-10 flex-grow w-full pb-28">
+        {/* Back Link */}
+        <div className="mb-6">
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2563EB] transition-colors"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Dashboard</span>
+          </Link>
+        </div>
         {/* Warning Banner for Local Fallback */}
         {isFallbackActive && (
           <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 items-start select-none">

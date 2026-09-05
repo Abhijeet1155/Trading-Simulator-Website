@@ -22,7 +22,16 @@ export async function getActiveWallet(userId) {
     wallets = (data || []).map(item => ({
       ...item,
       balance_configured: item.balance_configured ?? true,
-      account_name: item.account_name || 'Primary Demo'
+      account_name: item.nickname || item.account_name || 'Primary Demo',
+      nickname: item.nickname || item.account_name || 'Primary Demo',
+      account_type: item.account_type || 'standard',
+      leverage: parseInt(item.leverage || 100, 10),
+      currency: item.currency || 'USD',
+      execution_type: item.execution_type || 'Market',
+      platform: item.platform || 'MT5',
+      is_demo: item.is_demo !== undefined ? item.is_demo : true,
+      virtual_balance: parseFloat(item.virtual_balance || item.balance || 0),
+      initial_balance: parseFloat(item.initial_balance || item.starting_balance || 10000.00)
     }));
   } catch (err) {
     console.error('[getActiveWallet Error]:', err);
@@ -45,10 +54,17 @@ export async function getActiveWallet(userId) {
             const defaultAccNum = String(Math.abs(hash % 900000) + 100000);
             
             db.wallets_multi.push({
-              id: userId, // use userId as default wallet ID locally
+              id: userId,
               user_id: userId,
               account_number: defaultAccNum,
               account_name: 'Primary Demo',
+              nickname: 'Primary Demo',
+              account_type: 'standard',
+              leverage: 100,
+              currency: 'USD',
+              execution_type: 'Market',
+              platform: 'MT5',
+              is_demo: true,
               virtual_balance: db.wallets[userId],
               initial_balance: db.initial_balances?.[userId] || 10000.00,
               balance_configured: db.wallets_configured?.[userId] !== undefined ? db.wallets_configured[userId] : true,
@@ -59,7 +75,21 @@ export async function getActiveWallet(userId) {
         }
 
         if (useLocalFallback) {
-          wallets = db.wallets_multi?.filter(w => w.user_id === userId) || [];
+          const rawWallets = db.wallets_multi?.filter(w => w.user_id === userId) || [];
+          wallets = rawWallets.map(w => ({
+            ...w,
+            balance_configured: w.balance_configured ?? true,
+            account_name: w.nickname || w.account_name || 'Primary Demo',
+            nickname: w.nickname || w.account_name || 'Primary Demo',
+            account_type: w.account_type || 'standard',
+            leverage: parseInt(w.leverage || 100, 10),
+            currency: w.currency || 'USD',
+            execution_type: w.execution_type || 'Market',
+            platform: w.platform || 'MT5',
+            is_demo: w.is_demo !== undefined ? w.is_demo : true,
+            virtual_balance: parseFloat(w.virtual_balance || w.balance || 0),
+            initial_balance: parseFloat(w.initial_balance || w.starting_balance || 10000.00)
+          }));
         }
       } catch (e) {
         console.error('Error reading local db in active wallet resolution:', e);
@@ -67,16 +97,23 @@ export async function getActiveWallet(userId) {
     }
   }
 
-  // If still no wallets found (neither in Supabase nor in migrated local DB), create a default onboarding wallet
+  // If still no wallets found, create a default onboarding wallet
   if (wallets.length === 0) {
     const hash = userId.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
     const defaultAccNum = String(Math.abs(hash % 900000) + 100000);
     
     const newWallet = {
-      id: userId, // default wallet ID matches userId
+      id: userId,
       user_id: userId,
       account_number: defaultAccNum,
       account_name: 'Primary Demo',
+      nickname: 'Primary Demo',
+      account_type: 'standard',
+      leverage: 100,
+      currency: 'USD',
+      execution_type: 'Market',
+      platform: 'MT5',
+      is_demo: true,
       virtual_balance: 10000.00,
       initial_balance: 10000.00,
       balance_configured: true,
@@ -129,11 +166,18 @@ export async function getActiveWallet(userId) {
     return {
       ...w,
       account_number: w.account_number || defaultAccNum,
-      account_name: w.account_name || null
+      account_name: w.nickname || w.account_name || null,
+      nickname: w.nickname || w.account_name || null,
+      account_type: w.account_type || 'standard',
+      leverage: parseInt(w.leverage || 100, 10),
+      currency: w.currency || 'USD',
+      execution_type: w.execution_type || 'Market',
+      platform: w.platform || 'MT5',
+      is_demo: w.is_demo !== undefined ? w.is_demo : true
     };
   });
 
-  // Sort wallets so the primary one (id === userId or account_name === 'Primary Demo') is always first
+  // Sort wallets so the primary one (id === userId or account_name === 'Primary Demo') is first
   wallets.sort((a, b) => {
     const aIsPrimary = a.id === userId || a.account_name === 'Primary Demo';
     const bIsPrimary = b.id === userId || b.account_name === 'Primary Demo';
@@ -145,11 +189,9 @@ export async function getActiveWallet(userId) {
   // Find active wallet based on cookie
   let activeWallet = wallets.find(w => w.id === activeWalletId);
   if (!activeWallet) {
-    // If not found by ID, maybe check if cookie stored the account_number by accident
     activeWallet = wallets.find(w => w.account_number === activeWalletId);
   }
   if (!activeWallet) {
-    // Default to the first wallet
     activeWallet = wallets[0];
   }
 

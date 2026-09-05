@@ -468,6 +468,42 @@
       "initial_balance": 5000,
       "balance_configured": true,
       "updated_at": "2026-07-30T18:38:17.191Z"
+    },
+    {
+      "id": "w_dl14o5efj",
+      "user_id": "d6f2e105-ab15-4069-b654-e6ee47f43b32",
+      "account_number": "871477",
+      "account_name": null,
+      "nickname": null,
+      "virtual_balance": 500,
+      "currency": "USD",
+      "initial_balance": 500,
+      "balance_configured": true,
+      "account_type": "standard_cent",
+      "leverage": 200,
+      "execution_type": "Market",
+      "platform": "Webtrader",
+      "is_demo": false,
+      "account_setup_id": null,
+      "updated_at": "2026-09-04T16:57:19.646Z"
+    },
+    {
+      "id": "w_hmigl5pyi",
+      "user_id": "d6f2e105-ab15-4069-b654-e6ee47f43b32",
+      "account_number": "658181",
+      "account_name": "Testing new",
+      "nickname": "Testing new",
+      "virtual_balance": 1000,
+      "currency": "USD",
+      "initial_balance": 1000,
+      "balance_configured": true,
+      "account_type": "standard",
+      "leverage": 100,
+      "execution_type": "Market",
+      "platform": "MT5",
+      "is_demo": true,
+      "account_setup_id": null,
+      "updated_at": "2026-09-04T16:58:19.354Z"
     }
   ]
 }

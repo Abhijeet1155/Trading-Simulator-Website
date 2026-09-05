@@ -5,13 +5,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
   TrendingUp, ArrowLeft, Trophy, Calendar, Users, Target, DollarSign, 
-  ChevronRight, Award, Clock, CheckCircle2, AlertCircle, Play, Sparkles
+  ChevronRight, Award, Clock, CheckCircle2, AlertCircle, Play, Sparkles,
+  Crown, Lock
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
-export default function CompetitionsClientPage({ userId, userEmail, initialDisplayName }) {
+export default function CompetitionsClientPage({ userId, userEmail, initialDisplayName, initialPlanType = 'free' }) {
   const router = useRouter();
   const [displayName, setDisplayName] = useState(initialDisplayName);
+  const [planType, setPlanType] = useState(initialPlanType);
 
   // States
   const [competitions, setCompetitions] = useState([]);
@@ -226,6 +228,13 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
   // Trigger join confirmation modal
   const triggerJoinFlow = (comp) => {
+    if (comp.is_premium_only && planType !== 'premium') {
+      if (confirm("This is an exclusive Pro Competition. Upgrade to Pro to join! Would you like to view plans?")) {
+        router.push('/pricing');
+      }
+      return;
+    }
+
     if (!balanceConfigured) {
       alert("Please set your starting balance on the Dashboard before joining a competition");
       router.push('/dashboard');
@@ -417,12 +426,19 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                       <div className="relative z-10 flex-grow flex flex-col justify-between">
                         <div>
-                          <span className={`text-[10px] font-semibold  capitalize block mb-2 ${
-                            useMediaBackground ? 'text-blue-300' : 'text-[#2563EB]'
-                          }`}>
-                            Trading Tournament
-                          </span>
-                          <h2 className={`text-2xl md:text-3xl font-semibold  mb-2 ${
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`text-[10px] font-semibold capitalize ${
+                              useMediaBackground ? 'text-blue-300' : 'text-[#2563EB]'
+                            }`}>
+                              Trading Tournament
+                            </span>
+                            {comp.is_premium_only && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-wider">
+                                <Crown className="w-2.5 h-2.5" /> Pro Exclusive
+                              </span>
+                            )}
+                          </div>
+                          <h2 className={`text-2xl md:text-3xl font-semibold mb-2 ${
                             useMediaBackground ? 'text-white' : 'text-gray-900'
                           }`}>
                             {comp.title}
@@ -888,6 +904,17 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
         ) : (
           /* ----------------- COMPETITIONS LIST VIEW ----------------- */
           <div>
+            {/* Back Link */}
+            <div className="mb-6">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2563EB] transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Dashboard</span>
+              </Link>
+            </div>
+
             {/* Redesigned Hero Section */}
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12 mb-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col md:flex-row justify-between items-center gap-6 select-none">
               <div className="max-w-2xl text-center md:text-left">
@@ -1056,16 +1083,23 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent z-10" />
 
                           {/* Overlaid Title & Fee */}
-                          <div className="relative z-20 w-full flex justify-between items-end gap-3">
-                            <h3 className="font-semibold text-white text-sm  line-clamp-1">
-                              {comp.title}
-                            </h3>
+                          <div className="relative z-20 w-full flex justify-between items-end gap-2">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <h3 className="font-semibold text-white text-sm line-clamp-1">
+                                {comp.title}
+                              </h3>
+                              {comp.is_premium_only && (
+                                <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-amber-500 text-white uppercase tracking-wider shrink-0 flex items-center gap-0.5 shadow-xs">
+                                  <Crown className="w-2 h-2" /> Pro
+                                </span>
+                              )}
+                            </div>
                             {comp.entry_fee === 0 ? (
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9]/20 capitalize  flex-shrink-0">
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#E8F5E9] text-[#16A34A] border border-[#C8E6C9]/20 capitalize flex-shrink-0">
                                 Free
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-white/20 backdrop-blur-md text-white border border-white/20 capitalize  flex-shrink-0">
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-white/20 backdrop-blur-md text-white border border-white/20 capitalize flex-shrink-0">
                                 ${parseFloat(comp.entry_fee).toFixed(0)}
                               </span>
                             )}

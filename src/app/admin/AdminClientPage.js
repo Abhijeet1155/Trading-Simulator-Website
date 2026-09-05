@@ -64,7 +64,8 @@ export default function AdminClientPage({
     initial_equity: '10000',
     status: 'upcoming',
     banner_image_url: '',
-    banner_video_url: ''
+    banner_video_url: '',
+    is_premium_only: false
   });
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -264,7 +265,8 @@ export default function AdminClientPage({
       initial_equity: '10000',
       status: 'upcoming',
       banner_image_url: '',
-      banner_video_url: ''
+      banner_video_url: '',
+      is_premium_only: false
     });
     setSelectedFile(null);
     setFilePreview('');
@@ -296,7 +298,8 @@ export default function AdminClientPage({
       initial_equity: String(comp.initial_equity || 10000),
       status: comp.status || 'upcoming',
       banner_image_url: comp.banner_image_url || '',
-      banner_video_url: comp.banner_video_url || ''
+      banner_video_url: comp.banner_video_url || '',
+      is_premium_only: !!comp.is_premium_only
     });
     setSelectedFile(null);
     setFilePreview(comp.banner_image_url || '');
@@ -375,7 +378,8 @@ export default function AdminClientPage({
       initial_equity: parseFloat(formData.initial_equity || 10000),
       status: formData.status || 'upcoming',
       banner_image_url: finalImageUrl,
-      banner_video_url: formData.banner_video_url
+      banner_video_url: formData.banner_video_url,
+      is_premium_only: !!formData.is_premium_only
     };
 
     try {
@@ -1127,6 +1131,21 @@ export default function AdminClientPage({
                     className="w-full bg-[#172033] border border-[#27354F] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors font-mono"
                   />
                 </div>
+              </div>
+
+              {/* Premium Only Access Setting */}
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-[#172033] border border-[#27354F]">
+                <input
+                  type="checkbox"
+                  id="is_premium_only"
+                  checked={formData.is_premium_only || false}
+                  onChange={(e) => setFormData(prev => ({ ...prev, is_premium_only: e.target.checked }))}
+                  className="w-4 h-4 rounded text-[#2563EB] bg-[#0E1322] border-slate-600 focus:ring-0 cursor-pointer"
+                />
+                <label htmlFor="is_premium_only" className="text-xs font-semibold text-white flex items-center gap-1.5 cursor-pointer">
+                  <Award className="w-3.5 h-3.5 text-amber-500" />
+                  Premium / Pro Only (Restricts joining to users with Pro subscription)
+                </label>
               </div>
 
               {/* Media Settings (Banner Image / Video URL) */}

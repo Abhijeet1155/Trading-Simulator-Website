@@ -3,7 +3,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react';
+import { 
+  User, 
+  Settings, 
+  LogOut, 
+  ChevronDown, 
+  Trophy, 
+  Gamepad2, 
+  DollarSign, 
+  HelpCircle 
+} from 'lucide-react';
 
 export default function UserDropdown({ userName }) {
   const router = useRouter();
@@ -11,15 +20,24 @@ export default function UserDropdown({ userName }) {
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing ESC
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     }
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -39,6 +57,13 @@ export default function UserDropdown({ userName }) {
     }
   };
 
+  const navItems = [
+    { label: 'Leaderboard', href: '/leaderboard', icon: Trophy, iconColor: 'text-amber-500' },
+    { label: 'Competitions', href: '/competitions', icon: Gamepad2, iconColor: 'text-purple-500' },
+    { label: 'Pricing & Plans', href: '/pricing', icon: DollarSign, iconColor: 'text-emerald-500' },
+    { label: 'Support & Help', href: '/support', icon: HelpCircle, iconColor: 'text-blue-500' },
+  ];
+
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       {/* Trigger Button */}
@@ -54,27 +79,55 @@ export default function UserDropdown({ userName }) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border border-[#E5E7EB] rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] py-1.5 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
-          <Link
-            href="/settings"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-2.5 px-4 py-2 text-sm text-[#4B5563] hover:text-[#111111] hover:bg-[#F3F4F6] font-medium transition-all"
-          >
-            <Settings className="w-4 h-4 text-[#6B7280]" />
-            Settings
-          </Link>
+        <div className="absolute right-0 mt-2 w-56 bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_12px_30px_-5px_rgba(0,0,0,0.12),0_8px_10px_-6px_rgba(0,0,0,0.08)] py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+          {/* Main Navigation links */}
+          <div className="space-y-0.5 px-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-pointer"
+                >
+                  <Icon className={`w-4 h-4 ${item.iconColor} shrink-0`} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
 
-          <hr className="border-[#E5E7EB] my-1.5" />
+          {/* Divider before Settings */}
+          <hr className="border-gray-100 my-1.5 mx-2" />
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={loading}
-            className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 font-medium transition-all cursor-pointer text-left disabled:opacity-50"
-          >
-            <LogOut className="w-4 h-4 text-red-500 shrink-0" />
-            {loading ? 'Logging out...' : 'Log Out'}
-          </button>
+          {/* Settings link */}
+          <div className="px-1">
+            <Link
+              href="/settings"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-pointer"
+            >
+              <Settings className="w-4 h-4 text-gray-500 shrink-0" />
+              <span>Settings</span>
+            </Link>
+          </div>
+
+          {/* Divider before Log Out */}
+          <hr className="border-gray-100 my-1.5 mx-2" />
+
+          {/* Log Out link */}
+          <div className="px-1">
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loading}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-all cursor-pointer text-left disabled:opacity-50"
+            >
+              <LogOut className="w-4 h-4 text-red-500 shrink-0" />
+              <span>{loading ? 'Logging out...' : 'Log Out'}</span>
+            </button>
+          </div>
         </div>
       )}
     </div>

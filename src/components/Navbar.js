@@ -8,8 +8,12 @@ import {
   Menu, 
   X, 
   RotateCcw, 
-  Layers,
-  LayoutDashboard
+  Layers, 
+  LayoutDashboard, 
+  Globe, 
+  BookOpen, 
+  BarChart3,
+  PlayCircle
 } from 'lucide-react';
 import UserDropdown from '@/app/dashboard/UserDropdown';
 
@@ -40,12 +44,16 @@ export default function Navbar({ userName }) {
     };
   }, []);
 
-  // 1. TOP NAVIGATION: Dashboard | Trade | Accounts | History
+  // 1. TOP NAVIGATION: Dashboard | Trade | Replay | Accounts | History | Journal | Analytics | News
   const primaryNavLinks = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Trade', href: '/trade', icon: TrendingUp },
+    { label: 'Replay', href: '/replay', icon: PlayCircle },
     { label: 'Accounts', href: '/accounts', icon: Layers },
     { label: 'History', href: '/history', icon: RotateCcw },
+    { label: 'Journal', href: '/journal', icon: BookOpen },
+    { label: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { label: 'News', href: '/news', icon: Globe },
   ];
 
   return (

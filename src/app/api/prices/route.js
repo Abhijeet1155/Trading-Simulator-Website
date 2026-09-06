@@ -14,27 +14,17 @@ export async function GET() {
 
   try {
     const stockSymbols = ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'META'];
-    const coinGeckoIds = 'bitcoin,ethereum,solana,binancecoin,ripple,cardano,dogecoin,pax-gold';
-    const marketsUrl = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinGeckoIds}`;
-    const simpleUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinGeckoIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+    const binanceSymbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'PAXGUSDT'];
+    const binanceUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${encodeURIComponent(JSON.stringify(binanceSymbols))}`;
 
     const now = Date.now();
     const shouldFetchCrypto = !cryptoCache.data || (now - cryptoCache.timestamp > CRYPTO_CACHE_TTL_MS);
 
     const [cryptoRes, forexRes, stocksRes] = await Promise.allSettled([
       shouldFetchCrypto
-        ? fetch(marketsUrl, { headers: commonHeaders, cache: 'no-store' }).then(async r => {
-            if (r.ok) {
-              return { type: 'markets', data: await r.json() };
-            }
-            // Fallback to simple/price if markets fails (e.g. rate limited 429)
-            console.warn(`[CoinGecko Markets HTTP ${r.status}] Falling back to simple/price endpoint...`);
-            const sr = await fetch(simpleUrl, { headers: commonHeaders, cache: 'no-store' });
-            if (!sr.ok) {
-              const txt = await sr.text();
-              throw new Error(`CoinGecko Simple API error HTTP ${sr.status}: ${txt}`);
-            }
-            return { type: 'simple', data: await sr.json() };
+        ? fetch(binanceUrl, { headers: commonHeaders, cache: 'no-store' }).then(async r => {
+            if (!r.ok) throw new Error(`Binance 24hr API HTTP ${r.status}`);
+            return { type: 'binance', data: await r.json() };
           })
         : Promise.resolve(cryptoCache.data),
       fetch('https://open.er-api.com/v6/latest/USD', { headers: commonHeaders, cache: 'no-store' }).then(async r => {
@@ -58,15 +48,15 @@ export async function GET() {
     let isForexLive = false;
     let isStockLive = false;
 
-    // Default Crypto Data
+    // Default Crypto Data (Latest Market Fallbacks)
     const cryptoData = {
-      BTC: { price: 67240.50, change: 2.45, high: 68100.00, low: 65890.00, volume: '18.4K BTC' },
-      ETH: { price: 3482.15, change: -1.20, high: 3560.40, low: 3410.20, volume: '142K ETH' },
-      SOL: { price: 152.40, change: 3.12, high: 156.20, low: 148.50, volume: '840K SOL' },
-      BNB: { price: 585.20, change: 1.45, high: 592.10, low: 575.80, volume: '120K BNB' },
-      XRP: { price: 0.6250, change: -0.45, high: 0.6380, low: 0.6120, volume: '45M XRP' },
-      ADA: { price: 0.4450, change: -1.15, high: 0.4580, low: 0.4350, volume: '22M ADA' },
-      DOGE: { price: 0.1250, change: 4.85, high: 0.1320, low: 0.1180, volume: '180M DOGE' }
+      BTC: { price: 80055.00, change: 0.55, high: 80200.00, low: 79440.00, volume: '18.4K BTC' },
+      ETH: { price: 2512.00, change: 2.39, high: 2515.00, low: 2445.00, volume: '142K ETH' },
+      SOL: { price: 106.45, change: 4.41, high: 107.00, low: 101.60, volume: '840K SOL' },
+      BNB: { price: 765.20, change: 5.61, high: 780.00, low: 720.00, volume: '120K BNB' },
+      XRP: { price: 1.4290, change: 2.05, high: 1.4330, low: 1.3950, volume: '45M XRP' },
+      ADA: { price: 0.2230, change: 5.73, high: 0.2240, low: 0.2100, volume: '22M ADA' },
+      DOGE: { price: 0.0915, change: 8.11, high: 0.0950, low: 0.0845, volume: '180M DOGE' }
     };
 
     // Default Forex and Commodities Data
@@ -77,17 +67,17 @@ export async function GET() {
       'AUD/USD': { price: 0.6650, change: 0.05, high: 0.6690, low: 0.6610, volume: '44K Lots' },
       'USD/CAD': { price: 1.3720, change: 0.15, high: 1.3780, low: 1.3680, volume: '38K Lots' },
       'USD/CHF': { price: 0.9020, change: -0.10, high: 0.9065, low: 0.8980, volume: '31K Lots' },
-      'XAU/USD': { price: 2380.50, change: 0.79, high: 2405.00, low: 2368.00, volume: '38K Lots' }
+      'XAU/USD': { price: 4431.50, change: -0.07, high: 4435.00, low: 4427.00, volume: '38K Lots' }
     };
 
-    const coinGeckoMap = {
-      bitcoin: 'BTC',
-      ethereum: 'ETH',
-      solana: 'SOL',
-      binancecoin: 'BNB',
-      ripple: 'XRP',
-      cardano: 'ADA',
-      dogecoin: 'DOGE'
+    const binanceSymbolMap = {
+      'BTCUSDT': 'BTC',
+      'ETHUSDT': 'ETH',
+      'SOLUSDT': 'SOL',
+      'BNBUSDT': 'BNB',
+      'XRPUSDT': 'XRP',
+      'ADAUSDT': 'ADA',
+      'DOGEUSDT': 'DOGE'
     };
 
     let rawCrypto = null;
@@ -99,82 +89,45 @@ export async function GET() {
     } else if (cryptoCache.data) {
       rawCrypto = cryptoCache.data;
     } else {
-      console.error('[Prices API CoinGecko Error]:', cryptoRes.reason || cryptoRes.value);
+      console.error('[Prices API Binance Error]:', cryptoRes.reason || cryptoRes.value);
     }
 
-    if (rawCrypto && rawCrypto.data) {
+    if (rawCrypto && Array.isArray(rawCrypto.data)) {
       isCryptoLive = true;
-      if (rawCrypto.type === 'markets' && Array.isArray(rawCrypto.data)) {
-        rawCrypto.data.forEach(item => {
-          if (item.id === 'pax-gold') {
-            const paxgPrice = parseFloat(item.current_price);
-            if (paxgPrice) {
-              const coinUnits = item.total_volume ? item.total_volume / paxgPrice : 0;
-              forexData['XAU/USD'] = {
-                price: paxgPrice,
-                change: parseFloat((item.price_change_percentage_24h || 0).toFixed(2)) || forexData['XAU/USD'].change,
-                high: item.high_24h || forexData['XAU/USD'].high,
-                low: item.low_24h || forexData['XAU/USD'].low,
-                volume: coinUnits ? `${(coinUnits / 1000).toFixed(1)}K oz` : forexData['XAU/USD'].volume
-              };
-            }
-          } else {
-            const baseSymbol = coinGeckoMap[item.id];
-            if (baseSymbol && cryptoData[baseSymbol]) {
-              const coinUnits = (item.current_price && item.total_volume) ? item.total_volume / item.current_price : 0;
-              const volumeStr = coinUnits >= 1000000 
-                ? `${(coinUnits / 1000000).toFixed(1)}M ${baseSymbol}`
-                : `${(coinUnits / 1000).toFixed(1)}K ${baseSymbol}`;
+      rawCrypto.data.forEach(item => {
+        const lastPrice = parseFloat(item.lastPrice);
+        const change = parseFloat(parseFloat(item.priceChangePercent || 0).toFixed(2));
+        const high = parseFloat(item.highPrice);
+        const low = parseFloat(item.lowPrice);
+        const volumeUnits = parseFloat(item.volume);
 
-              cryptoData[baseSymbol] = {
-                price: parseFloat(item.current_price) || cryptoData[baseSymbol].price,
-                change: parseFloat((item.price_change_percentage_24h || 0).toFixed(2)) || cryptoData[baseSymbol].change,
-                high: item.high_24h || cryptoData[baseSymbol].high,
-                low: item.low_24h || cryptoData[baseSymbol].low,
-                volume: volumeStr
-              };
-            }
-          }
-        });
-      } else if (rawCrypto.type === 'simple' && typeof rawCrypto.data === 'object') {
-        const simpleData = rawCrypto.data;
-        if (simpleData['pax-gold']) {
-          const paxgPrice = parseFloat(simpleData['pax-gold'].usd);
-          if (paxgPrice) {
-            const vol = simpleData['pax-gold'].usd_24h_vol;
-            const coinUnits = vol ? vol / paxgPrice : 0;
-            const change = parseFloat((simpleData['pax-gold'].usd_24h_change || 0).toFixed(2));
+        if (item.symbol === 'PAXGUSDT') {
+          if (lastPrice) {
             forexData['XAU/USD'] = {
-              price: paxgPrice,
-              change: change || forexData['XAU/USD'].change,
-              high: parseFloat((paxgPrice * (1 + Math.abs(change / 100) * 0.5)).toFixed(2)),
-              low: parseFloat((paxgPrice * (1 - Math.abs(change / 100) * 0.5)).toFixed(2)),
-              volume: coinUnits ? `${(coinUnits / 1000).toFixed(1)}K oz` : forexData['XAU/USD'].volume
+              price: lastPrice,
+              change: change,
+              high: high || forexData['XAU/USD'].high,
+              low: low || forexData['XAU/USD'].low,
+              volume: volumeUnits ? `${(volumeUnits / 1000).toFixed(1)}K oz` : forexData['XAU/USD'].volume
+            };
+          }
+        } else {
+          const baseSymbol = binanceSymbolMap[item.symbol];
+          if (baseSymbol && cryptoData[baseSymbol] && lastPrice) {
+            const volumeStr = volumeUnits >= 1000000 
+              ? `${(volumeUnits / 1000000).toFixed(1)}M ${baseSymbol}`
+              : `${(volumeUnits / 1000).toFixed(1)}K ${baseSymbol}`;
+
+            cryptoData[baseSymbol] = {
+              price: lastPrice,
+              change: change,
+              high: high || cryptoData[baseSymbol].high,
+              low: low || cryptoData[baseSymbol].low,
+              volume: volumeStr || cryptoData[baseSymbol].volume
             };
           }
         }
-
-        Object.keys(coinGeckoMap).forEach(id => {
-          const baseSymbol = coinGeckoMap[id];
-          if (simpleData[id] && cryptoData[baseSymbol]) {
-            const price = parseFloat(simpleData[id].usd);
-            const change = parseFloat((simpleData[id].usd_24h_change || 0).toFixed(2));
-            const vol = simpleData[id].usd_24h_vol;
-            const coinUnits = (price && vol) ? vol / price : 0;
-            const volumeStr = coinUnits >= 1000000 
-              ? `${(coinUnits / 1000000).toFixed(1)}M ${baseSymbol}`
-              : `${(coinUnits / 1000).toFixed(1)}K ${baseSymbol}`;
-
-            cryptoData[baseSymbol] = {
-              price: price || cryptoData[baseSymbol].price,
-              change: change || cryptoData[baseSymbol].change,
-              high: parseFloat((price * (1 + Math.abs(change / 100) * 0.5)).toFixed(2)),
-              low: parseFloat((price * (1 - Math.abs(change / 100) * 0.5)).toFixed(2)),
-              volume: volumeStr
-            };
-          }
-        });
-      }
+      });
     }
 
     // 2. Parse Forex and Commodities

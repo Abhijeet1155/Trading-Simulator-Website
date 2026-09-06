@@ -85,11 +85,11 @@ const ASSETS = {
     symbol: 'BTC',
     pair: 'BTC/USDT',
     name: 'Bitcoin',
-    price: 67240.50,
-    high24h: 68100.00,
-    low24h: 65890.00,
+    price: 80100.00,
+    high24h: 80200.00,
+    low24h: 79440.00,
     volume24h: '18.4K BTC',
-    change24h: '+2.45%',
+    change24h: '+0.60%',
     type: 'Crypto',
     unit: 'BTC',
     iconColor: 'text-[#F0B90B] bg-[#F0B90B]/10'
@@ -98,11 +98,11 @@ const ASSETS = {
     symbol: 'ETH',
     pair: 'ETH/USDT',
     name: 'Ethereum',
-    price: 3482.15,
-    high24h: 3560.40,
-    low24h: 3410.20,
+    price: 2512.00,
+    high24h: 2515.00,
+    low24h: 2445.00,
     volume24h: '142K ETH',
-    change24h: '-1.20%',
+    change24h: '+2.40%',
     type: 'Crypto',
     unit: 'ETH',
     iconColor: 'text-[#627EEA] bg-[#627EEA]/10'
@@ -111,11 +111,11 @@ const ASSETS = {
     symbol: 'SOL',
     pair: 'SOL/USDT',
     name: 'Solana',
-    price: 152.40,
-    high24h: 156.20,
-    low24h: 148.50,
+    price: 106.50,
+    high24h: 107.00,
+    low24h: 101.60,
     volume24h: '840K SOL',
-    change24h: '+3.12%',
+    change24h: '+4.50%',
     type: 'Crypto',
     unit: 'SOL',
     iconColor: 'text-[#00FFA3] bg-[#00FFA3]/10'
@@ -124,11 +124,11 @@ const ASSETS = {
     symbol: 'BNB',
     pair: 'BNB/USDT',
     name: 'BNB',
-    price: 585.20,
-    high24h: 592.10,
-    low24h: 575.80,
+    price: 765.00,
+    high24h: 780.00,
+    low24h: 720.00,
     volume24h: '120K BNB',
-    change24h: '+1.45%',
+    change24h: '+5.60%',
     type: 'Crypto',
     unit: 'BNB',
     iconColor: 'text-[#F3BA2F] bg-[#F3BA2F]/10'
@@ -137,11 +137,11 @@ const ASSETS = {
     symbol: 'XRP',
     pair: 'XRP/USDT',
     name: 'Ripple',
-    price: 0.6250,
-    high24h: 0.6380,
-    low24h: 0.6120,
+    price: 1.4290,
+    high24h: 1.4330,
+    low24h: 1.3950,
     volume24h: '45M XRP',
-    change24h: '-0.45%',
+    change24h: '+2.05%',
     type: 'Crypto',
     unit: 'XRP',
     iconColor: 'text-[#23292F] bg-[#23292F]/10'
@@ -150,11 +150,11 @@ const ASSETS = {
     symbol: 'ADA',
     pair: 'ADA/USDT',
     name: 'Cardano',
-    price: 0.4450,
-    high24h: 0.4580,
-    low24h: 0.4350,
+    price: 0.2230,
+    high24h: 0.2240,
+    low24h: 0.2100,
     volume24h: '22M ADA',
-    change24h: '-1.15%',
+    change24h: '+5.70%',
     type: 'Crypto',
     unit: 'ADA',
     iconColor: 'text-[#0033AD] bg-[#0033AD]/10'
@@ -163,11 +163,11 @@ const ASSETS = {
     symbol: 'DOGE',
     pair: 'DOGE/USDT',
     name: 'Dogecoin',
-    price: 0.1250,
-    high24h: 0.1320,
-    low24h: 0.1180,
+    price: 0.0915,
+    high24h: 0.0950,
+    low24h: 0.0845,
     volume24h: '180M DOGE',
-    change24h: '+4.85%',
+    change24h: '+8.10%',
     type: 'Crypto',
     unit: 'DOGE',
     iconColor: 'text-[#C2A633] bg-[#C2A633]/10'
@@ -526,7 +526,6 @@ export default function TradeClientPage({
   const candleSeriesRef = useRef(null);
   const volSeriesRef = useRef(null);
   const lastBarRef = useRef(null);
-  const priceLinesRef = useRef([]);
 
   const asset = ASSETS[selectedAsset];
   const isForex = FOREX_SYMBOLS.includes(selectedAsset);
@@ -2443,45 +2442,6 @@ export default function TradeClientPage({
       });
     }
   }, [livePrice, chartType]);
-
-  // Sync open positions as horizontal price lines on the chart
-  useEffect(() => {
-    if (!candleSeriesRef.current) return;
-
-    // 1. Remove all old price lines
-    if (priceLinesRef.current.length > 0) {
-      priceLinesRef.current.forEach(line => {
-        try {
-          candleSeriesRef.current.removePriceLine(line);
-        } catch (err) {
-          // ignore
-        }
-      });
-      priceLinesRef.current = [];
-    }
-
-    // 2. Add price line for each active position matching selectedAsset
-    const activePositionsForAsset = positions.filter(
-      pos => pos.symbol === selectedAsset && pos.status !== 'closed'
-    );
-
-    activePositionsForAsset.forEach(pos => {
-      try {
-        const isBuy = pos.side?.toLowerCase() === 'buy';
-        const line = candleSeriesRef.current.createPriceLine({
-          price: pos.entry,
-          color: isBuy ? '#089981' : '#f23645',
-          lineWidth: 1.5,
-          lineStyle: 2, // Dashed
-          axisLabelVisible: true,
-          title: `${pos.side?.toUpperCase()} ${pos.size?.toFixed(2)} Lots`,
-        });
-        priceLinesRef.current.push(line);
-      } catch (err) {
-        console.error('Failed to create price line:', err);
-      }
-    });
-  }, [positions, selectedAsset]);
 
   console.log("Button reading asset:", selectedAsset);
 

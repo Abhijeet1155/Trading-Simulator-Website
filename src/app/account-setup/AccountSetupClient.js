@@ -25,7 +25,14 @@ import {
   DollarSign,
   Monitor,
   RefreshCw,
-  X
+  X,
+  Key,
+  Server,
+  Copy,
+  Eye,
+  EyeOff,
+  Smartphone,
+  Laptop
 } from 'lucide-react';
 import { 
   DEFAULT_ACCOUNT_TYPES, 
@@ -71,6 +78,18 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successModal, setSuccessModal] = useState(null);
+
+  // MT4/MT5 Bridge Modal State
+  const [mtBridgeModal, setMtBridgeModal] = useState(null);
+  const [mtBridgeData, setMtBridgeData] = useState(null);
+  const [mtBridgeLoading, setMtBridgeLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedKey, setCopiedKey] = useState('');
+  const [customMtPassword, setCustomMtPassword] = useState('');
+  const [isUpdatingMtPassword, setIsUpdatingMtPassword] = useState(false);
+  const [mtPasswordSuccess, setMtPasswordSuccess] = useState('');
+  const [testLoginStatus, setTestLoginStatus] = useState(null);
+  const [isTestingLogin, setIsTestingLogin] = useState(false);
 
   // Rename modal state
   const [renamingAccount, setRenamingAccount] = useState(null);
@@ -224,6 +243,109 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
     }
   };
 
+  // Open MT4/MT5 Bridge Connection Modal
+  const openMtBridgeModal = async (account) => {
+    setMtBridgeModal(account);
+    setMtBridgeLoading(true);
+    setMtBridgeData(null);
+    setTestLoginStatus(null);
+    setMtPasswordSuccess('');
+    setCustomMtPassword('');
+    setShowPassword(false);
+
+    try {
+      const res = await fetch(`/api/mt-bridge?accountNumber=${account.accountNumber}&walletId=${account.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setMtBridgeData(data);
+      }
+    } catch (e) {
+      console.error('Failed to load MT Bridge credentials:', e);
+    } finally {
+      setMtBridgeLoading(false);
+    }
+  };
+
+  // Copy to clipboard helper
+  const copyToClipboard = (text, key) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(''), 2500);
+    }
+  };
+
+  // Update MT4/MT5 Password
+  const handleUpdateMtPassword = async (e) => {
+    e.preventDefault();
+    if (!customMtPassword || customMtPassword.length < 6) {
+      alert('Password must be at least 6 characters long.');
+      return;
+    }
+    setIsUpdatingMtPassword(true);
+    setMtPasswordSuccess('');
+
+    try {
+      const res = await fetch('/api/mt-bridge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_password',
+          login: mtBridgeModal.accountNumber,
+          newPassword: customMtPassword
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setMtPasswordSuccess('Master Password updated! Use this to login in MT4/MT5.');
+        setMtBridgeData(prev => prev ? {
+          ...prev,
+          credentials: {
+            ...prev.credentials,
+            masterPassword: customMtPassword
+          }
+        } : null);
+        setCustomMtPassword('');
+      } else {
+        alert(data.error || 'Failed to update password');
+      }
+    } catch (err) {
+      alert('Network error while updating MT password');
+    } finally {
+      setIsUpdatingMtPassword(false);
+    }
+  };
+
+  // Test MT4/MT5 Bridge Connection
+  const handleTestMtLogin = async () => {
+    if (!mtBridgeData?.credentials) return;
+    setIsTestingLogin(true);
+    setTestLoginStatus(null);
+
+    try {
+      const res = await fetch('/api/mt-bridge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify_login',
+          login: mtBridgeData.credentials.login,
+          password: mtBridgeData.credentials.masterPassword,
+          server: mtBridgeData.credentials.server
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTestLoginStatus({ success: true, message: `Connected to ${mtBridgeData.credentials.server}! Balance: $${data.account.balance.toLocaleString()} ${data.account.currency}` });
+      } else {
+        setTestLoginStatus({ success: false, message: data.error || 'Authentication check failed.' });
+      }
+    } catch (e) {
+      setTestLoginStatus({ success: false, message: 'Could not reach server bridge.' });
+    } finally {
+      setIsTestingLogin(false);
+    }
+  };
+
   // Handle Form Submission
   const handleCreateAccount = async (e) => {
     e.preventDefault();
@@ -322,6 +444,14 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 </span>
               </div>
             </div>
+
+            <Link
+              href="/broker-sync"
+              className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-all shadow-2xs active:scale-95 cursor-pointer"
+            >
+              <Server className="w-3.5 h-3.5 text-cyan-600" />
+              <span>Broker Sync (MT5)</span>
+            </Link>
 
             <Link
               href="/trade"
@@ -520,25 +650,37 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                       </div>
 
                       {/* Bottom Action Strip */}
-                      <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center justify-between pt-1 gap-2 flex-wrap">
                         <div className="text-[10px] text-gray-500 font-mono">
                           Currency: <span className="text-gray-800 font-semibold">{acc.currency || 'USD'}</span> · {acc.executionType || 'Market'}
                         </div>
 
-                        <Link
-                          href="/trade"
-                          onClick={() => {
-                            if (!isCurrent) handleSwitchAccount(acc.id);
-                          }}
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                            isCurrent
-                              ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
-                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                          }`}
-                        >
-                          <span>Trade</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => openMtBridgeModal(acc)}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-all cursor-pointer shadow-2xs"
+                            title="Connect to MetaTrader 4 / MetaTrader 5"
+                          >
+                            <Server className="w-3 h-3 text-emerald-600" />
+                            <span>MT4/MT5 Link</span>
+                          </button>
+
+                          <Link
+                            href="/trade"
+                            onClick={() => {
+                              if (!isCurrent) handleSwitchAccount(acc.id);
+                            }}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                              isCurrent
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
+                                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                            }`}
+                          >
+                            <span>Trade</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   );
@@ -1040,6 +1182,256 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* MT4 / MT5 BRIDGE CONNECTION & DATA SYNC MODAL                          */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {mtBridgeModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 my-8">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+                  <Server className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                    <span>MetaTrader 4 / 5 Bridge</span>
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">
+                      Live Sync
+                    </span>
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Account #{mtBridgeModal.accountNumber} ({mtBridgeModal.nickname || 'Demo'})
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setMtBridgeModal(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {mtBridgeLoading ? (
+              <div className="py-12 text-center text-xs font-semibold text-gray-500 space-y-2">
+                <RefreshCw className="w-6 h-6 animate-spin text-emerald-600 mx-auto" />
+                <p>Generating secure MT4/MT5 bridge handshake...</p>
+              </div>
+            ) : mtBridgeData ? (
+              <div className="space-y-5 text-xs">
+                
+                {/* Protocol Info Banner */}
+                <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-3.5 flex items-start gap-3">
+                  <Zap className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="font-bold text-emerald-900 text-xs">Multi-Platform Real-Time Sync</div>
+                    <div className="text-[11px] text-emerald-700 leading-relaxed">
+                      Enter these credentials in your <strong>MT4 or MT5 mobile / desktop app</strong>. Trades placed in MetaTrader will immediately reflect on the website dashboard and balance in real-time.
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connection Credentials Card */}
+                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 space-y-3 font-mono">
+                  
+                  {/* Server */}
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <span className="text-gray-500 text-[11px]">Broker / Server:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-gray-900">{mtBridgeData.credentials.server}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(mtBridgeData.credentials.server, 'server')}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title="Copy Server"
+                      >
+                        {copiedKey === 'server' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Server Host */}
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <span className="text-gray-500 text-[11px]">Server Address / Host:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-gray-900">{mtBridgeData.credentials.serverHost}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(mtBridgeData.credentials.serverHost, 'host')}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title="Copy Host"
+                      >
+                        {copiedKey === 'host' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Account / Login ID */}
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <span className="text-gray-500 text-[11px]">Login / Account ID:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-blue-600 text-sm">{mtBridgeData.credentials.login}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(mtBridgeData.credentials.login, 'login')}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title="Copy Login"
+                      >
+                        {copiedKey === 'login' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Master Password */}
+                  <div className="flex items-center justify-between py-1 border-b border-gray-200/60">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-500 text-[11px]">Master Password:</span>
+                      <span className="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.2 rounded font-sans font-semibold">Trade Access</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-gray-900 font-mono tracking-wider">
+                        {showPassword ? mtBridgeData.credentials.masterPassword : '••••••••••••'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title={showPassword ? 'Hide Password' : 'Show Password'}
+                      >
+                        {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(mtBridgeData.credentials.masterPassword, 'master')}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title="Copy Password"
+                      >
+                        {copiedKey === 'master' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Investor Password */}
+                  <div className="flex items-center justify-between py-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-500 text-[11px]">Investor Password:</span>
+                      <span className="text-[9px] bg-gray-200 text-gray-700 px-1.5 py-0.2 rounded font-sans font-semibold">Read Only</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-gray-600 font-mono">{mtBridgeData.credentials.investorPassword}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(mtBridgeData.credentials.investorPassword, 'investor')}
+                        className="p-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900"
+                        title="Copy Investor Password"
+                      >
+                        {copiedKey === 'investor' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Real-time Synchronized Metrics Preview */}
+                <div className="grid grid-cols-3 gap-2 bg-gray-50 p-3 rounded-2xl border border-gray-200 font-mono text-center">
+                  <div>
+                    <span className="text-[9.5px] uppercase text-gray-400 font-semibold block">Balance</span>
+                    <span className="font-bold text-gray-900 text-xs">${mtBridgeData.metrics.balance.toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9.5px] uppercase text-gray-400 font-semibold block">Equity</span>
+                    <span className="font-bold text-emerald-600 text-xs">${mtBridgeData.metrics.equity.toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9.5px] uppercase text-gray-400 font-semibold block">Margin Level</span>
+                    <span className="font-bold text-blue-600 text-xs">{mtBridgeData.metrics.marginLevel}</span>
+                  </div>
+                </div>
+
+                {/* Connection Tester */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-gray-700 text-xs">Bridge Status & Verification</span>
+                    <button
+                      type="button"
+                      onClick={handleTestMtLogin}
+                      disabled={isTestingLogin}
+                      className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${isTestingLogin ? 'animate-spin text-emerald-600' : ''}`} />
+                      <span>{isTestingLogin ? 'Testing...' : 'Test MT4/5 Connection'}</span>
+                    </button>
+                  </div>
+
+                  {testLoginStatus && (
+                    <div className={`p-3 rounded-xl border text-xs font-semibold flex items-center gap-2 animate-in fade-in ${
+                      testLoginStatus.success ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-700'
+                    }`}>
+                      {testLoginStatus.success ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />}
+                      <span>{testLoginStatus.message}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Change MT Master Password */}
+                <form onSubmit={handleUpdateMtPassword} className="pt-2 border-t border-gray-100 space-y-2">
+                  <span className="block font-bold text-gray-700 text-xs">Set Custom MT Master Password</span>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="New MT4/MT5 Password (min 6 chars)"
+                      value={customMtPassword}
+                      onChange={(e) => setCustomMtPassword(e.target.value)}
+                      className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-mono font-semibold focus:outline-none focus:border-blue-600"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isUpdatingMtPassword || !customMtPassword}
+                      className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-xs transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {isUpdatingMtPassword ? 'Updating...' : 'Update'}
+                    </button>
+                  </div>
+                  {mtPasswordSuccess && (
+                    <div className="text-emerald-600 font-semibold text-[11px] flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{mtPasswordSuccess}</span>
+                    </div>
+                  )}
+                </form>
+
+              </div>
+            ) : (
+              <div className="py-6 text-center text-xs text-red-500">
+                Failed to load MT credentials. Please try again.
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => setMtBridgeModal(null)}
+                className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+              <Link
+                href="/trade"
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Web Trading Terminal</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
           </div>
         </div>
       )}

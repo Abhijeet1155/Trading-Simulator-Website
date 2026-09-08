@@ -11,6 +11,7 @@ import {
   IndicatorSettings 
 } from '../../types/indicators';
 import { Scissors, TrendingUp, TrendingDown, Target, ShieldAlert, Zap } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 interface ReplayChartCanvasProps {
   candles: CandleData[];
@@ -43,6 +44,9 @@ export default function ReplayChartCanvas({
   emas = [],
   indicatorSettings
 }: ReplayChartCanvasProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -88,8 +92,8 @@ export default function ReplayChartCanvas({
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    // 1. Clear background (Clean Institutional White)
-    ctx.fillStyle = '#ffffff';
+    // 1. Clear background
+    ctx.fillStyle = isDark ? '#121212' : '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
     if (visibleCandles.length === 0) {
@@ -174,9 +178,9 @@ export default function ReplayChartCanvas({
     // 2. Draw Horizontal Grid Lines & Price Labels
     const gridStepCount = 7;
     const priceStep = paddedPriceRange / gridStepCount;
-    ctx.strokeStyle = '#f1f5f9';
+    ctx.strokeStyle = isDark ? '#1e293b' : '#f1f5f9';
     ctx.lineWidth = 1;
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
     ctx.font = '10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -205,13 +209,13 @@ export default function ReplayChartCanvas({
       if (actualIdx % timeStep === 0) {
         const x = getX(actualIdx);
         ctx.beginPath();
-        ctx.strokeStyle = '#f1f5f9';
+        ctx.strokeStyle = isDark ? '#1e293b' : '#f1f5f9';
         ctx.moveTo(x, 0);
         ctx.lineTo(x, chartHeight);
         ctx.stroke();
 
         // Bottom Time Scale Label
-        ctx.fillStyle = '#64748b';
+        ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
         ctx.fillText(bar.time, x, chartHeight + 8);
       }
     });
@@ -567,7 +571,7 @@ export default function ReplayChartCanvas({
         }
       } else {
         // Standard Trading Crosshair
-        ctx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
+        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(15, 23, 42, 0.15)';
         ctx.lineWidth = 1;
         ctx.setLineDash([3, 3]);
 
@@ -586,7 +590,7 @@ export default function ReplayChartCanvas({
 
         // Crosshair Price Badge
         const hoveredPrice = getPrice(mousePos.y);
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = isDark ? '#262626' : '#0f172a';
         ctx.fillRect(chartWidth, mousePos.y - 10, priceScaleWidth, 20);
         ctx.fillStyle = '#ffffff';
         ctx.font = '10px monospace';
@@ -597,7 +601,7 @@ export default function ReplayChartCanvas({
     }
 
     // 14. Outer Border Lines
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = isDark ? '#262626' : '#e2e8f0';
     ctx.strokeRect(0, 0, chartWidth, chartHeight);
     ctx.strokeRect(chartWidth, 0, priceScaleWidth, chartHeight);
     ctx.strokeRect(0, chartHeight, width, timeScaleHeight);
@@ -618,7 +622,8 @@ export default function ReplayChartCanvas({
     liquidityLevels,
     killzones,
     emas,
-    indicatorSettings
+    indicatorSettings,
+    isDark
   ]);
 
   // Trigger re-render on dependency change
@@ -709,7 +714,7 @@ export default function ReplayChartCanvas({
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full h-full select-none bg-white overflow-hidden ${
+      className={`relative w-full h-full select-none bg-white dark:bg-[#121212] overflow-hidden ${
         isScissorsActive ? 'cursor-crosshair' : isDragging ? 'cursor-grabbing' : 'cursor-crosshair'
       }`}
       onWheel={handleWheel}
@@ -721,28 +726,28 @@ export default function ReplayChartCanvas({
     >
       {/* Top Bar OHLCV Live HUD */}
       {activeBarInfo && (
-        <div className="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-gray-200 text-[11px] font-mono shadow-xs">
-          <div className="flex items-center gap-1.5 font-bold text-gray-900">
-            <span className="text-[#2563EB]">{symbol}</span>
-            <span className="text-gray-300">•</span>
-            <span className="text-amber-600">{timeframe}</span>
+        <div className="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-3 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-gray-200 dark:border-neutral-800 text-[11px] font-mono shadow-xs">
+          <div className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">
+            <span className="text-[#2563EB] dark:text-blue-400">{symbol}</span>
+            <span className="text-gray-300 dark:text-neutral-700">•</span>
+            <span className="text-amber-600 dark:text-amber-400">{timeframe}</span>
           </div>
 
           <div className="hidden sm:flex items-center gap-3">
-            <div><span className="text-gray-400">O:</span> <span className="text-gray-700 font-semibold">{activeBarInfo.open.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400">H:</span> <span className="text-emerald-600 font-semibold">{activeBarInfo.high.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400">L:</span> <span className="text-rose-600 font-semibold">{activeBarInfo.low.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400">C:</span> <span className={activeBarInfo.close >= activeBarInfo.open ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}>{activeBarInfo.close.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400">Vol:</span> <span className="text-gray-600">{activeBarInfo.volume.toLocaleString()}</span></div>
+            <div><span className="text-gray-400 dark:text-neutral-500">O:</span> <span className="text-gray-700 dark:text-neutral-300 font-semibold">{activeBarInfo.open.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
+            <div><span className="text-gray-400 dark:text-neutral-500">H:</span> <span className="text-emerald-600 font-semibold">{activeBarInfo.high.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
+            <div><span className="text-gray-400 dark:text-neutral-500">L:</span> <span className="text-rose-600 font-semibold">{activeBarInfo.low.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
+            <div><span className="text-gray-400 dark:text-neutral-500">C:</span> <span className={activeBarInfo.close >= activeBarInfo.open ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}>{activeBarInfo.close.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
+            <div><span className="text-gray-400 dark:text-neutral-500">Vol:</span> <span className="text-gray-600 dark:text-neutral-400">{activeBarInfo.volume.toLocaleString()}</span></div>
           </div>
 
           {activeBarInfo.session && (
             <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold uppercase ${
               activeBarInfo.session === 'london' 
-                ? 'bg-blue-50 text-blue-700 border border-blue-200' 
+                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40' 
                 : activeBarInfo.session === 'ny'
-                ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                : 'bg-gray-100 text-gray-600'
+                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40'
+                : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-neutral-400'
             }`}>
               {activeBarInfo.session} session
             </span>
@@ -750,13 +755,13 @@ export default function ReplayChartCanvas({
 
           {/* Active EMA HUD Indicator */}
           {emas.length > 0 && (
-            <div className="hidden md:flex items-center gap-2 border-l border-gray-200 pl-2">
+            <div className="hidden md:flex items-center gap-2 border-l border-gray-200 dark:border-neutral-800 pl-2">
               {emas.map((ema) => {
                 const currentVal = ema.values[visibleCandles.length - 1];
                 return (
                   <div key={ema.period} className="flex items-center gap-1 text-[10px]">
                     <span style={{ color: ema.color }} className="font-bold">EMA{ema.period}:</span>
-                    <span className="text-gray-700 font-semibold">{currentVal !== null ? currentVal.toFixed(symbol === 'EURUSD' ? 5 : 2) : '—'}</span>
+                    <span className="text-gray-700 dark:text-neutral-300 font-semibold">{currentVal !== null ? currentVal.toFixed(symbol === 'EURUSD' ? 5 : 2) : '—'}</span>
                   </div>
                 );
               })}

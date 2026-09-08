@@ -46,6 +46,8 @@ export default async function SettingsPage() {
   const initialConfiguredBalance = parseFloat(activeWallet.initial_balance || 10000.00);
   const accountNumber = activeWallet.account_number;
 
+  const themePreference = dbUser?.theme_preference || user.user_metadata?.theme_preference || 'light';
+
   return (
     <SettingsClientPage 
       userId={user.id}
@@ -58,6 +60,7 @@ export default async function SettingsPage() {
       accountNumber={accountNumber}
       accountName={activeWallet.account_name}
       initialWallets={wallets}
+      initialThemePreference={themePreference}
     />
   );
 }

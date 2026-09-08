@@ -65,25 +65,25 @@ export default function IndicatorManagerModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in select-none">
-      <div className="bg-white border border-gray-200 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden font-sans text-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in select-none">
+      <div className="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#2A2A2A] rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden font-sans text-gray-900 dark:text-neutral-100">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/80">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-neutral-800 bg-gray-50/80 dark:bg-neutral-900/80">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900/50 flex items-center justify-center text-[#2563EB] dark:text-blue-400">
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-gray-900">Institutional Indicators Suite</h3>
-              <p className="text-[11px] text-gray-500">Configure ICT / SMC algorithmic overlays & dynamic technical models</p>
+              <h3 className="font-bold text-sm text-gray-900 dark:text-white">Institutional Indicators Suite</h3>
+              <p className="text-[11px] text-gray-500 dark:text-neutral-400">Configure ICT / SMC algorithmic overlays & dynamic technical models</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white border border-gray-200 text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -93,7 +93,7 @@ export default function IndicatorManagerModal({
         <div className="flex-1 flex overflow-hidden">
           
           {/* Left Navigation Sidebar */}
-          <div className="w-56 border-r border-gray-200 bg-gray-50/50 p-2.5 space-y-1 overflow-y-auto">
+          <div className="w-56 border-r border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/40 p-2.5 space-y-1 overflow-y-auto">
             
             {/* Tab 1: FVG */}
             <button
@@ -101,12 +101,12 @@ export default function IndicatorManagerModal({
               onClick={() => setActiveTab('fvg')}
               className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 activeTab === 'fvg'
-                  ? 'bg-blue-50 text-[#2563EB] border border-blue-200 shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/70'
+                  ? 'bg-blue-50 dark:bg-blue-950/60 text-[#2563EB] dark:text-blue-400 border border-blue-200 dark:border-blue-900/50 shadow-xs'
+                  : 'text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/70 dark:hover:bg-neutral-800/60'
               }`}
             >
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${localSettings.fvg.enabled ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                <span className={`w-2 h-2 rounded-full ${localSettings.fvg.enabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-neutral-600'}`} />
                 <span>ICT Fair Value Gaps</span>
               </div>
               <ChevronRight className="w-3.5 h-3.5 opacity-60" />
@@ -585,11 +585,11 @@ export default function IndicatorManagerModal({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+        <div className="px-6 py-3.5 border-t border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-900/80 flex items-center justify-between">
           <button
             type="button"
             onClick={handleReset}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-xs font-medium"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors cursor-pointer text-xs font-medium"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Defaults</span>
@@ -599,7 +599,7 @@ export default function IndicatorManagerModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-1.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-100 text-gray-700 transition-colors cursor-pointer text-xs font-semibold"
+              className="px-4 py-1.5 rounded-xl bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 hover:bg-gray-100 dark:hover:bg-neutral-700 text-gray-700 dark:text-neutral-300 transition-colors cursor-pointer text-xs font-semibold"
             >
               Cancel
             </button>

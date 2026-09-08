@@ -275,20 +275,20 @@ export default function NewTradeModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
       <div 
-        className="bg-white border border-gray-200 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden my-auto"
+        className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:px-6 py-3.5 border-b border-gray-200 flex items-center justify-between bg-gray-50/80 shrink-0">
+        <div className="p-4 sm:px-6 py-3.5 border-b border-gray-200 dark:border-neutral-800 flex items-center justify-between bg-gray-50/80 dark:bg-[#151515] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#2563EB]">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center justify-center text-[#2563EB] dark:text-blue-400">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900 tracking-tight">
+              <h2 className="text-base font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
                 {initialTrade ? 'Edit Trade Log' : 'Record New Trade'}
               </h2>
-              <p className="text-[11px] text-gray-500">
+              <p className="text-[11px] text-gray-500 dark:text-neutral-400">
                 Capture execution data, partials, SMC confluences, and psychological review.
               </p>
             </div>
@@ -297,20 +297,20 @@ export default function NewTradeModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-200/60 rounded-xl transition-colors cursor-pointer"
+            className="p-1.5 text-gray-400 dark:text-neutral-500 hover:text-gray-700 dark:hover:text-neutral-200 hover:bg-gray-200/60 dark:hover:bg-neutral-800 rounded-xl transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body / Scrollable Form */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto p-4 sm:p-6 space-y-6 flex-1 text-xs text-gray-700">
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-4 sm:p-6 space-y-6 flex-1 text-xs text-gray-700 dark:text-neutral-300">
           
           {/* SECTION 1: Asset & Direction Selector */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-50/80 p-4 rounded-xl border border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800">
             {/* Symbol */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
                 Asset / Symbol
               </label>
               <select
@@ -321,7 +321,7 @@ export default function NewTradeModal({
                   const matched = POPULAR_SYMBOLS.find(s => s.symbol === val);
                   if (matched) setAssetClass(matched.assetClass);
                 }}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
               >
                 {POPULAR_SYMBOLS.map((s) => (
                   <option key={s.symbol} value={s.symbol}>
@@ -337,24 +337,24 @@ export default function NewTradeModal({
                   placeholder="e.g. SOLUSD"
                   value={customSymbol}
                   onChange={(e) => setCustomSymbol(e.target.value)}
-                  className="mt-2 w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-gray-900 font-mono uppercase focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="mt-2 w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-1.5 text-gray-900 dark:text-neutral-100 font-mono uppercase focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               )}
             </div>
 
             {/* Direction (Long / Short) */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
                 Direction
               </label>
-              <div className="grid grid-cols-2 gap-1.5 bg-white p-1 rounded-xl border border-gray-200 shadow-2xs">
+              <div className="grid grid-cols-2 gap-1.5 bg-white dark:bg-[#181818] p-1 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
                 <button
                   type="button"
                   onClick={() => setDirection('LONG')}
                   className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg font-bold font-mono text-xs transition-all cursor-pointer ${
                     direction === 'LONG'
                       ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800'
                   }`}
                 >
                   <TrendingUp className="w-3.5 h-3.5" />
@@ -366,7 +366,7 @@ export default function NewTradeModal({
                   className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg font-bold font-mono text-xs transition-all cursor-pointer ${
                     direction === 'SHORT'
                       ? 'bg-rose-600 text-white shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800'
                   }`}
                 >
                   <TrendingDown className="w-3.5 h-3.5" />
@@ -377,13 +377,13 @@ export default function NewTradeModal({
 
             {/* Session */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
                 Session
               </label>
               <select
                 value={session}
                 onChange={(e) => setSession(e.target.value as TradingSession)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
               >
                 <option value="NEW_YORK">🇺🇸 New York AM/PM</option>
                 <option value="LONDON">🇬🇧 London Killzone</option>
@@ -395,13 +395,13 @@ export default function NewTradeModal({
 
             {/* Timeframe */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
                 Execution TF
               </label>
               <select
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value as any)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
               >
                 <option value="1m">1 Minute (1m)</option>
                 <option value="5m">5 Minute (5m)</option>
@@ -414,10 +414,10 @@ export default function NewTradeModal({
           </div>
 
           {/* SECTION 2: Pricing & Execution & Calculator */}
-          <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 space-y-4">
+          <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Calculator className="w-3.5 h-3.5 text-[#2563EB]" />
+              <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider flex items-center gap-1.5">
+                <Calculator className="w-3.5 h-3.5 text-[#2563EB] dark:text-blue-400" />
                 Execution Prices & PnL Calculator
               </span>
               
@@ -425,7 +425,7 @@ export default function NewTradeModal({
               <button
                 type="button"
                 onClick={() => setIsManualPnl(!isManualPnl)}
-                className="text-[11px] text-gray-500 hover:text-[#2563EB] cursor-pointer underline font-medium"
+                className="text-[11px] text-gray-500 dark:text-neutral-400 hover:text-[#2563EB] dark:hover:text-blue-400 cursor-pointer underline font-medium"
               >
                 {isManualPnl ? 'Switch to Auto-Calculate PnL' : 'Manual PnL Override'}
               </button>
@@ -434,7 +434,7 @@ export default function NewTradeModal({
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {/* Entry Price */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 uppercase font-mono font-semibold mb-1">Entry Price *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Entry Price *</label>
                 <input
                   type="number"
                   step="any"
@@ -442,13 +442,13 @@ export default function NewTradeModal({
                   value={entryPrice}
                   onChange={(e) => setEntryPrice(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               </div>
 
               {/* Exit Price */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 uppercase font-mono font-semibold mb-1">Exit Price *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Exit Price *</label>
                 <input
                   type="number"
                   step="any"
@@ -456,13 +456,13 @@ export default function NewTradeModal({
                   value={exitPrice}
                   onChange={(e) => setExitPrice(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               </div>
 
               {/* Stop Loss */}
               <div>
-                <label className="block text-[10.5px] text-rose-700 uppercase font-mono font-semibold mb-1">Stop Loss *</label>
+                <label className="block text-[10.5px] text-rose-700 dark:text-rose-400 uppercase font-mono font-semibold mb-1">Stop Loss *</label>
                 <input
                   type="number"
                   step="any"
@@ -470,26 +470,26 @@ export default function NewTradeModal({
                   value={stopLoss}
                   onChange={(e) => setStopLoss(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-white border border-rose-300 rounded-xl px-3 py-2 text-rose-700 font-mono font-bold focus:outline-none focus:border-rose-500 shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-rose-300 dark:border-rose-900/60 rounded-xl px-3 py-2 text-rose-700 dark:text-rose-400 font-mono font-bold focus:outline-none focus:border-rose-500 shadow-2xs"
                 />
               </div>
 
               {/* Take Profit */}
               <div>
-                <label className="block text-[10.5px] text-emerald-700 uppercase font-mono font-semibold mb-1">Take Profit</label>
+                <label className="block text-[10.5px] text-emerald-700 dark:text-emerald-400 uppercase font-mono font-semibold mb-1">Take Profit</label>
                 <input
                   type="number"
                   step="any"
                   value={takeProfit}
                   onChange={(e) => setTakeProfit(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-white border border-emerald-300 rounded-xl px-3 py-2 text-emerald-700 font-mono font-bold focus:outline-none focus:border-emerald-500 shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-emerald-300 dark:border-emerald-900/60 rounded-xl px-3 py-2 text-emerald-700 dark:text-emerald-400 font-mono font-bold focus:outline-none focus:border-emerald-500 shadow-2xs"
                 />
               </div>
 
               {/* Lot Size */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 uppercase font-mono font-semibold mb-1">Lot Size *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Lot Size *</label>
                 <input
                   type="number"
                   step="any"
@@ -497,81 +497,81 @@ export default function NewTradeModal({
                   value={lotSize}
                   onChange={(e) => setLotSize(e.target.value)}
                   placeholder="1.0"
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono font-bold focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               </div>
 
               {/* Commission */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 uppercase font-mono font-semibold mb-1">Comm. ($)</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Comm. ($)</label>
                 <input
                   type="number"
                   step="any"
                   value={commission}
                   onChange={(e) => setCommission(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-mono focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Manual PnL input when toggled */}
             {isManualPnl && (
-              <div className="bg-blue-50/70 p-3 rounded-xl border border-blue-200 flex items-center justify-between gap-4 animate-fade-in">
+              <div className="bg-blue-50/70 dark:bg-blue-950/30 p-3 rounded-xl border border-blue-200 dark:border-blue-800/60 flex items-center justify-between gap-4 animate-fade-in">
                 <div>
-                  <span className="text-xs font-bold text-blue-900 block">Manual Net P&L Input</span>
-                  <span className="text-[10px] text-blue-700">Directly specify final monetary profit or loss for custom broker rules.</span>
+                  <span className="text-xs font-bold text-blue-900 dark:text-blue-300 block">Manual Net P&L Input</span>
+                  <span className="text-[10px] text-blue-700 dark:text-blue-400">Directly specify final monetary profit or loss for custom broker rules.</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500 font-mono font-bold">$</span>
+                  <span className="text-gray-500 dark:text-neutral-400 font-mono font-bold">$</span>
                   <input
                     type="number"
                     step="any"
                     value={manualNetPnl}
                     onChange={(e) => setManualNetPnl(e.target.value)}
                     placeholder="+250.00 or -150.00"
-                    className="bg-white border border-blue-300 rounded-lg px-3 py-1.5 text-gray-900 font-mono font-bold text-sm w-44 focus:outline-none shadow-2xs"
+                    className="bg-white dark:bg-[#181818] border border-blue-300 dark:border-blue-700 rounded-lg px-3 py-1.5 text-gray-900 dark:text-neutral-100 font-mono font-bold text-sm w-44 focus:outline-none shadow-2xs"
                   />
                 </div>
               </div>
             )}
 
             {/* Live Calculated Metric Pill */}
-            <div className="bg-white p-3 rounded-xl border border-gray-200 flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-2xs">
+            <div className="bg-white dark:bg-[#181818] p-3 rounded-xl border border-gray-200 dark:border-neutral-800 flex flex-wrap items-center justify-between gap-3 font-mono text-xs shadow-2xs">
               <div className="flex items-center gap-2">
-                <span className="text-gray-500 font-sans font-medium">Est. Net P&L:</span>
-                <span className={`text-base font-extrabold ${netPnlValue >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <span className="text-gray-500 dark:text-neutral-400 font-sans font-medium">Est. Net P&L:</span>
+                <span className={`text-base font-extrabold ${netPnlValue >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                   {netPnlValue >= 0 ? '+' : ''}${netPnlValue.toFixed(2)} USD
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 text-gray-600">
+              <div className="flex items-center gap-4 text-gray-600 dark:text-neutral-400">
                 <span>
-                  Realized R:R: <strong className={rrRealized > 0 ? 'text-emerald-600' : 'text-rose-600'}>{rrRealized.toFixed(2)}R</strong>
+                  Realized R:R: <strong className={rrRealized > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>{rrRealized.toFixed(2)}R</strong>
                 </span>
                 <span>
-                  Planned R:R: <strong className="text-gray-900">{rrPlanned.toFixed(2)}R</strong>
+                  Planned R:R: <strong className="text-gray-900 dark:text-neutral-100">{rrPlanned.toFixed(2)}R</strong>
                 </span>
                 <span>
-                  Outcome: <strong className={calculatedResult === 'WIN' ? 'text-emerald-600' : calculatedResult === 'LOSS' ? 'text-rose-600' : 'text-gray-700'}>{calculatedResult}</strong>
+                  Outcome: <strong className={calculatedResult === 'WIN' ? 'text-emerald-600 dark:text-emerald-400' : calculatedResult === 'LOSS' ? 'text-rose-600 dark:text-rose-400' : 'text-gray-700 dark:text-neutral-300'}>{calculatedResult}</strong>
                 </span>
               </div>
             </div>
           </div>
 
           {/* SECTION 3: Dynamic Partials Tracker */}
-          <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 space-y-3">
+          <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-gray-900 uppercase tracking-wider block">
+                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block">
                   Scale Outs & Partials Tracker
                 </span>
-                <span className="text-[10.5px] text-gray-500">Record staggered profit taking at key targets / liquidity pools.</span>
+                <span className="text-[10.5px] text-gray-500 dark:text-neutral-400">Record staggered profit taking at key targets / liquidity pools.</span>
               </div>
               <button
                 type="button"
                 onClick={handleAddPartial}
-                className="flex items-center gap-1 bg-blue-50 hover:bg-[#2563EB] text-[#2563EB] hover:text-white border border-blue-200 hover:border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950/40 hover:bg-[#2563EB] dark:hover:bg-blue-600 text-[#2563EB] dark:text-blue-400 hover:text-white border border-blue-200 dark:border-blue-800/60 hover:border-transparent px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Partial Row</span>
@@ -579,14 +579,14 @@ export default function NewTradeModal({
             </div>
 
             {partials.length === 0 ? (
-              <div className="text-center py-4 border border-dashed border-gray-300 rounded-xl text-gray-500 text-[11px] bg-white">
+              <div className="text-center py-4 border border-dashed border-gray-300 dark:border-neutral-700 rounded-xl text-gray-500 dark:text-neutral-400 text-[11px] bg-white dark:bg-[#181818]">
                 No partial scale-outs added. Click "Add Partial Row" to track multi-target profit booking.
               </div>
             ) : (
               <div className="space-y-2">
                 {partials.map((p, idx) => (
-                  <div key={p.id} className="grid grid-cols-12 gap-2 items-center bg-white p-2.5 rounded-xl border border-gray-200 font-mono text-xs shadow-2xs">
-                    <div className="col-span-1 text-gray-500 font-bold">
+                  <div key={p.id} className="grid grid-cols-12 gap-2 items-center bg-white dark:bg-[#181818] p-2.5 rounded-xl border border-gray-200 dark:border-neutral-800 font-mono text-xs shadow-2xs">
+                    <div className="col-span-1 text-gray-500 dark:text-neutral-400 font-bold">
                       #{idx + 1}
                     </div>
                     <div className="col-span-3">
@@ -595,9 +595,9 @@ export default function NewTradeModal({
                           type="number"
                           value={p.percentage}
                           onChange={(e) => handleUpdatePartial(p.id, 'percentage', parseFloat(e.target.value) || 0)}
-                          className="w-14 bg-gray-50 border border-gray-200 rounded px-2 py-1 text-gray-900 text-center"
+                          className="w-14 bg-gray-50 dark:bg-[#151515] border border-gray-200 dark:border-neutral-800 rounded px-2 py-1 text-gray-900 dark:text-neutral-100 text-center"
                         />
-                        <span className="text-gray-500">%</span>
+                        <span className="text-gray-500 dark:text-neutral-400">%</span>
                       </div>
                     </div>
                     <div className="col-span-3">
@@ -607,7 +607,7 @@ export default function NewTradeModal({
                         placeholder="Exit Price"
                         value={p.exitPrice}
                         onChange={(e) => handleUpdatePartial(p.id, 'exitPrice', parseFloat(e.target.value) || 0)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-gray-900"
+                        className="w-full bg-gray-50 dark:bg-[#151515] border border-gray-200 dark:border-neutral-800 rounded px-2 py-1 text-gray-900 dark:text-neutral-100"
                       />
                     </div>
                     <div className="col-span-4">
@@ -616,14 +616,14 @@ export default function NewTradeModal({
                         placeholder="Note (e.g. Asia High sweep)"
                         value={p.note || ''}
                         onChange={(e) => handleUpdatePartial(p.id, 'note', e.target.value)}
-                        className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-gray-800 font-sans"
+                        className="w-full bg-gray-50 dark:bg-[#151515] border border-gray-200 dark:border-neutral-800 rounded px-2 py-1 text-gray-800 dark:text-neutral-200 font-sans"
                       />
                     </div>
                     <div className="col-span-1 text-right">
                       <button
                         type="button"
                         onClick={() => handleRemovePartial(p.id)}
-                        className="p-1 text-gray-400 hover:text-rose-600 transition-colors"
+                        className="p-1 text-gray-400 dark:text-neutral-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -635,15 +635,15 @@ export default function NewTradeModal({
           </div>
 
           {/* SECTION 4: Setup Models & Confluences */}
-          <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 space-y-3">
+          <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
             <div>
-              <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-1.5">
                 Setup Model / Playbook
               </label>
               <select
                 value={setupModel}
                 onChange={(e) => setSetupModel(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 font-medium focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 font-medium focus:outline-none focus:border-[#2563EB] shadow-2xs"
               >
                 {PREDEFINED_SETUP_MODELS.map(m => (
                   <option key={m} value={m}>{m}</option>
@@ -657,14 +657,14 @@ export default function NewTradeModal({
                   placeholder="Enter custom playbook model..."
                   value={customSetupModel}
                   onChange={(e) => setCustomSetupModel(e.target.value)}
-                  className="mt-2 w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="mt-2 w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               )}
             </div>
 
             {/* Confluences pills */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 uppercase tracking-wider mb-2">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-2">
                 Confluences & PD Arrays ({selectedConfluences.length} Selected)
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2.5">
@@ -678,7 +678,7 @@ export default function NewTradeModal({
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all cursor-pointer border ${
                         isSelected
                           ? 'bg-[#2563EB] text-white border-blue-600 shadow-2xs'
-                          : 'bg-white text-gray-700 border-gray-200 hover:text-gray-900 hover:bg-gray-50 shadow-2xs'
+                          : 'bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 border-gray-200 dark:border-neutral-800 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800 shadow-2xs'
                       }`}
                     >
                       {isSelected ? '✓ ' : '+ '}{conf}
@@ -700,12 +700,12 @@ export default function NewTradeModal({
                       handleAddCustomConfluence();
                     }
                   }}
-                  className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] text-xs shadow-2xs"
+                  className="flex-1 bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-1.5 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] text-xs shadow-2xs"
                 />
                 <button
                   type="button"
                   onClick={handleAddCustomConfluence}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-3 py-1.5 rounded-xl transition-colors cursor-pointer border border-gray-200 text-xs shadow-2xs"
+                  className="bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-neutral-200 font-semibold px-3 py-1.5 rounded-xl transition-colors cursor-pointer border border-gray-200 dark:border-neutral-700 text-xs shadow-2xs"
                 >
                   Add Tag
                 </button>
@@ -714,32 +714,32 @@ export default function NewTradeModal({
           </div>
 
           {/* SECTION 5: Chart Attachment & Screenshot */}
-          <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 space-y-3">
-            <span className="text-xs font-bold text-gray-900 uppercase tracking-wider block">
+          <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
+            <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block">
               Chart Snapshot / TradingView Link
             </span>
             <div className="flex items-center gap-2">
-              <LinkIcon className="w-4 h-4 text-gray-400 shrink-0" />
+              <LinkIcon className="w-4 h-4 text-gray-400 dark:text-neutral-500 shrink-0" />
               <input
                 type="url"
                 placeholder="Paste TradingView snapshot URL or image link (e.g. https://www.tradingview.com/x/...)"
                 value={chartUrl}
                 onChange={(e) => setChartUrl(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] text-xs shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-2 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] text-xs shadow-2xs"
               />
             </div>
 
             {chartUrl && (
-              <div className="relative rounded-xl overflow-hidden border border-gray-200 max-h-48 bg-gray-100">
+              <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-neutral-800 max-h-48 bg-gray-100 dark:bg-neutral-900">
                 <img src={chartUrl} alt="Chart snapshot preview" className="w-full h-48 object-cover" />
               </div>
             )}
           </div>
 
           {/* SECTION 6: Psychology, Rules & Execution Notes */}
-          <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-200 space-y-4">
+          <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-4">
             <div>
-              <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-2">
                 Psychology & Execution Discipline
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -752,8 +752,8 @@ export default function NewTradeModal({
                       onClick={() => togglePsychology(tag)}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all cursor-pointer border ${
                         isSelected
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold'
-                          : 'bg-white text-gray-700 border-gray-200 hover:text-gray-900 hover:bg-gray-50 shadow-2xs'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800/80 font-bold'
+                          : 'bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 border-gray-200 dark:border-neutral-800 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800 shadow-2xs'
                       }`}
                     >
                       {tag}
@@ -764,7 +764,7 @@ export default function NewTradeModal({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-2">
                 Mistakes / Rule Violations
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -778,9 +778,9 @@ export default function NewTradeModal({
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all cursor-pointer border ${
                         isSelected
                           ? tag === 'None (Clean Execution)' 
-                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300' 
-                            : 'bg-rose-50 text-rose-800 border-rose-300 font-bold'
-                          : 'bg-white text-gray-700 border-gray-200 hover:text-gray-900 hover:bg-gray-50 shadow-2xs'
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800/80' 
+                            : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800/80 font-bold'
+                          : 'bg-white dark:bg-[#181818] text-gray-700 dark:text-neutral-200 border-gray-200 dark:border-neutral-800 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-neutral-800 shadow-2xs'
                       }`}
                     >
                       {tag}
@@ -792,7 +792,7 @@ export default function NewTradeModal({
 
             {/* Execution Notes / Markdown */}
             <div>
-              <label className="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-1.5">
                 Trade Analysis & Review Notes
               </label>
               <textarea
@@ -800,13 +800,13 @@ export default function NewTradeModal({
                 placeholder="Detail the market narrative, HTF draw on liquidity, liquidity sweeps, emotional state during the trade, and lessons learned..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl p-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] text-xs leading-relaxed shadow-2xs"
+                className="w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl p-3 text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] text-xs leading-relaxed shadow-2xs"
               />
             </div>
 
             {/* Rating */}
             <div className="flex items-center justify-between pt-1">
-              <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider">
                 Execution Quality Rating
               </span>
               <div className="flex items-center gap-1">
@@ -819,7 +819,7 @@ export default function NewTradeModal({
                   >
                     <Star
                       className={`w-4 h-4 ${
-                        star <= rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300'
+                        star <= rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-neutral-600'
                       }`}
                     />
                   </button>
@@ -829,11 +829,11 @@ export default function NewTradeModal({
           </div>
 
           {/* Form Actions */}
-          <div className="pt-2 flex items-center justify-end gap-3 sticky bottom-0 bg-white py-3 border-t border-gray-200">
+          <div className="pt-2 flex items-center justify-end gap-3 sticky bottom-0 bg-white dark:bg-[#1E1E1E] py-3 border-t border-gray-200 dark:border-neutral-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors cursor-pointer border border-gray-200 shadow-2xs"
+              className="px-4 py-2 bg-gray-100 dark:bg-neutral-800 hover:bg-gray-200 dark:hover:bg-neutral-700 text-gray-700 dark:text-neutral-200 font-semibold rounded-xl text-xs transition-colors cursor-pointer border border-gray-200 dark:border-neutral-700 shadow-2xs"
             >
               Cancel
             </button>

@@ -39,6 +39,7 @@ export interface Trade {
   // Financial Outcomes
   netPnl: number;
   grossPnl: number;
+  pnlPercentage?: number;
   commission: number;
   pips?: number;
   rrRealized: number;

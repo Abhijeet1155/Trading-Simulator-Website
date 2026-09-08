@@ -11,51 +11,101 @@ import {
   Tooltip,
 } from 'recharts';
 import { Shield, Target, Clock, Zap, Award } from 'lucide-react';
-import { 
-  RADAR_DISCIPLINE, 
-  RADAR_RISK_MGMT, 
-  RADAR_EXECUTION, 
-  RADAR_EDGE_CONSISTENCY 
-} from '../../data/mockAnalyticsData';
 import { RadarDataPoint } from '../../types/analytics';
+import { useTheme } from '@/context/ThemeContext';
 
 interface PerformanceRadarsProps {
   showBenchmark?: boolean;
+  radars?: {
+    discipline: RadarDataPoint[];
+    riskManagement: RadarDataPoint[];
+    execution: RadarDataPoint[];
+    edgeConsistency: RadarDataPoint[];
+    scores?: { discipline: number; risk: number; execution: number; edge: number };
+  };
 }
 
-export default function PerformanceRadars({ showBenchmark = true }: PerformanceRadarsProps) {
+export default function PerformanceRadars({ showBenchmark = true, radars }: PerformanceRadarsProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
+
+  const defaultDisc = [
+    { axis: 'Rule Adherence', traderScore: 85, benchmarkScore: 70, fullMark: 100 },
+    { axis: 'Plan Execution', traderScore: 82, benchmarkScore: 65, fullMark: 100 },
+    { axis: 'FOMO Resistance', traderScore: 80, benchmarkScore: 60, fullMark: 100 },
+    { axis: 'Loss Acceptance', traderScore: 88, benchmarkScore: 75, fullMark: 100 },
+    { axis: 'No Revenge Trade', traderScore: 90, benchmarkScore: 68, fullMark: 100 },
+    { axis: 'Overtrade Control', traderScore: 84, benchmarkScore: 72, fullMark: 100 },
+  ];
+
+  const defaultRisk = [
+    { axis: 'SL Discipline', traderScore: 88, benchmarkScore: 75, fullMark: 100 },
+    { axis: 'Pos Sizing Consistency', traderScore: 85, benchmarkScore: 70, fullMark: 100 },
+    { axis: 'Max DD Control', traderScore: 89, benchmarkScore: 68, fullMark: 100 },
+    { axis: 'R:R Realization', traderScore: 82, benchmarkScore: 65, fullMark: 100 },
+    { axis: 'Profit Scaling', traderScore: 78, benchmarkScore: 60, fullMark: 100 },
+    { axis: 'Capital Preservation', traderScore: 90, benchmarkScore: 72, fullMark: 100 },
+  ];
+
+  const defaultExec = [
+    { axis: 'Killzone Precision', traderScore: 86, benchmarkScore: 65, fullMark: 100 },
+    { axis: 'Entry Slippage', traderScore: 84, benchmarkScore: 70, fullMark: 100 },
+    { axis: 'Limit Fill Rate', traderScore: 87, benchmarkScore: 68, fullMark: 100 },
+    { axis: 'Macro Timing', traderScore: 80, benchmarkScore: 62, fullMark: 100 },
+    { axis: 'Exit Timing', traderScore: 85, benchmarkScore: 66, fullMark: 100 },
+    { axis: 'Spread Efficiency', traderScore: 88, benchmarkScore: 74, fullMark: 100 },
+  ];
+
+  const defaultEdge = [
+    { axis: 'Setup Expectancy', traderScore: 89, benchmarkScore: 70, fullMark: 100 },
+    { axis: 'Win Rate Stability', traderScore: 84, benchmarkScore: 65, fullMark: 100 },
+    { axis: 'Profit Factor', traderScore: 90, benchmarkScore: 68, fullMark: 100 },
+    { axis: 'Market Regime Adapt', traderScore: 78, benchmarkScore: 60, fullMark: 100 },
+    { axis: 'Confluence Depth', traderScore: 86, benchmarkScore: 72, fullMark: 100 },
+    { axis: 'Volume Profile Fit', traderScore: 82, benchmarkScore: 66, fullMark: 100 },
+  ];
+
+  const discData = radars?.discipline || defaultDisc;
+  const riskData = radars?.riskManagement || defaultRisk;
+  const execData = radars?.execution || defaultExec;
+  const edgeData = radars?.edgeConsistency || defaultEdge;
+
+  const getAvgScore = (data: RadarDataPoint[]) => {
+    return Math.round(data.reduce((a, b) => a + b.traderScore, 0) / (data.length || 1));
+  };
+
   const radarConfigs = [
     {
       title: 'Discipline & Psychology',
-      score: 92,
+      score: radars?.scores?.discipline ?? getAvgScore(discData),
       color: '#10b981', // emerald
       icon: Shield,
-      data: RADAR_DISCIPLINE,
-      summary: 'Excellent rule compliance and zero revenge trades.',
+      data: discData,
+      summary: 'Evaluated from win-rate stability, stop loss execution, and revenge trading avoidance.',
     },
     {
       title: 'Risk Management',
-      score: 90,
+      score: radars?.scores?.risk ?? getAvgScore(riskData),
       color: '#2563eb', // blue
       icon: Target,
-      data: RADAR_RISK_MGMT,
-      summary: 'Strict stop loss usage with consistent position sizing.',
+      data: riskData,
+      summary: 'Evaluated from drawdown containment, position sizing, and realized R:R efficiency.',
     },
     {
       title: 'Execution Timing',
-      score: 88,
+      score: radars?.scores?.execution ?? getAvgScore(execData),
       color: '#0284c7', // sky
       icon: Clock,
-      data: RADAR_EXECUTION,
-      summary: 'High precision inside London & NY Killzones.',
+      data: execData,
+      summary: 'Evaluated from London / NY session killzones, hold times, and fill efficiency.',
     },
     {
       title: 'Edge & Consistency',
-      score: 91,
+      score: radars?.scores?.edge ?? getAvgScore(edgeData),
       color: '#7c3aed', // purple
       icon: Zap,
-      data: RADAR_EDGE_CONSISTENCY,
-      summary: 'High expectancy setup model with strong confluence.',
+      data: edgeData,
+      summary: 'Evaluated from profit factor, positive trade expectancy, and setup repeatability.',
     },
   ];
 
@@ -63,19 +113,19 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
     <div className="mb-6 space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Award className="w-4 h-4 text-[#2563EB]" />
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider font-mono">
+          <Award className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
+          <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
             Institutional Performance Radar (4-Pillar Evaluation)
           </h2>
         </div>
-        <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
+        <div className="flex items-center gap-4 text-xs font-mono text-gray-500 dark:text-neutral-400">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            Trader Profile
+            Trader Profile (Live Data)
           </span>
           {showBenchmark && (
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-gray-400 border border-gray-300 border-dashed" />
+              <span className="w-2.5 h-2.5 rounded-full bg-gray-400 dark:bg-neutral-600 border border-gray-300 dark:border-neutral-500 border-dashed" />
               Institutional Benchmark (70th %ile)
             </span>
           )}
@@ -90,7 +140,7 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
           return (
             <div
               key={config.title}
-              className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-gray-300 transition-colors"
+              className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-gray-300 dark:hover:border-white/[0.15] transition-colors"
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-1">
@@ -106,8 +156,8 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
                     <Icon className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-gray-900">{config.title}</h3>
-                    <p className="text-[10px] text-gray-500 font-mono">Score: <strong style={{ color: config.color }}>{config.score}/100</strong></p>
+                    <h3 className="text-xs font-bold text-gray-900 dark:text-white">{config.title}</h3>
+                    <p className="text-[10px] text-gray-500 dark:text-neutral-400 font-mono">Score: <strong style={{ color: config.color }}>{config.score}/100</strong></p>
                   </div>
                 </div>
                 <span
@@ -118,7 +168,7 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
                     color: config.color,
                   }}
                 >
-                  {config.score >= 90 ? 'Top 5%' : 'Top 15%'}
+                  {config.score >= 85 ? 'Top 10%' : config.score >= 70 ? 'Top 25%' : 'Developing'}
                 </span>
               </div>
 
@@ -126,10 +176,10 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
               <div className="w-full h-52 my-1">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={config.data}>
-                    <PolarGrid stroke="#e2e8f0" />
+                    <PolarGrid stroke={isDark ? '#262f40' : '#e2e8f0'} />
                     <PolarAngleAxis
                       dataKey="axis"
-                      tick={{ fill: '#64748b', fontSize: 9, fontFamily: 'monospace', fontWeight: 600 }}
+                      tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 9, fontFamily: 'monospace', fontWeight: 600 }}
                     />
                     <PolarRadiusAxis
                       angle={30}
@@ -157,23 +207,23 @@ export default function PerformanceRadars({ showBenchmark = true }: PerformanceR
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#ffffff',
-                        borderColor: '#e2e8f0',
+                        backgroundColor: isDark ? '#161D2A' : '#ffffff',
+                        borderColor: isDark ? '#262f40' : '#e2e8f0',
                         borderRadius: '12px',
                         fontSize: '11px',
                         fontFamily: 'monospace',
-                        color: '#0f172a',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        color: isDark ? '#f8fafc' : '#0f172a',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
                       }}
-                      formatter={(val: any, name: any) => [`${val}/100`, name === 'traderScore' ? 'Trader' : 'Benchmark']}
+                      formatter={(val: any, name: any) => [`${val}/100`, name === 'traderScore' ? 'Trader Score' : 'Benchmark'] as any}
                     />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
 
               {/* Bottom Insight */}
-              <div className="bg-gray-50 p-2 rounded-xl border border-gray-100 text-[10.5px] text-gray-600">
-                <span className="text-gray-900 font-semibold">Insight: </span>
+              <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06] text-[10.5px] text-gray-600 dark:text-neutral-300">
+                <span className="text-gray-900 dark:text-white font-semibold">Insight: </span>
                 {config.summary}
               </div>
             </div>

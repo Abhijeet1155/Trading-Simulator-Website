@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     plan_type TEXT DEFAULT 'free' NOT NULL,
     status TEXT DEFAULT 'active' NOT NULL,
     is_admin BOOLEAN DEFAULT false NOT NULL,
+    theme_preference TEXT DEFAULT 'light' NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

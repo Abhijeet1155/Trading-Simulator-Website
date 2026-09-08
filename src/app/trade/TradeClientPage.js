@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import UserDropdown from '../dashboard/UserDropdown';
 import Navbar from '@/components/Navbar';
+import { useTheme } from '@/context/ThemeContext';
 import { formatLotSize } from '../../lib/account';
 import { DEFAULT_ACCOUNT_TYPES, ALLOWED_LEVERAGES } from '../../lib/accountTypes';
 
@@ -439,6 +440,7 @@ export default function TradeClientPage({
   initialLeverage = 100,
   accountTypes = []
 }) {
+  const { resolvedTheme } = useTheme();
   const [selectedAsset, setSelectedAsset] = useState('BTC');
 
   useEffect(() => {
@@ -500,6 +502,31 @@ export default function TradeClientPage({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [isLiveData, setIsLiveData] = useState(true);
+
+  // TP/SL Edit modal state
+  const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false);
+  const [tpslEditingPos, setTpslEditingPos] = useState(null);
+  const [modalEditTP, setModalEditTP] = useState('');
+  const [modalEditSL, setModalEditSL] = useState('');
+
+  const openTPSLEditModal = (pos) => {
+    setTpslEditingPos(pos);
+    setModalEditTP(pos.take_profit ? pos.take_profit.toString() : '');
+    setModalEditSL(pos.stop_loss ? pos.stop_loss.toString() : '');
+    setIsTPSLModalOpen(true);
+  };
+
+  const handleUpdateTPSLSubmit = async (e) => {
+    e.preventDefault();
+    if (!tpslEditingPos) return;
+    const tpNum = modalEditTP.trim() ? parseFloat(modalEditTP) : null;
+    const slNum = modalEditSL.trim() ? parseFloat(modalEditSL) : null;
+    const success = await updateTradeTPSL(tpslEditingPos.id, tpNum, slNum);
+    if (success) {
+      setIsTPSLModalOpen(false);
+      setTpslEditingPos(null);
+    }
+  };
 
   // Account Details Dropdown state and click outside handler
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
@@ -1617,7 +1644,7 @@ export default function TradeClientPage({
         symbol: tvSymbol,
         interval: tvInterval,
         timezone: "Etc/UTC",
-        theme: "light",
+        theme: resolvedTheme === 'dark' ? 'dark' : 'light',
         style: tvStyle,
         locale: "en",
         enable_publishing: false,
@@ -1631,7 +1658,7 @@ export default function TradeClientPage({
     } catch (err) {
       console.error('Failed to create TradingView widget:', err);
     }
-  }, [scriptLoaded, selectedAsset, timeframe, chartType]);
+  }, [scriptLoaded, selectedAsset, timeframe, chartType, resolvedTheme]);
 
   // Listen for TradingView iframe postMessage events & search modal shortcuts
   useEffect(() => {
@@ -1696,19 +1723,19 @@ export default function TradeClientPage({
     });
 
     return (
-      <div className="flex flex-col h-full overflow-hidden select-none bg-white font-sans">
+      <div className="flex flex-col h-full overflow-hidden select-none bg-white dark:bg-[#111722] font-sans">
         {/* Watchlist Main Header */}
-        <div className="px-3 py-2 bg-[#FAFAFA] border-b border-gray-100 flex flex-col gap-1.5 shrink-0 select-none">
+        <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#161D2A] border-b border-gray-100 dark:border-white/[0.08] flex flex-col gap-1.5 shrink-0 select-none">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-xs text-gray-900 capitalize">Watchlist</span>
-              <span className="text-[9px] text-gray-400 font-semibold">({filteredAssets.length})</span>
+              <span className="font-semibold text-xs text-gray-900 dark:text-neutral-100 capitalize">Watchlist</span>
+              <span className="text-[9px] text-gray-400 dark:text-neutral-500 font-semibold">({filteredAssets.length})</span>
             </div>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(true)}
-                className="p-1 hover:bg-gray-200/70 rounded text-gray-400 hover:text-[#2563EB] transition-colors cursor-pointer"
+                className="p-1 hover:bg-gray-200/70 dark:hover:bg-white/[0.08] rounded text-gray-400 dark:text-neutral-400 hover:text-[#2563EB] dark:hover:text-blue-400 transition-colors cursor-pointer"
                 title="Search Symbols (Ctrl+K)"
               >
                 <Search className="w-3.5 h-3.5" />
@@ -1716,20 +1743,20 @@ export default function TradeClientPage({
               <button
                 type="button"
                 onClick={toggleLeftCollapse}
-                className="p-1 hover:bg-gray-200/70 rounded text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                className="p-1 hover:bg-gray-200/70 dark:hover:bg-white/[0.08] rounded text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
                 title="Collapse Watchlist panel (<)"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-          <div className="text-[9.5px] font-semibold flex gap-2 text-gray-400 pt-1 border-t border-gray-100 overflow-x-auto select-none no-scrollbar">
+          <div className="text-[9.5px] font-semibold flex gap-2 text-gray-400 dark:text-neutral-400 pt-1 border-t border-gray-100 dark:border-white/[0.08] overflow-x-auto select-none no-scrollbar">
             {['All', 'Crypto', 'Forex', 'Stocks', 'Favorites'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setWatchlistTab(tab)}
                 className={`cursor-pointer transition-all capitalize whitespace-nowrap px-1 py-0.5 rounded ${
-                  watchlistTab === tab ? 'text-[#2563EB] font-semibold bg-blue-50/80' : 'hover:text-gray-600'
+                  watchlistTab === tab ? 'text-[#2563EB] dark:text-blue-400 font-semibold bg-blue-50/80 dark:bg-blue-500/15' : 'hover:text-gray-600 dark:hover:text-neutral-200'
                 }`}
               >
                 {tab === 'Favorites' ? '⭐ Favs' : tab}
@@ -1739,19 +1766,19 @@ export default function TradeClientPage({
         </div>
 
         {/* Watchlist Search Bar input */}
-        <div className="px-3 py-1.5 border-b border-gray-100 bg-[#FAFAFA]/40 shrink-0 flex items-center gap-1.5 relative select-none">
-          <Search className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+        <div className="px-3 py-1.5 border-b border-gray-100 dark:border-white/[0.08] bg-[#FAFAFA]/40 dark:bg-[#161D2A]/40 shrink-0 flex items-center gap-1.5 relative select-none">
+          <Search className="w-3.5 h-3.5 text-gray-400 dark:text-neutral-500 shrink-0" />
           <input
             type="text"
             placeholder="Search market pair..."
             value={watchlistSearchQuery}
             onChange={(e) => setWatchlistSearchQuery(e.target.value)}
-            className="w-full bg-transparent border-none text-[10.5px] font-semibold text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-0 p-0"
+            className="w-full bg-transparent border-none text-[10.5px] font-semibold text-gray-700 dark:text-neutral-200 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-0 p-0"
           />
           {watchlistSearchQuery && (
             <button 
               onClick={() => setWatchlistSearchQuery('')}
-              className="absolute right-3 text-gray-400 hover:text-gray-600 transition-colors p-0.5 cursor-pointer"
+              className="absolute right-3 text-gray-400 dark:text-neutral-500 hover:text-gray-600 dark:hover:text-neutral-300 transition-colors p-0.5 cursor-pointer"
             >
               <X className="w-3 h-3" />
             </button>
@@ -1762,7 +1789,7 @@ export default function TradeClientPage({
         <div className="flex-grow overflow-y-auto px-2">
           <table className="w-full text-left border-collapse text-[10px] font-sans">
             <thead>
-              <tr className="border-b border-gray-100 text-[#9CA3AF] font-semibold capitalize text-[7.5px] sticky top-0 bg-white z-10 py-1">
+              <tr className="border-b border-gray-100 dark:border-white/[0.08] text-[#9CA3AF] dark:text-neutral-500 font-semibold capitalize text-[7.5px] sticky top-0 bg-white dark:bg-[#111722] z-10 py-1">
                 <th className="py-1 w-5"></th>
                 <th className="py-1">Pair</th>
                 <th className="py-1 text-right">Price</th>
@@ -1772,7 +1799,7 @@ export default function TradeClientPage({
             <tbody>
               {filteredAssets.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-gray-400 font-semibold text-[10px]">
+                  <td colSpan={4} className="py-8 text-center text-gray-400 dark:text-neutral-500 font-semibold text-[10px]">
                     No markets found
                   </td>
                 </tr>
@@ -1788,29 +1815,29 @@ export default function TradeClientPage({
                     <tr
                       key={item.symbol}
                       onClick={() => handleAssetChange(item.symbol)}
-                      className={`cursor-pointer border-b border-gray-50 hover:bg-blue-50/50 transition-colors select-none group ${
-                        isSelected ? 'bg-blue-50/80 font-bold border-l-2 border-l-[#2563EB]' : ''
+                      className={`cursor-pointer border-b border-gray-50 dark:border-white/[0.04] hover:bg-blue-50/50 dark:hover:bg-white/[0.03] transition-colors select-none group ${
+                        isSelected ? 'bg-blue-50/80 dark:bg-blue-500/15 font-bold border-l-2 border-l-[#2563EB] dark:border-l-blue-400' : ''
                       }`}
                     >
-                      <td className="py-1.5 pl-1 text-gray-300">
+                      <td className="py-1.5 pl-1 text-gray-300 dark:text-neutral-600">
                         <button
                           type="button"
                           onClick={(e) => toggleFavoriteSymbol(item.symbol, e)}
                           className="hover:text-amber-400 cursor-pointer p-0.5"
                           title={isFav ? "Remove favorite" : "Add favorite"}
                         >
-                          <Star className={`w-3 h-3 ${isFav ? 'text-amber-400 fill-amber-400' : 'text-gray-300 group-hover:text-gray-400'}`} />
+                          <Star className={`w-3 h-3 ${isFav ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-neutral-600 group-hover:text-gray-400 dark:group-hover:text-neutral-400'}`} />
                         </button>
                       </td>
-                      <td className="py-1.5 font-semibold text-gray-900">
-                        <div className={`text-[10px] ${isSelected ? 'text-[#2563EB] font-bold' : 'text-gray-900'}`}>
+                      <td className="py-1.5 font-semibold text-gray-900 dark:text-neutral-100">
+                        <div className={`text-[10px] ${isSelected ? 'text-[#2563EB] dark:text-blue-400 font-bold' : 'text-gray-900 dark:text-neutral-100'}`}>
                           {item.pair || (item.symbol.includes('/') ? item.symbol : `${item.symbol}/USDT`)}
                         </div>
-                        <div className="text-[8px] text-gray-400 font-normal leading-none truncate max-w-[80px]">
+                        <div className="text-[8px] text-gray-400 dark:text-neutral-500 font-normal leading-none truncate max-w-[80px]">
                           {item.name}
                         </div>
                       </td>
-                      <td className="py-1.5 text-right font-mono text-gray-700 tabular-nums">
+                      <td className="py-1.5 text-right font-mono text-gray-700 dark:text-neutral-300 tabular-nums">
                         {formatAssetPrice(buyPrice, item.symbol)}
                       </td>
                       <td className={`py-1.5 pr-1 text-right font-mono font-semibold tabular-nums ${
@@ -1850,17 +1877,17 @@ export default function TradeClientPage({
     });
 
     return (
-      <div className="flex flex-col h-full bg-white text-gray-900 font-sans text-xs select-none p-3 justify-between overflow-y-auto scrollbar-thin">
+      <div className="flex flex-col h-full bg-white dark:bg-[#111722] text-gray-900 dark:text-neutral-100 font-sans text-xs select-none p-3 justify-between overflow-y-auto scrollbar-thin">
         <div className="flex flex-col gap-2">
           {/* Order Book Header Controls */}
-          <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-            <span className="font-semibold text-xs text-gray-900 capitalize">Level 2 Order Book</span>
-            <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-md">
+          <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-white/[0.08]">
+            <span className="font-semibold text-xs text-gray-900 dark:text-neutral-100 capitalize">Level 2 Order Book</span>
+            <div className="flex items-center gap-1 bg-gray-100 dark:bg-[#161D2A] p-0.5 rounded-md">
               <button
                 type="button"
                 onClick={() => setOrderbookViewMode('default')}
                 title="Default (Asks & Bids)"
-                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'default' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-400 hover:text-gray-700'}`}
+                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'default' ? 'bg-white dark:bg-[#1E293B] text-gray-900 dark:text-neutral-100 shadow-xs' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'}`}
               >
                 Both
               </button>
@@ -1868,7 +1895,7 @@ export default function TradeClientPage({
                 type="button"
                 onClick={() => setOrderbookViewMode('asks')}
                 title="Asks Only (Sells)"
-                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'asks' ? 'bg-white text-[#f23645] shadow-xs' : 'text-gray-400 hover:text-gray-700'}`}
+                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'asks' ? 'bg-white dark:bg-[#1E293B] text-[#f23645] shadow-xs' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'}`}
               >
                 Asks
               </button>
@@ -1876,7 +1903,7 @@ export default function TradeClientPage({
                 type="button"
                 onClick={() => setOrderbookViewMode('bids')}
                 title="Bids Only (Buys)"
-                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'bids' ? 'bg-white text-[#089981] shadow-xs' : 'text-gray-400 hover:text-gray-700'}`}
+                className={`px-1.5 py-0.5 rounded text-[9px] font-semibold cursor-pointer ${orderbookViewMode === 'bids' ? 'bg-white dark:bg-[#1E293B] text-[#089981] shadow-xs' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'}`}
               >
                 Bids
               </button>
@@ -1884,7 +1911,7 @@ export default function TradeClientPage({
           </div>
 
           {/* Table Header */}
-          <div className="grid grid-cols-3 text-[9px] font-semibold text-gray-400 pb-1 border-b border-gray-100">
+          <div className="grid grid-cols-3 text-[9px] font-semibold text-gray-400 dark:text-neutral-500 pb-1 border-b border-gray-100 dark:border-white/[0.08]">
             <span>Price ({selectedAsset.includes('/') ? 'Quote' : 'USDT'})</span>
             <span className="text-right">Size ({selectedAsset})</span>
             <span className="text-right">Total</span>
@@ -1897,19 +1924,19 @@ export default function TradeClientPage({
                 <div
                   key={idx}
                   onClick={() => { setLimitPrice(ask.price.toFixed(isForex ? 4 : 2)); setOrderSubtype('Limit'); setRightPanelTab('ticket'); showToast(`Price set to ${ask.price.toFixed(isForex ? 4 : 2)}`, 'info'); }}
-                  className="grid grid-cols-3 text-[10.5px] font-mono py-0.5 px-1 rounded relative overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
-                  style={{ background: `linear-gradient(270deg, rgba(242, 54, 69, 0.10) ${ask.depthPct}%, transparent ${ask.depthPct}%)` }}
+                  className="grid grid-cols-3 text-[10.5px] font-mono py-0.5 px-1 rounded relative overflow-hidden cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
+                  style={{ background: `linear-gradient(270deg, rgba(242, 54, 69, 0.12) ${ask.depthPct}%, transparent ${ask.depthPct}%)` }}
                 >
                   <span className="text-[#f23645] font-semibold">{formatAssetPrice(ask.price, selectedAsset)}</span>
-                  <span className="text-right text-gray-700 font-semibold">{ask.size}</span>
-                  <span className="text-right text-gray-400 font-semibold">${(ask.price * parseFloat(ask.size)).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                  <span className="text-right text-gray-700 dark:text-neutral-200 font-semibold">{ask.size}</span>
+                  <span className="text-right text-gray-400 dark:text-neutral-500 font-semibold">${(ask.price * parseFloat(ask.size)).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
                 </div>
               ))}
             </div>
           )}
 
           {/* Mid Price / Spread Bar */}
-          <div className="py-1.5 px-2 my-1 border-y border-gray-100 bg-gray-50 flex items-center justify-between font-mono">
+          <div className="py-1.5 px-2 my-1 border-y border-gray-100 dark:border-white/[0.08] bg-gray-50 dark:bg-[#161D2A] flex items-center justify-between font-mono">
             <div className="flex items-center gap-1.5">
               <span className={`font-semibold text-xs ${selectedIsUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                 {formatAssetPrice(livePrice, selectedAsset)}
@@ -1918,7 +1945,7 @@ export default function TradeClientPage({
                 {selectedIsUp ? '↗' : '↘'}
               </span>
             </div>
-            <span className="text-[9px] text-gray-400 font-semibold">Spread: {isForex ? '0.0001' : '0.01'}</span>
+            <span className="text-[9px] text-gray-400 dark:text-neutral-400 font-semibold">Spread: {isForex ? '0.0001' : '0.01'}</span>
           </div>
 
           {/* Bids (Buy Orders) */}
@@ -1928,19 +1955,19 @@ export default function TradeClientPage({
                 <div
                   key={idx}
                   onClick={() => { setLimitPrice(bid.price.toFixed(isForex ? 4 : 2)); setOrderSubtype('Limit'); setRightPanelTab('ticket'); showToast(`Price set to ${bid.price.toFixed(isForex ? 4 : 2)}`, 'info'); }}
-                  className="grid grid-cols-3 text-[10.5px] font-mono py-0.5 px-1 rounded relative overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
-                  style={{ background: `linear-gradient(270deg, rgba(8, 153, 129, 0.10) ${bid.depthPct}%, transparent ${bid.depthPct}%)` }}
+                  className="grid grid-cols-3 text-[10.5px] font-mono py-0.5 px-1 rounded relative overflow-hidden cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
+                  style={{ background: `linear-gradient(270deg, rgba(8, 153, 129, 0.12) ${bid.depthPct}%, transparent ${bid.depthPct}%)` }}
                 >
                   <span className="text-[#089981] font-semibold">{formatAssetPrice(bid.price, selectedAsset)}</span>
-                  <span className="text-right text-gray-700 font-semibold">{bid.size}</span>
-                  <span className="text-right text-gray-400 font-semibold">${(bid.price * parseFloat(bid.size)).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                  <span className="text-right text-gray-700 dark:text-neutral-200 font-semibold">{bid.size}</span>
+                  <span className="text-right text-gray-400 dark:text-neutral-500 font-semibold">${(bid.price * parseFloat(bid.size)).toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="mt-3 pt-2 border-t border-gray-100 text-[9.5px] text-gray-400 text-center font-semibold">
+        <div className="mt-3 pt-2 border-t border-gray-100 dark:border-white/[0.08] text-[9.5px] text-gray-400 dark:text-neutral-500 text-center font-semibold">
           Click any price row to copy price into Order Form
         </div>
       </div>
@@ -1958,15 +1985,15 @@ export default function TradeClientPage({
     const isInsufficientMargin = marginRequired > freeMargin;
 
     return (
-      <div className="flex flex-col h-full bg-white text-gray-900 border-t lg:border-t-0 border-[#E0E3EB] overflow-hidden select-none">
+      <div className="flex flex-col h-full bg-white dark:bg-[#111722] text-gray-900 dark:text-neutral-100 border-t lg:border-t-0 border-[#E0E3EB] dark:border-white/[0.08] overflow-hidden select-none">
         {/* Right Panel Header Switcher Tabs */}
-        <div className="flex items-center justify-between border-b border-gray-100 bg-[#FAFAFA] text-[10.5px] font-semibold shrink-0 select-none pr-1.5">
+        <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/[0.08] bg-[#FAFAFA] dark:bg-[#161D2A] text-[10.5px] font-semibold shrink-0 select-none pr-1.5">
           <div className="flex flex-1">
             <button
               type="button"
               onClick={() => setRightPanelTab('ticket')}
               className={`flex-1 py-2 text-center border-b-2 cursor-pointer transition-colors ${
-                rightPanelTab === 'ticket' ? 'border-[#2563EB] text-[#2563EB] bg-white font-semibold' : 'border-transparent text-gray-400 hover:text-gray-700'
+                rightPanelTab === 'ticket' ? 'border-[#2563EB] text-[#2563EB] dark:text-blue-400 bg-white dark:bg-[#111722] font-semibold' : 'border-transparent text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'
               }`}
             >
               Spot Ticket
@@ -1975,7 +2002,7 @@ export default function TradeClientPage({
               type="button"
               onClick={() => setRightPanelTab('orderbook')}
               className={`flex-1 py-2 text-center border-b-2 cursor-pointer transition-colors ${
-                rightPanelTab === 'orderbook' ? 'border-[#2563EB] text-[#2563EB] bg-white font-semibold' : 'border-transparent text-gray-400 hover:text-gray-700'
+                rightPanelTab === 'orderbook' ? 'border-[#2563EB] text-[#2563EB] dark:text-blue-400 bg-white dark:bg-[#111722] font-semibold' : 'border-transparent text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'
               }`}
             >
               Level 2 Book
@@ -1984,7 +2011,7 @@ export default function TradeClientPage({
           <button
             type="button"
             onClick={toggleRightCollapse}
-            className="p-1 hover:bg-gray-200/70 rounded text-gray-400 hover:text-gray-700 transition-colors cursor-pointer ml-1"
+            className="p-1 hover:bg-gray-200/70 dark:hover:bg-white/[0.08] rounded text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors cursor-pointer ml-1"
             title="Collapse Spot Ticket panel (>)"
           >
             <ChevronRight className="w-3.5 h-3.5" />
@@ -1996,16 +2023,16 @@ export default function TradeClientPage({
         ) : (
           <div className="flex-grow overflow-y-auto p-3 space-y-3.5 scrollbar-thin select-none">
             {/* HEADER & ASSET INFO ROW */}
-            <div className="flex items-center justify-between pb-2.5 border-b border-gray-100 select-none">
+            <div className="flex items-center justify-between pb-2.5 border-b border-gray-100 dark:border-white/[0.08] select-none">
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-semibold text-white shrink-0" style={{ backgroundColor: getAssetColor(selectedAsset) }}>
                   {selectedAsset[0]}
                 </span>
-                <span className="font-semibold text-xs text-gray-900">{selectedAsset}</span>
+                <span className="font-semibold text-xs text-gray-900 dark:text-neutral-100">{selectedAsset}</span>
               </div>
               <button 
                 type="button"
-                className="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded hover:bg-gray-100 cursor-pointer" 
+                className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors p-1 rounded hover:bg-gray-100 dark:hover:bg-white/[0.08] cursor-pointer" 
                 title="Collapse Panel" 
                 onClick={toggleRightCollapse}
               >
@@ -2015,13 +2042,13 @@ export default function TradeClientPage({
 
             {/* Volume Sentiment Indicator */}
             <div className="select-none">
-              <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden flex">
+              <div className="h-1 w-full bg-gray-100 dark:bg-white/[0.08] rounded-full overflow-hidden flex">
                 <div className="bg-[#f23645]" style={{ width: '62%' }} />
                 <div className="bg-[#2563EB]" style={{ width: '38%' }} />
               </div>
-              <div className="flex justify-between text-[8px] font-semibold text-gray-400 mt-1 font-mono">
+              <div className="flex justify-between text-[8px] font-semibold text-gray-400 dark:text-neutral-500 mt-1 font-mono">
                 <span className="text-[#f23645]">SELL 62%</span>
-                <span className="text-[#2563EB]">BUY 38%</span>
+                <span className="text-[#2563EB] dark:text-blue-400">BUY 38%</span>
               </div>
             </div>
 
@@ -2030,26 +2057,26 @@ export default function TradeClientPage({
               <button
                 type="button"
                 onClick={() => setFormModeDropdownOpen(o => !o)}
-                className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
+                className="w-full bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md py-1.5 px-3 flex items-center justify-between text-xs text-gray-700 dark:text-neutral-200 font-semibold hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
               >
                 <span>
                   {orderFormMode === 'regular' && 'Regular Form'}
                   {orderFormMode === 'quick'   && 'Quick Trade'}
                   {orderFormMode === 'risk'    && 'Risk Calculator'}
                 </span>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-150 ${formModeDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 dark:text-neutral-500 transition-transform duration-150 ${formModeDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
               {formModeDropdownOpen && (
-                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-white border border-[#E0E3EB] rounded-md shadow-lg overflow-hidden">
+                <div className="absolute z-50 top-full mt-1 left-0 right-0 bg-white dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md shadow-lg overflow-hidden">
                   {[['regular','Regular Form','Standard inputs — volume, price, TP/SL'],['quick','Quick Trade','One-click execution with preset lots'],['risk','Risk Calculator','Auto lot size from risk % and SL distance']].map(([mode, label, desc]) => (
                     <button
                       key={mode}
                       type="button"
                       onClick={() => { setOrderFormMode(mode); setFormModeDropdownOpen(false); setErrorMsg(''); }}
-                      className={`w-full text-left px-3 py-2 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 ${ orderFormMode === mode ? 'bg-blue-50' : '' }`}
+                      className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors border-b border-gray-50 dark:border-white/[0.04] last:border-0 ${ orderFormMode === mode ? 'bg-blue-50 dark:bg-blue-500/10' : '' }`}
                     >
-                      <div className={`text-[10px] font-semibold ${orderFormMode === mode ? 'text-[#2563EB]' : 'text-gray-800'}`}>{label}</div>
-                      <div className="text-[9px] text-gray-400 mt-0.5">{desc}</div>
+                      <div className={`text-[10px] font-semibold ${orderFormMode === mode ? 'text-[#2563EB] dark:text-blue-400' : 'text-gray-800 dark:text-neutral-100'}`}>{label}</div>
+                      <div className="text-[9px] text-gray-400 dark:text-neutral-400 mt-0.5">{desc}</div>
                     </button>
                   ))}
                 </div>
@@ -2062,15 +2089,15 @@ export default function TradeClientPage({
             {orderFormMode === 'regular' && (
               <div className="flex flex-col gap-3">
                 {/* ORDER TYPE TABS */}
-                <div className="bg-gray-100 p-0.5 rounded-lg flex select-none">
-                  <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Market</button>
-                  <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-400 hover:text-gray-700'}`}>Pending</button>
+                <div className="bg-gray-100 dark:bg-[#161D2A] p-0.5 rounded-lg flex select-none">
+                  <button type="button" onClick={() => setOrderSubtype('Market')} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize cursor-pointer transition-all ${orderSubtype === 'Market' ? 'bg-white dark:bg-[#1E293B] text-gray-800 dark:text-neutral-100 shadow-sm' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'}`}>Market</button>
+                  <button type="button" onClick={() => { if (orderSubtype === 'Market') setOrderSubtype('Limit'); }} className={`w-1/2 py-1 rounded-md text-center font-semibold text-[9.5px] capitalize cursor-pointer transition-all ${orderSubtype !== 'Market' ? 'bg-white dark:bg-[#1E293B] text-gray-800 dark:text-neutral-100 shadow-sm' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'}`}>Pending</button>
                 </div>
 
                 {orderSubtype !== 'Market' && (
                   <div className="flex gap-2 items-center justify-between select-none">
-                    <span className="text-[9px] font-semibold text-gray-400 capitalize">Pending Type</span>
-                    <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] border border-[#E0E3EB] text-gray-700 text-[10px] font-semibold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
+                    <span className="text-[9px] font-semibold text-gray-400 dark:text-neutral-400 capitalize">Pending Type</span>
+                    <select value={orderSubtype} onChange={(e) => setOrderSubtype(e.target.value)} className="bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] text-gray-700 dark:text-neutral-200 text-[10px] font-semibold rounded-md px-2 py-0.5 focus:outline-none focus:border-[#2563EB] cursor-pointer">
                       <option value="Limit">Limit Order</option>
                       <option value="Stop-Limit">Stop-Limit Order</option>
                     </select>
@@ -2078,24 +2105,24 @@ export default function TradeClientPage({
                 )}
                 {orderSubtype !== 'Market' && (
                   <div className="flex flex-col gap-1">
-                    <label className="block text-[9px] text-gray-400 capitalize font-semibold">Price (USDT)</label>
-                    <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                      <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                    <label className="block text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold">Price (USDT)</label>
+                    <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                      <input type="text" value={limitPrice} onChange={(e) => handlePriceInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:ring-0 p-0" />
                       <div className="flex items-center gap-2 select-none">
-                        <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                        <button type="button" onClick={() => adjustPrice('limit', true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                        <button type="button" onClick={() => adjustPrice('limit', false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                        <button type="button" onClick={() => adjustPrice('limit', true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                       </div>
                     </div>
                   </div>
                 )}
                 {orderSubtype === 'Stop-Limit' && (
                   <div className="flex flex-col gap-1">
-                    <label className="block text-[9px] text-gray-400 capitalize font-semibold">Stop Price (USDT)</label>
-                    <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                      <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
+                    <label className="block text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold">Stop Price (USDT)</label>
+                    <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                      <input type="text" value={stopPrice} onChange={(e) => setStopPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:ring-0 p-0" />
                       <div className="flex items-center gap-2 select-none">
-                        <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                        <button type="button" onClick={() => adjustPrice('stop', true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                        <button type="button" onClick={() => adjustPrice('stop', false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                        <button type="button" onClick={() => adjustPrice('stop', true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                       </div>
                     </div>
                   </div>
@@ -2103,41 +2130,41 @@ export default function TradeClientPage({
 
                 {/* Volume */}
                 <div className="flex flex-col gap-1">
-                  <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize font-semibold"><span>Volume</span></div>
-                  <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                    <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
+                  <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold"><span>Volume</span></div>
+                  <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                    <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:ring-0 p-0" />
+                    <span className="text-[10px] font-semibold text-gray-400 dark:text-neutral-400 mr-2 select-none">Lots</span>
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 </div>
 
                 {/* TP */}
-                <div className="flex flex-col gap-1 border-t border-gray-100 pt-2.5">
-                  <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize font-semibold">
-                    <span className="flex items-center gap-1">Take Profit <button type="button" onClick={() => showToast('Take Profit triggers automatically to lock gains.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
+                <div className="flex flex-col gap-1 border-t border-gray-100 dark:border-white/[0.08] pt-2.5">
+                  <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold">
+                    <span className="flex items-center gap-1">Take Profit <button type="button" onClick={() => showToast('Take Profit triggers automatically to lock gains.','info')} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                   </div>
-                  <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                  <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                    <input type="text" value={tpPrice} placeholder="Not set" onChange={(e) => setTpPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:ring-0 p-0" />
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                      <button type="button" onClick={() => adjustTp(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustTp(false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustTp(true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                     </div>
                   </div>
                 </div>
 
                 {/* SL */}
                 <div className="flex flex-col gap-1">
-                  <div className="flex justify-between items-center text-[9px] text-gray-400 capitalize font-semibold">
-                    <span className="flex items-center gap-1">Stop Loss <button type="button" onClick={() => showToast('Stop Loss triggers automatically to protect your capital.','info')} className="text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
+                  <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold">
+                    <span className="flex items-center gap-1">Stop Loss <button type="button" onClick={() => showToast('Stop Loss triggers automatically to protect your capital.','info')} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"><HelpCircle className="w-3 h-3" /></button></span>
                   </div>
-                  <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0" />
+                  <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                    <input type="text" value={slPrice} placeholder="Not set" onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:ring-0 p-0" />
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
-                      <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustSl(false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3 h-3" /></button>
+                      <button type="button" onClick={() => adjustSl(true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3 h-3" /></button>
                     </div>
                   </div>
                 </div>
@@ -2151,7 +2178,7 @@ export default function TradeClientPage({
             {/* ════════════════════════════════════════ */}
             {orderFormMode === 'quick' && (
               <div className="flex flex-col gap-3">
-                <p className="text-[9px] text-gray-400 font-semibold leading-relaxed">Select a preset lot size and execute instantly at market price. No extra inputs required.</p>
+                <p className="text-[9px] text-gray-400 dark:text-neutral-500 font-semibold leading-relaxed">Select a preset lot size and execute instantly at market price. No extra inputs required.</p>
 
                 {/* Preset lot buttons */}
                 <div className="grid grid-cols-3 gap-1.5">
@@ -2163,41 +2190,41 @@ export default function TradeClientPage({
                       className={`py-2 rounded-md border text-[10px] font-semibold transition-all cursor-pointer ${
                         vol === preset
                           ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-sm'
-                          : 'bg-[#FAFAFA] border-[#E0E3EB] text-gray-600 hover:border-[#2563EB] hover:text-[#2563EB]'
+                          : 'bg-[#FAFAFA] dark:bg-[#161D2A] border-[#E0E3EB] dark:border-white/[0.08] text-gray-600 dark:text-neutral-300 hover:border-[#2563EB] hover:text-[#2563EB]'
                       }`}
                     >
                       {preset}
                     </button>
                   ))}
                 </div>
-                <div className="text-[9px] text-gray-400 font-semibold text-center select-none">lots</div>
+                <div className="text-[9px] text-gray-400 dark:text-neutral-500 font-semibold text-center select-none">lots</div>
 
                 {/* Custom vol */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[9px] text-gray-400 capitalize font-semibold">Custom Volume</label>
-                  <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
-                    <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0" />
-                    <span className="text-[10px] font-semibold text-gray-400 mr-2 select-none">Lots</span>
+                  <label className="text-[9px] text-gray-400 dark:text-neutral-400 capitalize font-semibold">Custom Volume</label>
+                  <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 h-8 focus-within:border-[#2563EB] transition-colors">
+                    <input type="text" value={vol} onChange={(e) => handleVolInput(e.target.value)} className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:ring-0 p-0" />
+                    <span className="text-[10px] font-semibold text-gray-400 dark:text-neutral-400 mr-2 select-none">Lots</span>
                     <div className="flex items-center gap-2 select-none">
-                      <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 hover:text-gray-700 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => adjustVol(false)} className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Minus className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => adjustVol(true)}  className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 font-semibold p-1 transition-colors cursor-pointer"><Plus  className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                 </div>
 
                 {/* Summary */}
-                <div className="bg-gray-50 border border-gray-100 rounded-md p-2.5 space-y-1.5">
+                <div className="bg-gray-50 dark:bg-[#161D2A]/60 border border-gray-100 dark:border-white/[0.08] rounded-md p-2.5 space-y-1.5">
                   <div className="flex justify-between text-[9px] font-semibold">
-                    <span className="text-gray-400">Order Value</span>
-                    <span className="text-gray-800 font-mono">${getOrderValueUSD().toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                    <span className="text-gray-400 dark:text-neutral-400">Order Value</span>
+                    <span className="text-gray-800 dark:text-neutral-200 font-mono">${getOrderValueUSD().toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                   </div>
                   <div className="flex justify-between text-[9px] font-semibold">
-                    <span className="text-gray-400">Margin Required</span>
-                    <span className="text-gray-800 font-mono">${(getOrderValueUSD()/leverage).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                    <span className="text-gray-400 dark:text-neutral-400">Margin Required</span>
+                    <span className="text-gray-800 dark:text-neutral-200 font-mono">${(getOrderValueUSD()/leverage).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                   </div>
                   <div className="flex justify-between text-[9px] font-semibold">
-                    <span className="text-gray-400">Leverage</span>
-                    <span className="text-[#2563EB] font-mono">{leverage}x</span>
+                    <span className="text-gray-400 dark:text-neutral-400">Leverage</span>
+                    <span className="text-[#2563EB] dark:text-blue-400 font-mono">{leverage}x</span>
                   </div>
                 </div>
 
@@ -2240,25 +2267,25 @@ export default function TradeClientPage({
                                    : null;
 
               const inputH = 'h-8';
-              const fieldCls = `flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-md px-3 ${inputH} focus-within:border-[#2563EB] transition-colors`;
+              const fieldCls = `flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-md px-3 ${inputH} focus-within:border-[#2563EB] transition-colors`;
               const rowCls  = 'flex justify-between text-[9px] font-semibold py-1';
 
               return (
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-semibold text-gray-700">Risk-Based Position Sizing</span>
-                    <span className="text-[8px] bg-blue-50 text-[#2563EB] border border-blue-200 rounded px-1 font-mono">1 Lot = {isForex ? '100k' : isGold ? '100oz' : '1 unit'}</span>
+                    <span className="text-[10px] font-semibold text-gray-700 dark:text-neutral-200">Risk-Based Position Sizing</span>
+                    <span className="text-[8px] bg-blue-50 dark:bg-blue-500/10 text-[#2563EB] dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 rounded px-1 font-mono">1 Lot = {isForex ? '100k' : isGold ? '100oz' : '1 unit'}</span>
                   </div>
 
-                  <div className="bg-blue-50/60 border border-blue-100 rounded-md p-2 flex justify-between items-center text-[9.5px]">
-                    <span className="text-gray-500">Equity Base</span>
-                    <span className="font-mono font-semibold text-gray-800">${(balance + activeMargin).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                  <div className="bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 rounded-md p-2 flex justify-between items-center text-[9.5px]">
+                    <span className="text-gray-500 dark:text-neutral-400">Equity Base</span>
+                    <span className="font-mono font-semibold text-gray-800 dark:text-neutral-200">${(balance + activeMargin).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between items-center text-[9px] text-gray-400 font-semibold">
+                    <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 font-semibold">
                       <span>Risk per Trade</span>
-                      <span className="font-mono text-[#2563EB] font-semibold">${riskAmt.toFixed(2)} ({riskPct}%)</span>
+                      <span className="font-mono text-[#2563EB] dark:text-blue-400 font-semibold">${riskAmt.toFixed(2)} ({riskPct}%)</span>
                     </div>
                     <div className="grid grid-cols-4 gap-1">
                       {['0.5','1','2','3'].map(p => (
@@ -2269,7 +2296,7 @@ export default function TradeClientPage({
                           className={`py-1 rounded text-[9.5px] font-semibold font-mono border transition-all cursor-pointer ${
                             riskPct === p
                               ? 'bg-[#2563EB] border-[#2563EB] text-white'
-                              : 'bg-[#FAFAFA] border-[#E0E3EB] text-gray-600 hover:border-[#2563EB]'
+                              : 'bg-[#FAFAFA] dark:bg-[#161D2A] border-[#E0E3EB] dark:border-white/[0.08] text-gray-600 dark:text-neutral-300 hover:border-[#2563EB]'
                           }`}
                         >
                           {p}%
@@ -2279,9 +2306,9 @@ export default function TradeClientPage({
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-[9px] text-gray-400 font-semibold">
+                    <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 font-semibold">
                       <span>Entry Price</span>
-                      <button type="button" onClick={() => setCalcEntryPrice(livePrice.toString())} className="text-[#2563EB] hover:underline cursor-pointer">Use Live ({formatAssetPrice(livePrice)})</button>
+                      <button type="button" onClick={() => setCalcEntryPrice(livePrice.toString())} className="text-[#2563EB] dark:text-blue-400 hover:underline cursor-pointer">Use Live ({formatAssetPrice(livePrice)})</button>
                     </div>
                     <div className={fieldCls}>
                       <input
@@ -2289,15 +2316,15 @@ export default function TradeClientPage({
                         value={calcEntryPrice}
                         placeholder={formatAssetPrice(livePrice)}
                         onChange={(e) => setCalcEntryPrice(e.target.value.replace(/[^0-9.]/g, ''))}
-                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0"
+                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:ring-0 p-0"
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-[9px] text-gray-400 font-semibold">
+                    <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 font-semibold">
                       <span className="text-[#f23645]">Stop-Loss Price *</span>
-                      {slDistPips > 0 && <span className="font-mono text-gray-500 font-semibold">{slDistPips.toFixed(1)} {unitLabel}</span>}
+                      {slDistPips > 0 && <span className="font-mono text-gray-500 dark:text-neutral-400 font-semibold">{slDistPips.toFixed(1)} {unitLabel}</span>}
                     </div>
                     <div className={`${fieldCls} ${!slValid && slPrice ? 'border-[#f23645]' : ''}`}>
                       <input
@@ -2305,15 +2332,15 @@ export default function TradeClientPage({
                         value={slPrice}
                         placeholder="Required for calculation"
                         onChange={(e) => setSlPrice(e.target.value.replace(/[^0-9.]/g, ''))}
-                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0"
+                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:ring-0 p-0"
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <div className="flex justify-between text-[9px] text-gray-400 font-semibold">
-                      <span className="text-green-600">Take-Profit Price (Optional)</span>
-                      {tpDistPips > 0 && <span className="font-mono text-gray-500 font-semibold">{tpDistPips.toFixed(1)} {unitLabel}</span>}
+                    <div className="flex justify-between items-center text-[9px] text-gray-400 dark:text-neutral-400 font-semibold">
+                      <span className="text-green-600 dark:text-green-400">Take-Profit Price (Optional)</span>
+                      {tpDistPips > 0 && <span className="font-mono text-gray-500 dark:text-neutral-400 font-semibold">{tpDistPips.toFixed(1)} {unitLabel}</span>}
                     </div>
                     <div className={fieldCls}>
                       <input
@@ -2321,43 +2348,43 @@ export default function TradeClientPage({
                         value={calcTpPrice}
                         placeholder="Optional target"
                         onChange={(e) => setCalcTpPrice(e.target.value.replace(/[^0-9.]/g, ''))}
-                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-0 p-0"
+                        className="w-full bg-transparent border-none text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:ring-0 p-0"
                       />
                     </div>
                   </div>
 
                   {slValid && calcLots > 0 ? (
-                    <div className="bg-gradient-to-br from-blue-50/80 to-indigo-50/50 border border-blue-200 rounded-md p-2.5 space-y-1">
-                      <div className="text-[9px] font-semibold text-gray-500 pb-1 border-b border-blue-100 flex justify-between items-center">
+                    <div className="bg-gradient-to-br from-blue-50/80 to-indigo-50/50 dark:from-blue-950/40 dark:to-indigo-950/30 border border-blue-200 dark:border-blue-900/40 rounded-md p-2.5 space-y-1">
+                      <div className="text-[9px] font-semibold text-gray-500 dark:text-neutral-400 pb-1 border-b border-blue-100 dark:border-blue-900/40 flex justify-between items-center">
                         <span>Calculated Position</span>
-                        <span className="text-[#2563EB] font-mono">1 pip = ${pipValuePerLot} / lot</span>
+                        <span className="text-[#2563EB] dark:text-blue-400 font-mono">1 pip = ${pipValuePerLot} / lot</span>
                       </div>
-                      <div className="divide-y divide-blue-50/80">
+                      <div className="divide-y divide-blue-50/80 dark:divide-blue-900/20">
                         <div className={`${rowCls} pt-1`}>
-                          <span className="text-gray-500">Suggested Lots</span>
-                          <span className={`font-mono font-semibold text-[10px] ${calcLots > 0 ? 'text-[#2563EB]' : 'text-gray-300'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span>
+                          <span className="text-gray-500 dark:text-neutral-400">Suggested Lots</span>
+                          <span className={`font-mono font-semibold text-[10px] ${calcLots > 0 ? 'text-[#2563EB] dark:text-blue-400' : 'text-gray-300 dark:text-neutral-600'}`}>{calcLots > 0 ? calcLots.toFixed(2) : '< 0.01'}</span>
                         </div>
-                        <div className={`${rowCls} border-b border-blue-50`}>
-                          <span className="text-gray-500">Max Loss</span>
+                        <div className={`${rowCls} border-b border-blue-50 dark:border-blue-900/20`}>
+                          <span className="text-gray-500 dark:text-neutral-400">Max Loss</span>
                           <span className="text-[#f23645] font-mono">-${potLoss.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                         </div>
                         {tpValid && (
                           <>
-                            <div className={`${rowCls} border-b border-blue-50`}>
-                              <span className="text-gray-500">Potential Profit</span>
-                              <span className="text-green-600 font-mono">+${potProfit.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                            <div className={`${rowCls} border-b border-blue-50 dark:border-blue-900/20`}>
+                              <span className="text-gray-500 dark:text-neutral-400">Potential Profit</span>
+                              <span className="text-green-600 dark:text-green-400 font-mono">+${potProfit.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
                             </div>
                             <div className={rowCls}>
-                              <span className="text-gray-500">Risk : Reward</span>
-                              <span className={`font-mono font-semibold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600' : 'text-[#f23645]'}`}>1 : {rrRatio}</span>
+                              <span className="text-gray-500 dark:text-neutral-400">Risk : Reward</span>
+                              <span className={`font-mono font-semibold text-[10px] ${parseFloat(rrRatio) >= 2 ? 'text-green-600 dark:text-green-400' : parseFloat(rrRatio) >= 1 ? 'text-yellow-600 dark:text-yellow-400' : 'text-[#f23645]'}`}>1 : {rrRatio}</span>
                             </div>
                           </>
                         )}
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-gray-50 border border-dashed border-gray-200 rounded-md p-3 text-center">
-                      <div className="text-[9px] text-gray-400 font-semibold">Enter a stop-loss price above to calculate your position size</div>
+                    <div className="bg-gray-50 dark:bg-[#161D2A]/40 border border-dashed border-gray-200 dark:border-white/[0.08] rounded-md p-3 text-center">
+                      <div className="text-[9px] text-gray-400 dark:text-neutral-500 font-semibold">Enter a stop-loss price above to calculate your position size</div>
                     </div>
                   )}
 
@@ -2375,13 +2402,13 @@ export default function TradeClientPage({
             })()}
 
             {/* SUBMIT BUTTON & FOOTER STATS */}
-            <div className="pt-2.5 border-t border-gray-100 font-semibold bg-[#FAFAFA] p-3 rounded-lg flex flex-col gap-2.5">
+            <div className="pt-2.5 border-t border-gray-100 dark:border-white/[0.08] font-semibold bg-[#FAFAFA] dark:bg-[#161D2A] p-3 rounded-lg flex flex-col gap-2.5">
               {/* Active Account Indicator */}
-              <div className="flex justify-between items-center text-[10px] font-semibold text-gray-400 pb-2 border-b border-gray-100 select-none">
+              <div className="flex justify-between items-center text-[10px] font-semibold text-gray-400 dark:text-neutral-400 pb-2 border-b border-gray-100 dark:border-white/[0.08] select-none">
                 <span>Trading Account</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-gray-900 font-mono font-semibold">Demo #{accountNumber}</span>
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-semibold capitalize bg-green-50 text-green-700 border border-green-200 select-none">Active</span>
+                  <span className="text-gray-900 dark:text-neutral-100 font-mono font-semibold">Demo #{accountNumber}</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-semibold capitalize bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/40 select-none">Active</span>
                 </div>
               </div>
 
@@ -2398,22 +2425,22 @@ export default function TradeClientPage({
               </button>
               
               {/* Account/Margin details */}
-              <div className="text-[10px] space-y-1 text-gray-400 font-semibold">
+              <div className="text-[10px] space-y-1 text-gray-400 dark:text-neutral-400 font-semibold">
                 <div className="flex justify-between">
                   <span>Available Balance:</span>
-                  <span className="text-gray-700 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                  <span className="text-gray-700 dark:text-neutral-200 font-mono">{balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Margin Required:</span>
-                  <span className="text-gray-700 font-mono">{marginRequired.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                  <span className="text-gray-700 dark:text-neutral-200 font-mono">{marginRequired.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Free Margin:</span>
-                  <span className="text-gray-700 font-mono">{freeMargin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                  <span className="text-gray-700 dark:text-neutral-200 font-mono">{freeMargin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Account Equity:</span>
-                  <span className="text-gray-700 font-mono">{activeEquity.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
+                  <span className="text-gray-700 dark:text-neutral-200 font-mono">{activeEquity.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD</span>
                 </div>
               </div>
             </div>
@@ -2446,12 +2473,12 @@ export default function TradeClientPage({
   console.log("Button reading asset:", selectedAsset);
 
   return (
-    <div className="h-screen bg-[#F0F3FA] flex flex-col justify-between font-sans overflow-hidden text-[#111111] select-none">
+    <div className="h-screen bg-[#F0F3FA] dark:bg-[#0B0E14] flex flex-col justify-between font-sans overflow-hidden text-[#111111] dark:text-neutral-100 select-none">
       {/* Toast Alert */}
       {toast.visible && (
         <div className="fixed top-20 right-6 z-50 animate-fade-in">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[#e0e0e0] shadow-sm bg-white text-gray-800">
-            {toast.type === 'info' ? <Info className="w-5 h-5 text-[#2563EB] shrink-0" /> : <CheckCircle2 className="w-5 h-5 text-[#089981] shrink-0" />}
+          <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-[#e0e0e0] dark:border-white/[0.08] shadow-sm bg-white dark:bg-[#161D2A] text-gray-800 dark:text-neutral-200">
+            {toast.type === 'info' ? <Info className="w-5 h-5 text-[#2563EB] dark:text-blue-400 shrink-0" /> : <CheckCircle2 className="w-5 h-5 text-[#089981] shrink-0" />}
             <span className="text-xs font-semibold">{toast.message}</span>
           </div>
         </div>
@@ -2459,19 +2486,19 @@ export default function TradeClientPage({
 
       {/* Symbol Search Modal */}
       {isSearchOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-[500px] rounded-brand border border-gray-200 shadow-xl flex flex-col overflow-hidden animate-fade-in max-h-[80vh]">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-gray-900">Search Symbols</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#111722] w-full max-w-[500px] rounded-brand border border-gray-200 dark:border-white/[0.08] shadow-xl flex flex-col overflow-hidden animate-fade-in max-h-[80vh]">
+            <div className="p-4 border-b border-gray-100 dark:border-white/[0.08] flex items-center justify-between">
+              <h3 className="font-semibold text-sm text-gray-900 dark:text-neutral-100">Search Symbols</h3>
               <button 
                 onClick={() => setIsSearchOpen(false)}
-                className="p-1 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-md text-gray-400 dark:text-neutral-400 hover:text-gray-600 dark:hover:text-neutral-200 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="p-4 border-b border-gray-100 relative">
-              <Search className="w-4 h-4 text-gray-400 absolute left-7 top-1/2 -translate-y-1/2" />
+            <div className="p-4 border-b border-gray-100 dark:border-white/[0.08] relative">
+              <Search className="w-4 h-4 text-gray-400 dark:text-neutral-500 absolute left-7 top-1/2 -translate-y-1/2" />
               <input 
                 type="text"
                 autoFocus
@@ -2492,7 +2519,7 @@ export default function TradeClientPage({
                     setIsSearchOpen(false);
                   }
                 }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 bg-gray-50/50 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-white/[0.08] bg-gray-50/50 dark:bg-[#161D2A] text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white dark:focus:bg-[#161D2A] transition-all"
               />
             </div>
             
@@ -2513,19 +2540,19 @@ export default function TradeClientPage({
                       <button
                         key={item.symbol}
                         onClick={() => handleAssetChange(item.symbol)}
-                        className="w-full text-left p-3 rounded-lg hover:bg-gray-50 flex items-center justify-between transition-colors cursor-pointer group"
+                        className="w-full text-left p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/[0.03] flex items-center justify-between transition-colors cursor-pointer group"
                       >
                         <div className="flex items-center gap-3">
                           <span className={`w-2 h-2 rounded-full ${isUp ? 'bg-[#089981]' : 'bg-[#f23645]'}`} />
                           <div>
-                            <div className="font-semibold text-xs text-gray-900 group-hover:text-[#2563EB] transition-colors">
+                            <div className="font-semibold text-xs text-gray-900 dark:text-neutral-100 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 transition-colors">
                               {item.pair || (item.symbol.includes('/') ? item.symbol : `${item.symbol}/USDT`)}
                             </div>
-                            <div className="text-[10px] text-gray-400 font-medium">{item.name} • {item.type}</div>
+                            <div className="text-[10px] text-gray-400 dark:text-neutral-500 font-medium">{item.name} • {item.type}</div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="font-semibold text-xs font-mono">{formatAssetPrice(buyPrice, item.symbol)}</div>
+                          <div className="font-semibold text-xs font-mono text-gray-900 dark:text-neutral-100">{formatAssetPrice(buyPrice, item.symbol)}</div>
                           <div className={`text-[10px] font-semibold font-mono ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                             {isUp ? '+' : ''}{changePct.toFixed(2)}%
                           </div>
@@ -2543,7 +2570,7 @@ export default function TradeClientPage({
       <Navbar userName={userName} onAccountSwitch={fetchAccountDetails} />
 
       {/* TOP TICKER STRIP */}
-      <div className="bg-white border-b border-[#E0E3EB] h-7 overflow-hidden relative flex items-center w-full select-none shrink-0">
+      <div className="bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] h-7 overflow-hidden relative flex items-center w-full select-none shrink-0">
         <div className="animate-marquee whitespace-nowrap flex items-center gap-12 text-[10px] font-sans py-0.5">
           {[...Object.values(ASSETS), ...Object.values(ASSETS), ...Object.values(ASSETS)].map((item, idx) => {
             const currentPrice = prices[item.symbol] || item.price;
@@ -2556,8 +2583,8 @@ export default function TradeClientPage({
                 onClick={() => handleAssetChange(item.symbol)}
                 className="flex items-center gap-1.5 shrink-0 hover:opacity-80 transition-opacity cursor-pointer text-left"
               >
-                <span className="font-semibold text-[#111111]">{item.symbol}</span>
-                <span className="text-gray-500 font-semibold tabular-nums">
+                <span className="font-semibold text-[#111111] dark:text-neutral-100">{item.symbol}</span>
+                <span className="text-gray-500 dark:text-neutral-400 font-semibold tabular-nums">
                   {FOREX_SYMBOLS.includes(item.symbol) 
                     ? currentPrice.toFixed(4) 
                     : currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })
@@ -2579,12 +2606,12 @@ export default function TradeClientPage({
         <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-y-auto lg:overflow-hidden w-full relative">
         
         {/* Far Left Drawing Toolbar (TradingView Style) */}
-        <aside className="hidden lg:flex w-11 bg-white border-r border-[#E0E3EB] flex-col items-center py-2 justify-between shrink-0 select-none">
+        <aside className="hidden lg:flex w-11 bg-white dark:bg-[#111722] border-r border-[#E0E3EB] dark:border-white/[0.08] flex-col items-center py-2 justify-between shrink-0 select-none">
           <div className="flex flex-col items-center gap-2 w-full px-1">
             <button 
               title="Crosshair Cursor" 
               onClick={() => { setActiveDrawingTool('cursor'); showToast('Crosshair active', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'cursor' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'cursor' ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-semibold' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>
             </button>
@@ -2592,7 +2619,7 @@ export default function TradeClientPage({
             <button 
               title="Trend Line" 
               onClick={() => { setActiveDrawingTool('trend'); showToast('Trend line tool selected. Click on chart to draw.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'trend' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'trend' ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-semibold' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1"/><circle cx="20" cy="4" r="1"/></svg>
             </button>
@@ -2600,7 +2627,7 @@ export default function TradeClientPage({
             <button 
               title="Fibonacci Retracement" 
               onClick={() => { setActiveDrawingTool('fib'); showToast('Fibonacci Retracement tool selected.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'fib' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'fib' ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-semibold' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -2608,7 +2635,7 @@ export default function TradeClientPage({
             <button 
               title="Brush Tool" 
               onClick={() => { setActiveDrawingTool('brush'); showToast('Brush tool selected. Click and drag to draw.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'brush' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'brush' ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-semibold' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </button>
@@ -2616,7 +2643,7 @@ export default function TradeClientPage({
             <button 
               title="Text Annotation" 
               onClick={() => { setActiveDrawingTool('text'); showToast('Text tool selected. Click on chart to place text.', 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'text' ? 'bg-[#2563EB]/10 text-[#2563EB] font-semibold' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${activeDrawingTool === 'text' ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-semibold' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
             </button>
@@ -2624,17 +2651,17 @@ export default function TradeClientPage({
             <button 
               title="Measure (Ruler)" 
               onClick={() => showToast('Measure tool activated. Click two points on the chart to measure distance & percent.', 'info')}
-              className="p-1.5 rounded-md text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer w-8 h-8 flex items-center justify-center"
+              className="p-1.5 rounded-md text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors cursor-pointer w-8 h-8 flex items-center justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path d="M22 12h-4M2 12h4M12 2v4M12 18v4M7 7l3 3M17 17l-3-3"/></svg>
             </button>
 
-            <div className="w-6 h-[1px] bg-gray-100 my-1" />
+            <div className="w-6 h-[1px] bg-gray-100 dark:bg-white/[0.08] my-1" />
 
             <button 
               title={magnetMode ? "Magnet Mode (ON)" : "Magnet Mode (OFF)"}
               onClick={() => { setMagnetMode(!magnetMode); showToast(magnetMode ? "Magnet mode disabled" : "Magnet mode enabled: snap to price points", 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${magnetMode ? 'bg-[#2563EB] text-white' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${magnetMode ? 'bg-[#2563EB] text-white' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 5H7a4 4 0 0 0-4 4v5a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V9a4 4 0 0 0-4-4z"/><path d="M7 11h2M15 11h2"/></svg>
             </button>
@@ -2644,7 +2671,7 @@ export default function TradeClientPage({
             <button 
               title={drawingsLocked ? "Unlock Drawings" : "Lock All Drawing Tools"}
               onClick={() => { setDrawingsLocked(!drawingsLocked); showToast(drawingsLocked ? "Drawing tools unlocked" : "All drawing tools locked in place", 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${drawingsLocked ? 'bg-[#2563EB]/10 text-[#2563EB]' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${drawingsLocked ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               {drawingsLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
             </button>
@@ -2652,7 +2679,7 @@ export default function TradeClientPage({
             <button 
               title={drawingsHidden ? "Show Drawings" : "Hide All Drawings"}
               onClick={() => { setDrawingsHidden(!drawingsHidden); showToast(drawingsHidden ? "Drawings visible" : "All drawings hidden from view", 'info'); }}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${drawingsHidden ? 'bg-[#2563EB]/10 text-[#2563EB]' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-50'}`}
+              className={`p-1.5 rounded-md transition-colors cursor-pointer w-8 h-8 flex items-center justify-center ${drawingsHidden ? 'bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-gray-50 dark:hover:bg-white/[0.04]'}`}
             >
               {drawingsHidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -2660,7 +2687,7 @@ export default function TradeClientPage({
             <button 
               title="Remove Drawings & Indicators" 
               onClick={() => showToast('All drawings deleted from chart.', 'success')}
-              className="p-1.5 rounded-md text-gray-400 hover:text-[#f23645] hover:bg-[#f23645]/5 transition-colors cursor-pointer w-8 h-8 flex items-center justify-center"
+              className="p-1.5 rounded-md text-gray-400 dark:text-neutral-400 hover:text-[#f23645] hover:bg-[#f23645]/5 transition-colors cursor-pointer w-8 h-8 flex items-center justify-center"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -2671,37 +2698,37 @@ export default function TradeClientPage({
         {isLeftCollapsed ? (
           <aside 
             onClick={toggleLeftCollapse}
-            className="hidden lg:flex w-9 bg-[#FAFAFA] hover:bg-gray-100/80 border-r border-[#E0E3EB] flex-col items-center py-3 cursor-pointer select-none transition-all group shrink-0"
+            className="hidden lg:flex w-9 bg-[#FAFAFA] dark:bg-[#161D2A] hover:bg-gray-100/80 dark:hover:bg-white/[0.04] border-r border-[#E0E3EB] dark:border-white/[0.08] flex-col items-center py-3 cursor-pointer select-none transition-all group shrink-0"
             title="Expand Watchlist panel"
           >
             <button
               type="button"
               onClick={toggleLeftCollapse}
-              className="p-1 rounded bg-white border border-gray-200 shadow-2xs text-gray-500 group-hover:text-[#2563EB] transition-colors"
+              className="p-1 rounded bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] shadow-2xs text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 transition-colors"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
-            <div className="mt-6 [writing-mode:vertical-rl] rotate-180 text-[10.5px] font-bold text-gray-500 group-hover:text-[#2563EB] tracking-wider uppercase flex items-center gap-1.5">
+            <div className="mt-6 [writing-mode:vertical-rl] rotate-180 text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 tracking-wider uppercase flex items-center gap-1.5">
               <span>Watchlist</span>
-              <span className="text-[9px] font-mono text-gray-400">({Object.keys(ASSETS).length})</span>
+              <span className="text-[9px] font-mono text-gray-400 dark:text-neutral-500">({Object.keys(ASSETS).length})</span>
             </div>
           </aside>
         ) : (
-          <aside style={{ width: `${leftWidth}px` }} className="hidden lg:flex bg-white flex-col overflow-hidden h-full shrink-0 transition-all border-r border-[#E0E3EB]">
+          <aside style={{ width: `${leftWidth}px` }} className="hidden lg:flex bg-white dark:bg-[#111722] flex-col overflow-hidden h-full shrink-0 transition-all border-r border-[#E0E3EB] dark:border-white/[0.08]">
             {renderWatchlist()}
           </aside>
         )}
 
         {/* Center and Left Work Area (Chart & Bottom Terminal) */}
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white">
+        <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white dark:bg-[#0B0E14]">
           
           {/* Chart Section */}
-          <div className="h-[420px] lg:h-0 lg:flex-grow flex flex-col overflow-hidden relative shrink-0 lg:min-h-0 bg-white">
+          <div className="h-[420px] lg:h-0 lg:flex-grow flex flex-col overflow-hidden relative shrink-0 lg:min-h-0 bg-white dark:bg-[#0B0E14]">
             {/* Chart Top Header Toolbar: [SELL] [BUY] [Timeframes] [Chart Types] [Indicators/Tools] */}
-            <div className="h-10 bg-white border-b border-[#E0E3EB] flex items-center justify-between px-2.5 shrink-0 select-none z-20">
+            <div className="h-10 bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] flex items-center justify-between px-2.5 shrink-0 select-none z-20">
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
                 {/* SELL / BUY Quick Action Group */}
-                <div className="flex items-center gap-1 bg-[#FAFAFA] p-0.5 rounded-lg border border-gray-200/90 shadow-2xs shrink-0">
+                <div className="flex items-center gap-1 bg-[#FAFAFA] dark:bg-[#161D2A] p-0.5 rounded-lg border border-gray-200/90 dark:border-white/[0.08] shadow-2xs shrink-0">
                   {/* SELL BUTTON (Red) */}
                   <button
                     type="button"
@@ -2715,7 +2742,7 @@ export default function TradeClientPage({
                     </span>
                   </button>
 
-                  <div className="px-1 text-[8px] font-mono font-semibold text-gray-400">
+                  <div className="px-1 text-[8px] font-mono font-semibold text-gray-400 dark:text-neutral-500">
                     {isForex ? '0.0001' : '0.01'}
                   </div>
 
@@ -2734,10 +2761,10 @@ export default function TradeClientPage({
                 </div>
 
                 {/* Vertical Divider */}
-                <div className="h-4 w-[1px] bg-gray-200 mx-1 shrink-0" />
+                <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/[0.08] mx-1 shrink-0" />
 
                 {/* Timeframes: 1m, 15m, 1H, 4H, 1D */}
-                <div className="flex items-center gap-0.5 bg-gray-100/70 p-0.5 rounded-lg shrink-0 text-[10px] font-semibold">
+                <div className="flex items-center gap-0.5 bg-gray-100/70 dark:bg-[#161D2A] p-0.5 rounded-lg shrink-0 text-[10px] font-semibold">
                   {['1m', '15m', '1H', '4H', '1D'].map((tf) => (
                     <button
                       key={tf}
@@ -2745,8 +2772,8 @@ export default function TradeClientPage({
                       onClick={() => setTimeframe(tf)}
                       className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                         timeframe === tf
-                          ? 'bg-white text-[#2563EB] font-bold shadow-2xs'
-                          : 'text-gray-500 hover:text-gray-900 hover:bg-white/60'
+                          ? 'bg-white dark:bg-[#1E293B] text-[#2563EB] dark:text-blue-400 font-bold shadow-2xs'
+                          : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-white/[0.04]'
                       }`}
                     >
                       {tf}
@@ -2755,17 +2782,17 @@ export default function TradeClientPage({
                 </div>
 
                 {/* Vertical Divider */}
-                <div className="h-4 w-[1px] bg-gray-200 mx-1 shrink-0" />
+                <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/[0.08] mx-1 shrink-0" />
 
                 {/* Chart Style (Candles / Line) */}
-                <div className="flex items-center gap-0.5 bg-gray-100/70 p-0.5 rounded-lg shrink-0 text-[10px] font-semibold">
+                <div className="flex items-center gap-0.5 bg-gray-100/70 dark:bg-[#161D2A] p-0.5 rounded-lg shrink-0 text-[10px] font-semibold">
                   <button
                     type="button"
                     onClick={() => setChartType('candles')}
                     className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                       chartType === 'candles'
-                        ? 'bg-white text-[#2563EB] font-bold shadow-2xs'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-white/60'
+                        ? 'bg-white dark:bg-[#1E293B] text-[#2563EB] dark:text-blue-400 font-bold shadow-2xs'
+                        : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-white/[0.04]'
                     }`}
                     title="Candlestick Chart"
                   >
@@ -2776,8 +2803,8 @@ export default function TradeClientPage({
                     onClick={() => setChartType('line')}
                     className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                       chartType === 'line'
-                        ? 'bg-white text-[#2563EB] font-bold shadow-2xs'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-white/60'
+                        ? 'bg-white dark:bg-[#1E293B] text-[#2563EB] dark:text-blue-400 font-bold shadow-2xs'
+                        : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-white/[0.04]'
                     }`}
                     title="Line Chart"
                   >
@@ -2789,9 +2816,9 @@ export default function TradeClientPage({
                 <button
                   type="button"
                   onClick={() => showToast('Technical indicators loaded on chart.', 'info')}
-                  className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors cursor-pointer shrink-0"
+                  className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-600 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-neutral-100 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg transition-colors cursor-pointer shrink-0"
                 >
-                  <Sliders className="w-3 h-3 text-[#2563EB]" />
+                  <Sliders className="w-3 h-3 text-[#2563EB] dark:text-blue-400" />
                   <span>Indicators</span>
                 </button>
               </div>
@@ -2809,7 +2836,7 @@ export default function TradeClientPage({
                       }
                     }
                   }}
-                  className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-700 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
                   title="Toggle Fullscreen"
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
@@ -2818,7 +2845,7 @@ export default function TradeClientPage({
             </div>
 
             {/* Chart Canvas Area */}
-            <div className="flex-grow w-full h-full bg-white relative overflow-hidden">
+            <div className="flex-grow w-full h-full bg-white dark:bg-[#0B0E14] relative overflow-hidden">
               {/* TradingView Chart Container */}
               <div ref={chartContainerRef} className="w-full h-full" />
             </div>
@@ -2829,17 +2856,17 @@ export default function TradeClientPage({
         {isRightCollapsed ? (
           <aside
             onClick={toggleRightCollapse}
-            className="hidden lg:flex w-9 bg-[#FAFAFA] hover:bg-gray-100/80 border-l border-[#E0E3EB] flex-col items-center py-3 cursor-pointer select-none transition-all group shrink-0"
+            className="hidden lg:flex w-9 bg-[#FAFAFA] dark:bg-[#161D2A] hover:bg-gray-100/80 dark:hover:bg-white/[0.04] border-l border-[#E0E3EB] dark:border-white/[0.08] flex-col items-center py-3 cursor-pointer select-none transition-all group shrink-0"
             title="Expand Spot Ticket panel"
           >
             <button
               type="button"
               onClick={toggleRightCollapse}
-              className="p-1 rounded bg-white border border-gray-200 shadow-2xs text-gray-500 group-hover:text-[#2563EB] transition-colors"
+              className="p-1 rounded bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] shadow-2xs text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 transition-colors"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <div className="mt-6 [writing-mode:vertical-rl] text-[10.5px] font-bold text-gray-500 group-hover:text-[#2563EB] tracking-wider uppercase flex items-center gap-1.5">
+            <div className="mt-6 [writing-mode:vertical-rl] text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 tracking-wider uppercase flex items-center gap-1.5">
               <span>{rightPanelTab === 'ticket' ? 'Spot Ticket' : 'Level 2 Book'}</span>
             </div>
           </aside>
@@ -2848,9 +2875,9 @@ export default function TradeClientPage({
             {/* Right Resize Handle */}
             <div 
               onMouseDown={startResizeRight}
-              className="hidden lg:block w-[4px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-transparent border-l border-[#E0E3EB] hover:border-transparent cursor-col-resize transition-all duration-150 shrink-0 select-none z-10"
+              className="hidden lg:block w-[4px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-transparent border-l border-[#E0E3EB] dark:border-white/[0.08] hover:border-transparent cursor-col-resize transition-all duration-150 shrink-0 select-none z-10"
             />
-            <aside style={{ width: isDesktop ? `${rightWidth}px` : '100%' }} className="w-full lg:w-auto bg-white border-t lg:border-t-0 flex flex-col shrink-0 overflow-y-auto lg:overflow-hidden h-auto lg:h-full transition-all">
+            <aside style={{ width: isDesktop ? `${rightWidth}px` : '100%' }} className="w-full lg:w-auto bg-white dark:bg-[#111722] border-t lg:border-t-0 flex flex-col shrink-0 overflow-y-auto lg:overflow-hidden h-auto lg:h-full transition-all">
               {renderOrderPanel()}
             </aside>
           </>
@@ -2862,30 +2889,30 @@ export default function TradeClientPage({
         {!isBottomCollapsed && (
           <div 
             onMouseDown={startResizeTerminal}
-            className="h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] border-t border-b border-[#E0E3EB] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10 w-full"
+            className="h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] dark:bg-[#161D2A] border-t border-b border-[#E0E3EB] dark:border-white/[0.08] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10 w-full"
           />
         )}
 
         {/* ROW 2: Bottom Terminal (Positions / Pending Orders / Order History) — Full Width */}
         <div 
           style={{ height: isBottomCollapsed ? '32px' : `${terminalHeight}px` }} 
-          className="bg-white overflow-hidden flex flex-col shrink-0 w-full border-t border-gray-200 transition-[height] duration-200 ease-in-out"
+          className="bg-white dark:bg-[#111722] overflow-hidden flex flex-col shrink-0 w-full border-t border-gray-200 dark:border-white/[0.08] transition-[height] duration-200 ease-in-out"
         >
           {/* Header Tabs */}
-          <div className="text-[11px] font-semibold border-b border-gray-100 bg-[#FAFAFA] text-gray-400 shrink-0 flex justify-between items-center px-2 py-0.5 h-8 select-none">
+          <div className="text-[11px] font-semibold border-b border-gray-100 dark:border-white/[0.08] bg-[#FAFAFA] dark:bg-[#161D2A] text-gray-400 dark:text-neutral-400 shrink-0 flex justify-between items-center px-2 py-0.5 h-8 select-none">
             <div className="flex items-center gap-2 select-none">
               {/* Bottom Panel Collapse / Expand Button */}
               <button
                 type="button"
                 onClick={toggleBottomCollapse}
-                className="p-1 hover:bg-gray-200/80 rounded text-gray-500 hover:text-gray-900 transition-colors cursor-pointer flex items-center gap-1 text-[10px] font-semibold mr-1"
+                className="p-1 hover:bg-gray-200/80 dark:hover:bg-white/[0.08] rounded text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100 transition-colors cursor-pointer flex items-center gap-1 text-[10px] font-semibold mr-1"
                 title={isBottomCollapsed ? "Expand Terminal Panel (▲)" : "Collapse Terminal Panel (▼)"}
               >
-                {isBottomCollapsed ? <ChevronUp className="w-3.5 h-3.5 text-[#2563EB]" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                <span className="text-[9.5px] text-gray-600 hidden sm:inline">{isBottomCollapsed ? "Expand" : "Collapse"}</span>
+                {isBottomCollapsed ? <ChevronUp className="w-3.5 h-3.5 text-[#2563EB] dark:text-blue-400" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                <span className="text-[9.5px] text-gray-600 dark:text-neutral-300 hidden sm:inline">{isBottomCollapsed ? "Expand" : "Collapse"}</span>
               </button>
 
-              <div className="h-3.5 w-[1px] bg-gray-200 mr-1" />
+              <div className="h-3.5 w-[1px] bg-gray-200 dark:bg-white/[0.08] mr-1" />
 
               {['positions', 'pending', 'history'].map(tab => (
                 <button
@@ -2895,7 +2922,7 @@ export default function TradeClientPage({
                     if (isBottomCollapsed) setIsBottomCollapsed(false);
                   }}
                   className={`cursor-pointer transition-all py-1 px-1.5 relative capitalize text-[10px] ${
-                    tableTab === tab && !isBottomCollapsed ? 'text-[#2563EB] font-bold border-b-2 border-[#2563EB]' : 'text-gray-400 hover:text-gray-700'
+                    tableTab === tab && !isBottomCollapsed ? 'text-[#2563EB] dark:text-blue-400 font-bold border-b-2 border-[#2563EB] dark:border-blue-400' : 'text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200'
                   }`}
                 >
                   {tab === 'positions' ? `Positions (${positions.length})` : tab === 'pending' ? 'Pending Orders (0)' : 'Order History'}
@@ -2903,7 +2930,7 @@ export default function TradeClientPage({
               ))}
             </div>
             
-            <div className="text-[9px] text-gray-400 flex items-center gap-1 font-semibold pr-2">
+            <div className="text-[9px] text-gray-400 dark:text-neutral-400 flex items-center gap-1 font-semibold pr-2">
               <span className="w-2 h-2 rounded-full bg-[#089981] animate-pulse" /> Live connection active
             </div>
           </div>
@@ -2915,7 +2942,7 @@ export default function TradeClientPage({
               positions.length > 0 ? (
                 <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
                   <thead>
-                    <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
+                    <tr className="border-b border-gray-200/60 dark:border-white/[0.08] bg-gray-50/50 dark:bg-[#161D2A] text-gray-400 dark:text-neutral-400 font-semibold capitalize text-[8px] sticky top-0">
                       <th className="px-3 py-1.5">Symbol</th>
                       <th className="px-3 py-1.5">Side</th>
                       <th className="px-3 py-1.5">Vol (Lots)</th>
@@ -2926,15 +2953,15 @@ export default function TradeClientPage({
                       <th className="px-3 py-1.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100/60">
+                  <tbody className="divide-y divide-gray-100/60 dark:divide-white/[0.04]">
                     {positions.map((pos) => {
                       const currentVal = prices[pos.symbol] || pos.entry;
                       const pnl = getPositionPnL(pos);
                       const isUp = pnl >= 0;
 
                       return (
-                        <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol?.includes('/') ? pos.symbol : `${pos.symbol}/USDT`}</td>
+                        <tr key={pos.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] text-gray-800 dark:text-neutral-200 text-[11px]">
+                          <td className="px-3 py-1.5 font-semibold text-gray-900 dark:text-neutral-100">{pos.symbol?.includes('/') ? pos.symbol : `${pos.symbol}/USDT`}</td>
                           <td className="px-3 py-1.5">
                             <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                               pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
@@ -2946,7 +2973,7 @@ export default function TradeClientPage({
                           <td className="px-3 py-1.5 font-mono tabular-nums">
                             {FOREX_SYMBOLS.includes(pos.symbol) ? (pos.entry || 0).toFixed(4) : `$${(pos.entry || 0).toLocaleString()}`}
                           </td>
-                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-500">
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-500 dark:text-neutral-400">
                             {(() => {
                               const tpText = pos.take_profit ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.take_profit.toFixed(4) : pos.take_profit.toLocaleString()) : '--';
                               const slText = pos.stop_loss ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.stop_loss.toFixed(4) : pos.stop_loss.toLocaleString()) : '--';
@@ -2954,7 +2981,7 @@ export default function TradeClientPage({
                                 <button
                                   type="button"
                                   onClick={() => openTPSLEditModal(pos)}
-                                  className="hover:text-[#2563EB] hover:underline cursor-pointer flex items-center gap-1 font-mono text-[10.5px]"
+                                  className="hover:text-[#2563EB] dark:hover:text-blue-400 hover:underline cursor-pointer flex items-center gap-1 font-mono text-[10.5px]"
                                   title="Click to adjust TP / SL"
                                 >
                                   <span className={pos.take_profit ? 'text-[#089981] font-semibold' : ''}>{tpText}</span>
@@ -2965,7 +2992,7 @@ export default function TradeClientPage({
                               );
                             })()}
                           </td>
-                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900 dark:text-neutral-100">
                             {FOREX_SYMBOLS.includes(pos.symbol) ? (currentVal || 0).toFixed(4) : `$${(currentVal || 0).toLocaleString()}`}
                           </td>
                           <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
@@ -2976,14 +3003,14 @@ export default function TradeClientPage({
                               <button
                                 type="button"
                                 onClick={() => showToast('Close By execution is not available on this instrument.', 'info')}
-                                className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
+                                className="px-1.5 py-0.5 border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-white/[0.04] rounded text-[9px] font-semibold text-gray-500 dark:text-neutral-400 cursor-pointer"
                               >
                                 Close By
                               </button>
                               <button
                                 type="button"
                                 onClick={() => showToast('Reverse position execution requested', 'info')}
-                                className="px-1.5 py-0.5 border border-gray-200 hover:bg-gray-50 rounded text-[9px] font-semibold text-gray-500 cursor-pointer"
+                                className="px-1.5 py-0.5 border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-white/[0.04] rounded text-[9px] font-semibold text-gray-500 dark:text-neutral-400 cursor-pointer"
                               >
                                 Reverse
                               </button>
@@ -2991,7 +3018,7 @@ export default function TradeClientPage({
                                 type="button"
                                 disabled={isClosingId !== null}
                                 onClick={() => handleClosePosition(pos.id, pos.symbol, pos.entry)}
-                                className="px-2 py-0.5 bg-black text-white hover:bg-gray-800 rounded text-[9px] font-semibold capitalize transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-2 py-0.5 bg-black dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded text-[9px] font-semibold capitalize transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {isClosingId === pos.id ? 'Closing...' : 'Close'}
                               </button>
@@ -3004,26 +3031,26 @@ export default function TradeClientPage({
                 </table>
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
-                  <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
-                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-gray-50 dark:bg-[#161D2A] border border-gray-100 dark:border-white/[0.08] rounded-full flex items-center justify-center mb-3 text-gray-400 dark:text-neutral-400 shadow-sm">
+                    <svg className="w-6 h-6 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-xs text-gray-700">No open positions</h3>
-                  <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
+                  <h3 className="font-semibold text-xs text-gray-700 dark:text-neutral-200">No open positions</h3>
+                  <p className="text-[10px] text-gray-400 dark:text-neutral-500 mt-1 max-w-xs leading-relaxed font-semibold">
                     Your trades will appear here once you place an order.
                   </p>
                 </div>
               )
             ) : tableTab === 'history' ? (
               loadingHistory ? (
-                <div className="text-center py-8 text-gray-400 text-xs font-semibold select-none animate-pulse">
+                <div className="text-center py-8 text-gray-400 dark:text-neutral-400 text-xs font-semibold select-none animate-pulse">
                   Loading order history...
                 </div>
               ) : historyTrades.length > 0 ? (
                 <table className="w-full text-left border-collapse text-xs min-w-[700px] font-sans">
                   <thead>
-                    <tr className="border-b border-gray-200/60 bg-gray-50/50 text-gray-400 font-semibold capitalize text-[8px]  sticky top-0">
+                    <tr className="border-b border-gray-200/60 dark:border-white/[0.08] bg-gray-50/50 dark:bg-[#161D2A] text-gray-400 dark:text-neutral-400 font-semibold capitalize text-[8px] sticky top-0">
                       <th className="px-3 py-1.5">Symbol</th>
                       <th className="px-3 py-1.5">Side</th>
                       <th className="px-3 py-1.5">Vol (Lots)</th>
@@ -3033,12 +3060,12 @@ export default function TradeClientPage({
                       <th className="px-3 py-1.5 text-right">Close Time</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100/60">
+                  <tbody className="divide-y divide-gray-100/60 dark:divide-white/[0.04]">
                     {historyTrades.map((pos) => {
                       const isUp = pos.pnl >= 0;
                       return (
-                        <tr key={pos.id} className="hover:bg-gray-50/50 text-gray-800 text-[11px]">
-                          <td className="px-3 py-1.5 font-semibold text-gray-900">{pos.symbol}/USDT</td>
+                        <tr key={pos.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] text-gray-800 dark:text-neutral-200 text-[11px]">
+                          <td className="px-3 py-1.5 font-semibold text-gray-900 dark:text-neutral-100">{pos.symbol}/USDT</td>
                           <td className="px-3 py-1.5">
                             <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
                               pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
@@ -3050,13 +3077,13 @@ export default function TradeClientPage({
                           <td className="px-3 py-1.5 font-mono tabular-nums">
                             {FOREX_SYMBOLS.includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
                           </td>
-                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900">
+                          <td className="px-3 py-1.5 font-mono tabular-nums text-gray-900 dark:text-neutral-100">
                             {FOREX_SYMBOLS.includes(pos.symbol) ? pos.exit?.toFixed(4) : `$${pos.exit?.toLocaleString()}`}
                           </td>
                           <td className={`px-3 py-1.5 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
                             {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                           </td>
-                          <td className="px-3 py-1.5 text-right text-gray-500 font-semibold">{pos.closed_time}</td>
+                          <td className="px-3 py-1.5 text-right text-gray-500 dark:text-neutral-400 font-semibold">{pos.closed_time}</td>
                         </tr>
                       );
                     })}
@@ -3064,19 +3091,19 @@ export default function TradeClientPage({
                 </table>
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-center select-none animate-fade-in">
-                  <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-3 text-gray-400 shadow-sm">
-                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-gray-50 dark:bg-[#161D2A] border border-gray-100 dark:border-white/[0.08] rounded-full flex items-center justify-center mb-3 text-gray-400 dark:text-neutral-400 shadow-sm">
+                    <svg className="w-6 h-6 text-gray-400 dark:text-neutral-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-xs text-gray-700">No closed orders yet</h3>
-                  <p className="text-[10px] text-gray-400 mt-1 max-w-xs leading-relaxed font-semibold">
+                  <h3 className="font-semibold text-xs text-gray-700 dark:text-neutral-200">No closed orders yet</h3>
+                  <p className="text-[10px] text-gray-400 dark:text-neutral-500 mt-1 max-w-xs leading-relaxed font-semibold">
                     Your completed trades will be logged here for tracking.
                   </p>
                 </div>
               )
             ) : (
-              <div className="text-center py-8 text-gray-400 text-xs font-semibold">
+              <div className="text-center py-8 text-gray-400 dark:text-neutral-400 text-xs font-semibold">
                 No pending orders found.
               </div>
             )}
@@ -3086,14 +3113,73 @@ export default function TradeClientPage({
 
       </div>
 
+      {/* Modal for TP / SL adjustments */}
+      {isTPSLModalOpen && tpslEditingPos && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in scale-in duration-200">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-neutral-100">Adjust Take Profit &amp; Stop Loss</h3>
+              <button 
+                onClick={() => setIsTPSLModalOpen(false)}
+                className="p-1 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg text-gray-400 dark:text-neutral-400 hover:text-gray-600 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 dark:text-neutral-500 font-semibold mb-4">
+              {tpslEditingPos.symbol} • {tpslEditingPos.side?.toUpperCase()} {formatLotSize(tpslEditingPos.size)} Lots @ {tpslEditingPos.entry}
+            </p>
+            <form onSubmit={handleUpdateTPSLSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">Take Profit Price</label>
+                <input
+                  type="number"
+                  step="any"
+                  placeholder="e.g. 105000"
+                  value={modalEditTP}
+                  onChange={(e) => setModalEditTP(e.target.value)}
+                  className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] transition-colors"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider block">Stop Loss Price</label>
+                <input
+                  type="number"
+                  step="any"
+                  placeholder="e.g. 98000"
+                  value={modalEditSL}
+                  onChange={(e) => setModalEditSL(e.target.value)}
+                  className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] transition-colors"
+                />
+              </div>
+              <div className="flex gap-3 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsTPSLModalOpen(false)}
+                  className="px-4 py-2 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg text-xs font-semibold text-gray-600 dark:text-neutral-300 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-lg text-xs font-semibold shadow-sm cursor-pointer"
+                >
+                  Save Levels
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Modal for renaming an account */}
       {isRenameModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in scale-in duration-200">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Rename Account</h3>
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] rounded-2xl p-6 max-w-sm w-full shadow-2xl select-none animate-in scale-in duration-200">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-neutral-100 mb-3">Rename Account</h3>
             <form onSubmit={submitRenameAccount} className="space-y-4">
               {renameError && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
+                <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-lg text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4 animate-bounce" />
                   {renameError}
                 </div>
@@ -3104,14 +3190,14 @@ export default function TradeClientPage({
                 placeholder="e.g. Gold Strategy Test"
                 value={renameValue}
                 onChange={(e) => setRenameValue(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
+                className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
                 autoFocus
               />
               <div className="flex gap-3 justify-end">
                 <button
                   type="button"
                   onClick={() => setIsRenameModalOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg text-xs font-semibold text-gray-600 dark:text-neutral-300 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -3130,23 +3216,23 @@ export default function TradeClientPage({
       {/* Modal for creating a new demo account */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
+          <div className="bg-white dark:bg-[#111722] border border-[#E5E7EB] dark:border-white/[0.08] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base font-semibold text-[#111111] flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-[#2563EB]" />
+              <h2 className="text-base font-semibold text-[#111111] dark:text-neutral-100 flex items-center gap-2">
+                <Wallet className="w-5 h-5 text-[#2563EB] dark:text-blue-400" />
                 New Practice Account
               </h2>
               <button 
                 onClick={() => setIsCreateModalOpen(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg cursor-pointer"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-500 dark:text-neutral-400" />
               </button>
             </div>
 
             <form onSubmit={handleCreateAccountSubmit} className="space-y-4">
               {createError && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
+                <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-lg text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4" />
                   {createError}
                 </div>
@@ -3154,20 +3240,20 @@ export default function TradeClientPage({
 
               {/* Account Name */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Account Name (Optional)</label>
+                <label className="text-[10px] font-semibold text-gray-500 dark:text-neutral-400 capitalize block">Account Name (Optional)</label>
                 <input
                   type="text"
                   maxLength="50"
                   placeholder="e.g. Scalping Practice, Gold Strategy"
                   value={newAccountName}
                   onChange={(e) => setNewAccountName(e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
+                  className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
                 />
               </div>
 
               {/* Preset Balances */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Starting Capital</label>
+                <label className="text-[10px] font-semibold text-gray-500 dark:text-neutral-400 capitalize block">Starting Capital</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: 1000, label: '$1,000' },
@@ -3189,8 +3275,8 @@ export default function TradeClientPage({
                         }}
                         className={`py-1.5 px-2 border rounded-xl font-mono font-semibold text-[10px] transition-all cursor-pointer text-center ${
                           isSelected
-                            ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB] shadow-sm'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                            ? 'border-[#2563EB] bg-[#2563EB]/5 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 shadow-sm'
+                            : 'border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/[0.2] text-gray-700 dark:text-neutral-200 bg-white dark:bg-[#161D2A]'
                         }`}
                       >
                         {preset.label}
@@ -3202,9 +3288,9 @@ export default function TradeClientPage({
 
               {/* Custom Starting Capital */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-semibold text-gray-500 capitalize  block">Or Custom Amount (USD)</label>
+                <label className="text-[10px] font-semibold text-gray-500 dark:text-neutral-400 capitalize block">Or Custom Amount (USD)</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 dark:text-neutral-500 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -3216,7 +3302,7 @@ export default function TradeClientPage({
                       setNewAccountPreset(0);
                       setCreateError('');
                     }}
-                    className="w-full bg-white border border-gray-200 rounded-xl pl-7 pr-3.5 py-2.5 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
+                    className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl pl-7 pr-3.5 py-2.5 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
                   />
                 </div>
               </div>
@@ -3226,7 +3312,7 @@ export default function TradeClientPage({
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="flex-1 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold text-xs rounded-xl transition-all cursor-pointer text-center"
+                  className="flex-1 py-2 border border-gray-200 dark:border-white/[0.08] hover:bg-gray-50 dark:hover:bg-white/[0.04] text-gray-700 dark:text-neutral-300 font-semibold text-xs rounded-xl transition-all cursor-pointer text-center"
                 >
                   Cancel
                 </button>
@@ -3246,14 +3332,14 @@ export default function TradeClientPage({
       {/* BALANCE SETTINGS MODAL */}
       {isBalanceSettingsOpen && accountData && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[300] p-4 animate-in fade-in duration-200">
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200 select-none">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Adjust Account Balance</h3>
-            <p className="text-xs text-gray-400 font-semibold mb-4">
+          <div className="bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.08] rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200 select-none">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-neutral-100 mb-3">Adjust Account Balance</h3>
+            <p className="text-xs text-gray-400 dark:text-neutral-400 font-semibold mb-4">
               Set a new virtual capital for {accountData.accountName || `Demo #${accountData.accountNumber}`}.
             </p>
             <form onSubmit={handleAdjustBalanceSubmit} className="space-y-4">
               {adjustError && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold flex items-center gap-1.5">
+                <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-lg text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4 animate-bounce" />
                   {adjustError}
                 </div>
@@ -3272,8 +3358,8 @@ export default function TradeClientPage({
                       }}
                       className={`py-2 px-1 border rounded-lg font-mono font-semibold text-xs transition-all cursor-pointer text-center ${
                         isSelected
-                          ? 'border-[#2563EB] bg-[#2563EB]/5 text-[#2563EB]'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                          ? 'border-[#2563EB] bg-[#2563EB]/5 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400'
+                          : 'border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/[0.2] text-gray-600 dark:text-neutral-300 bg-white dark:bg-[#161D2A]'
                       }`}
                     >
                       ${presetVal.toLocaleString()}
@@ -3283,9 +3369,9 @@ export default function TradeClientPage({
               </div>
               {/* Custom Input */}
               <div className="space-y-1">
-                <label className="text-[10px] font-semibold text-gray-400 capitalize ">Custom Amount</label>
+                <label className="text-[10px] font-semibold text-gray-400 dark:text-neutral-400 capitalize">Custom Amount</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 font-mono font-semibold text-xs">$</span>
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 dark:text-neutral-500 font-mono font-semibold text-xs">$</span>
                   <input
                     type="number"
                     min="100"
@@ -3296,7 +3382,7 @@ export default function TradeClientPage({
                       setCustomAdjustAmount(e.target.value);
                       setSelectedAdjustPreset(0);
                     }}
-                    className="w-full bg-white border border-gray-200 rounded-lg pl-6 pr-3 py-2 text-xs font-semibold text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
+                    className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-lg pl-6 pr-3 py-2 text-xs font-semibold text-gray-900 dark:text-neutral-100 placeholder-gray-400 dark:placeholder-neutral-500 focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB] transition-colors"
                   />
                 </div>
               </div>
@@ -3305,7 +3391,7 @@ export default function TradeClientPage({
                 <button
                   type="button"
                   onClick={() => setIsBalanceSettingsOpen(false)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 cursor-pointer"
+                  className="px-4 py-2 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg text-xs font-semibold text-gray-600 dark:text-neutral-300 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -3325,23 +3411,23 @@ export default function TradeClientPage({
       {/* QUICK CHART TRADING MODAL */}
       {isChartTradeModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[999] flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
+          <div className="bg-white dark:bg-[#111722] border border-[#E5E7EB] dark:border-white/[0.08] rounded-2xl p-6 max-w-md w-full shadow-2xl select-none animate-in scale-in duration-200">
             {/* Modal Header */}
-            <div className="flex justify-between items-center pb-3 mb-4 border-b border-gray-100">
+            <div className="flex justify-between items-center pb-3 mb-4 border-b border-gray-100 dark:border-white/[0.08]">
               <div className="flex items-center gap-2">
                 <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-bold ${modalSide === 'buy' ? 'bg-[#2563EB]' : 'bg-[#f23645]'}`}>
                   {modalSide === 'buy' ? '▲' : '▼'}
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-[#111111] capitalize">
+                  <h2 className="text-base font-bold text-[#111111] dark:text-neutral-100 capitalize">
                     {modalSide === 'buy' ? 'Buy Order' : 'Sell Order'} — {selectedAsset}
                   </h2>
-                  <p className="text-[10px] text-gray-400 font-semibold">Demo Account #{accountNumber}</p>
+                  <p className="text-[10px] text-gray-400 dark:text-neutral-500 font-semibold">Demo Account #{accountNumber}</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsChartTradeModalOpen(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg text-gray-400 dark:text-neutral-400 hover:text-gray-600 dark:hover:text-neutral-200 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -3349,7 +3435,7 @@ export default function TradeClientPage({
 
             {/* Error Message */}
             {modalError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs font-semibold flex items-center gap-2 mb-4 animate-in fade-in">
+              <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/40 rounded-xl text-red-600 dark:text-red-400 text-xs font-semibold flex items-center gap-2 mb-4 animate-in fade-in">
                 <ShieldAlert className="w-4 h-4 shrink-0" />
                 <span>{modalError}</span>
               </div>
@@ -3357,14 +3443,14 @@ export default function TradeClientPage({
 
             <form onSubmit={handleModalOrderSubmit} className="space-y-4">
               {/* Order Side Selector Pill */}
-              <div className="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-xl">
+              <div className="grid grid-cols-2 gap-2 p-1 bg-gray-100 dark:bg-[#161D2A] rounded-xl">
                 <button
                   type="button"
                   onClick={() => setModalSide('buy')}
                   className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     modalSide === 'buy'
                       ? 'bg-[#2563EB] text-white shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
+                      : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100'
                   }`}
                 >
                   BUY
@@ -3375,7 +3461,7 @@ export default function TradeClientPage({
                   className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     modalSide === 'sell'
                       ? 'bg-[#f23645] text-white shadow-xs'
-                      : 'text-gray-500 hover:text-gray-900'
+                      : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100'
                   }`}
                 >
                   SELL
@@ -3385,22 +3471,22 @@ export default function TradeClientPage({
               {/* 1. Currency Pair & Live Market Price Row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
                     Currency Pair
                   </label>
                   <input
                     type="text"
                     readOnly
                     value={selectedAsset.includes('/') ? selectedAsset : `${selectedAsset}/USDT`}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-800 cursor-not-allowed focus:outline-none"
+                    className="w-full bg-gray-50 dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-bold text-gray-800 dark:text-neutral-200 cursor-not-allowed focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
                     Market Price (Live)
                   </label>
-                  <div className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#2563EB] flex items-center justify-between">
+                  <div className="w-full bg-gray-50 dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#2563EB] dark:text-blue-400 flex items-center justify-between">
                     <span>${formatAssetPrice(livePrice)}</span>
                     <span className="w-2 h-2 rounded-full bg-[#089981] animate-pulse" />
                   </div>
@@ -3409,13 +3495,13 @@ export default function TradeClientPage({
 
               {/* 2. Execution Type */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
                   Execution Type
                 </label>
                 <select
                   value={modalExecType}
                   onChange={(e) => setModalExecType(e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-900 focus:outline-none focus:border-[#2563EB] cursor-pointer"
+                  className="w-full bg-white dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-semibold text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-[#2563EB] cursor-pointer"
                 >
                   <option value="Market">Market execution</option>
                   <option value="Buy limit">Buy limit</option>
@@ -3430,12 +3516,12 @@ export default function TradeClientPage({
               {/* 3. Volume / Lots */}
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">
                     Volume / Lots
                   </label>
-                  <span className="text-[9.5px] font-mono text-gray-400">1 lot = {isForex ? '100,000' : '1 unit'}</span>
+                  <span className="text-[9.5px] font-mono text-gray-400 dark:text-neutral-500">1 lot = {isForex ? '100,000' : '1 unit'}</span>
                 </div>
-                <div className="flex items-center bg-[#FAFAFA] border border-[#E0E3EB] rounded-xl px-3 h-10 focus-within:border-[#2563EB] transition-colors">
+                <div className="flex items-center bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-xl px-3 h-10 focus-within:border-[#2563EB] transition-colors">
                   <input
                     type="number"
                     step="0.01"
@@ -3444,7 +3530,7 @@ export default function TradeClientPage({
                     required
                     value={modalVolume}
                     onChange={(e) => setModalVolume(e.target.value)}
-                    className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 focus:outline-none focus:ring-0 p-0"
+                    className="w-full bg-transparent border-none text-xs font-bold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:ring-0 p-0"
                     placeholder="0.10"
                   />
                   <div className="flex items-center gap-1.5 select-none pl-2">
@@ -3454,7 +3540,7 @@ export default function TradeClientPage({
                         const cur = parseFloat(modalVolume) || 0.10;
                         setModalVolume(Math.max(0.01, parseFloat((cur - 0.01).toFixed(2))).toString());
                       }}
-                      className="text-gray-400 hover:text-gray-700 p-1 rounded hover:bg-gray-200/50 cursor-pointer"
+                      className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 p-1 rounded hover:bg-gray-200/50 dark:hover:bg-white/[0.08] cursor-pointer"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
@@ -3464,7 +3550,7 @@ export default function TradeClientPage({
                         const cur = parseFloat(modalVolume) || 0.10;
                         setModalVolume(parseFloat((cur + 0.01).toFixed(2)).toString());
                       }}
-                      className="text-gray-400 hover:text-gray-700 p-1 rounded hover:bg-gray-200/50 cursor-pointer"
+                      className="text-gray-400 dark:text-neutral-400 hover:text-gray-700 dark:hover:text-neutral-200 p-1 rounded hover:bg-gray-200/50 dark:hover:bg-white/[0.08] cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
@@ -3475,7 +3561,7 @@ export default function TradeClientPage({
               {/* 4. Conditional Trigger Price (Hidden if Market execution) */}
               {modalExecType !== 'Market' && (
                 <div className="animate-in fade-in duration-150">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
                     Order Price ({selectedAsset.includes('/') ? 'Quote' : 'USDT'}) *
                   </label>
                   <input
@@ -3485,7 +3571,7 @@ export default function TradeClientPage({
                     value={modalPrice}
                     onChange={(e) => setModalPrice(e.target.value)}
                     placeholder={formatAssetPrice(livePrice)}
-                    className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-xl px-3.5 py-2.5 text-xs font-bold font-mono text-gray-900 focus:outline-none focus:border-[#2563EB] transition-colors"
+                    className="w-full bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-bold font-mono text-gray-900 dark:text-neutral-100 focus:outline-none focus:border-[#2563EB] transition-colors"
                   />
                 </div>
               )}
@@ -3493,7 +3579,7 @@ export default function TradeClientPage({
               {/* 5. Take Profit & Stop Loss Row */}
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-emerald-600 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
                     Take Profit (optional)
                   </label>
                   <input
@@ -3502,12 +3588,12 @@ export default function TradeClientPage({
                     value={modalTakeProfit}
                     onChange={(e) => setModalTakeProfit(e.target.value)}
                     placeholder="Not set"
-                    className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-xl px-3 py-2 text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:border-emerald-500 transition-colors"
+                    className="w-full bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:border-emerald-500 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-red-600 mb-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1">
                     Stop Loss (optional)
                   </label>
                   <input
@@ -3516,13 +3602,13 @@ export default function TradeClientPage({
                     value={modalStopLoss}
                     onChange={(e) => setModalStopLoss(e.target.value)}
                     placeholder="Not set"
-                    className="w-full bg-[#FAFAFA] border border-[#E0E3EB] rounded-xl px-3 py-2 text-xs font-semibold font-mono text-gray-900 placeholder-gray-300 focus:outline-none focus:border-red-500 transition-colors"
+                    className="w-full bg-[#FAFAFA] dark:bg-[#161D2A] border border-[#E0E3EB] dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-semibold font-mono text-gray-900 dark:text-neutral-100 placeholder-gray-300 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors"
                   />
                 </div>
               </div>
 
               {/* Margin / Account Summary Strip */}
-              <div className="p-3 bg-gray-50 rounded-xl border border-gray-100 text-[10px] font-mono text-gray-500 flex justify-between items-center">
+              <div className="p-3 bg-gray-50 dark:bg-[#161D2A] rounded-xl border border-gray-100 dark:border-white/[0.08] text-[10px] font-mono text-gray-500 dark:text-neutral-400 flex justify-between items-center">
                 <span>Free Margin: ${freeMargin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 <span>Lev: 1:{leverage}</span>
               </div>
@@ -3532,7 +3618,7 @@ export default function TradeClientPage({
                 <button
                   type="button"
                   onClick={() => setIsChartTradeModalOpen(false)}
-                  className="flex-1 py-2.5 border border-[#E0E3EB] rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer capitalize"
+                  className="flex-1 py-2.5 border border-[#E0E3EB] dark:border-white/[0.08] rounded-xl text-xs font-bold text-gray-600 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors cursor-pointer capitalize"
                 >
                   Cancel
                 </button>
@@ -3551,10 +3637,8 @@ export default function TradeClientPage({
         </div>
       )}
 
-
-
       {/* Footer */}
-      <footer className="text-center text-[9px] text-[#9CA3AF] py-1 bg-white border-t border-[#E0E3EB] shrink-0 select-none font-medium">
+      <footer className="text-center text-[9px] text-[#9CA3AF] dark:text-neutral-500 py-1 bg-white dark:bg-[#111722] border-t border-[#E0E3EB] dark:border-white/[0.08] shrink-0 select-none font-medium">
         &copy; {new Date().getFullYear()} PaperPulse. Virtual trading educational simulator. No real money trades are processed.
       </footer>
     </div>

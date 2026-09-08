@@ -1,18 +1,21 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
-  /* Design System Theme Variables (MANDATORY Hex Codes) */
+  /* Design System Theme Variables */
   --font-sans: var(--font-sans), Inter, sans-serif;
   --font-mono: var(--font-mono), monospace;
   
-  --color-brand-bg: #FFFFFF;
-  --color-brand-bg-sec: #FAFAFA;
-  --color-brand-text: #111111;
-  --color-brand-muted: #6B7280;
+  --color-brand-bg: var(--bg-primary);
+  --color-brand-bg-sec: var(--bg-secondary);
+  --color-brand-text: var(--text-primary);
+  --color-brand-muted: var(--text-secondary);
+  --color-brand-border: var(--border-color);
+  --color-brand-card: var(--card-bg);
+  --color-brand-accent: #2563EB;
   --color-brand-green: #16A34A;
   --color-brand-red: #DC2626;
-  --color-brand-accent: #2563EB; /* Primary accent: #2563EB (blue) or #059669 (green) */
-  --color-brand-border: #E5E7EB;
   
   --shadow-brand-soft: 0 1px 3px rgba(0, 0, 0, 0.06);
 
@@ -30,18 +33,69 @@
   }
 }
 
+/* Light Mode Variables (Default) */
 :root {
-  --background: #FFFFFF;
-  --foreground: #111111;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F5;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --card-bg: #FFFFFF;
+  --card-bg-sec: #F9F9F9;
+  --border-color: #E5E7EB;
+  --border-subtle: #F3F4F6;
+  --chart-bg: #FFFFFF;
+  --chart-grid: #F0F3FA;
+  --chart-text: #6B7280;
+  --input-bg: #FFFFFF;
+  --input-border: #D1D5DB;
+  --dropdown-bg: #FFFFFF;
+  --modal-bg: #FFFFFF;
+  --hover-bg: #F3F4F6;
+  --active-tab-bg: #EFF6FF;
+  --active-tab-text: #2563EB;
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"],
+.dark {
+  --bg-primary: #121212;
+  --bg-secondary: #1A1A1A;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --card-bg: #1E1E1E;
+  --card-bg-sec: #252525;
+  --border-color: #2E2E2E;
+  --border-subtle: #242424;
+  --chart-bg: #121212;
+  --chart-grid: #1F2937;
+  --chart-text: #9CA3AF;
+  --input-bg: #1A1A1A;
+  --input-border: #374151;
+  --dropdown-bg: #1E1E1E;
+  --modal-bg: #1E1E1E;
+  --hover-bg: #2A2A2A;
+  --active-tab-bg: #1E293B;
+  --active-tab-text: #60A5FA;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark,
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--color-brand-bg);
-  color: var(--color-brand-text);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 /* Rounded Corner Defaults */
@@ -49,20 +103,20 @@ body {
   border-radius: 12px;
 }
 
-/* Custom Scrollbar for clean fintech look */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-brand-bg);
+  background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-brand-border);
+  background: var(--border-color);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-brand-muted);
+  background: var(--text-secondary);
 }
 
 @keyframes marquee {
@@ -80,12 +134,7 @@ body {
   animation-play-state: paused;
 }
 
-/* Page Smooth Scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Premium Navigation Link Hover Underline Animation */
+/* Navigation Link Hover Underline Animation */
 .nav-link {
   position: relative;
   transition: color 0.2s ease-in-out;
@@ -99,13 +148,13 @@ html {
   height: 2px;
   bottom: -4px;
   left: 0;
-  background-color: #2563EB; /* brand accent blue */
+  background-color: #2563EB;
   transform-origin: bottom right;
   transition: transform 0.25s ease-out;
 }
 
 .nav-link:hover {
-  color: #111111;
+  color: var(--text-primary);
 }
 
 .nav-link:hover::after {
@@ -113,3 +162,69 @@ html {
   transform-origin: bottom left;
 }
 
+/* Global utility theme classes */
+.theme-card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.theme-card-sec {
+  background-color: var(--card-bg-sec);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.theme-input {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+.theme-input:focus {
+  border-color: #2563EB;
+}
+
+/* Automatic Dark Mode fallbacks for common container classes */
+.dark .bg-white:not([class*="bg-emerald-"]):not([class*="bg-blue-"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):not([class*="bg-amber-"]):not([class*="bg-purple-"]) {
+  background-color: var(--card-bg);
+}
+
+.dark .bg-\[\#FAFAFA\],
+.dark .bg-gray-50\/50,
+.dark .bg-gray-50 {
+  background-color: var(--bg-secondary);
+}
+
+.dark .border-gray-200,
+.dark .border-gray-100,
+.dark .border-\[\#E5E7EB\],
+.dark .border-\[\#E0E3EB\] {
+  border-color: var(--border-color);
+}
+
+.dark .text-gray-900,
+.dark .text-\[\#111111\],
+.dark .text-gray-800 {
+  color: var(--text-primary);
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-\[\#6B7280\],
+.dark .text-\[\#4B5563\] {
+  color: var(--text-secondary);
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea {
+  background-color: var(--input-bg);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--text-secondary);
+}

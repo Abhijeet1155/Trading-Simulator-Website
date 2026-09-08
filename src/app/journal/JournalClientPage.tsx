@@ -11,7 +11,7 @@ interface JournalClientPageProps {
 
 export default function JournalClientPage({ userName, userId }: JournalClientPageProps) {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#121212] text-gray-900 dark:text-neutral-100 flex flex-col selection:bg-blue-600 selection:text-white transition-colors duration-200">
       {/* Platform Navigation */}
       <Navbar userName={userName} />
 

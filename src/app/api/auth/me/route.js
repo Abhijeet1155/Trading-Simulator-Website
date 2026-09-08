@@ -15,7 +15,7 @@ export async function GET() {
     // Retrieve profile details from public.users table
     const { data: dbUser, error: dbError } = await supabase
       .from('users')
-      .select('name, email, plan_type, status')
+      .select('name, email, plan_type, status, theme_preference')
       .eq('id', user.id)
       .single();
 
@@ -28,7 +28,8 @@ export async function GET() {
           name: user.user_metadata?.name || 'User',
           email: user.email,
           plan_type: 'free',
-          status: 'active'
+          status: 'active',
+          theme_preference: user.user_metadata?.theme_preference || 'light'
         }
       });
     }
@@ -40,7 +41,8 @@ export async function GET() {
         name: dbUser.name, 
         email: dbUser.email, 
         plan_type: dbUser.plan_type, 
-        status: dbUser.status 
+        status: dbUser.status,
+        theme_preference: dbUser.theme_preference || 'light'
       } 
     });
   } catch (error) {

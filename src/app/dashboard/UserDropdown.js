@@ -13,6 +13,7 @@ import {
   DollarSign, 
   HelpCircle 
 } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function UserDropdown({ userName }) {
   const router = useRouter();
@@ -70,16 +71,16 @@ export default function UserDropdown({ userName }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 bg-[#F3F4F6] hover:bg-[#E5E7EB] rounded-lg text-sm text-[#4B5563] hover:text-[#111111] font-semibold transition-all cursor-pointer select-none border border-transparent hover:border-gray-200"
+        className="flex items-center gap-2 px-3 py-1.5 bg-[#F3F4F6] dark:bg-[#202020] hover:bg-[#E5E7EB] dark:hover:bg-[#2A2A2A] rounded-lg text-sm text-[#4B5563] dark:text-neutral-300 hover:text-[#111111] dark:hover:text-white font-semibold transition-all cursor-pointer select-none border border-transparent hover:border-gray-200 dark:hover:border-neutral-700"
       >
-        <User className="w-4 h-4 text-[#6B7280]" />
+        <User className="w-4 h-4 text-[#6B7280] dark:text-neutral-400" />
         <span>{userName}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] dark:text-neutral-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_12px_30px_-5px_rgba(0,0,0,0.12),0_8px_10px_-6px_rgba(0,0,0,0.08)] py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+        <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-[#1C1C1C] border border-[#E5E7EB] dark:border-[#2E2E2E] rounded-2xl shadow-[0_12px_30px_-5px_rgba(0,0,0,0.12),0_8px_10px_-6px_rgba(0,0,0,0.08)] py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 select-none">
           {/* Main Navigation links */}
           <div className="space-y-0.5 px-1">
             {navItems.map((item) => {
@@ -89,7 +90,7 @@ export default function UserDropdown({ userName }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-pointer"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-800/80 transition-all cursor-pointer"
                 >
                   <Icon className={`w-4 h-4 ${item.iconColor} shrink-0`} />
                   <span>{item.label}</span>
@@ -98,23 +99,31 @@ export default function UserDropdown({ userName }) {
             })}
           </div>
 
+          {/* Divider before Appearance Theme Toggle */}
+          <hr className="border-gray-100 dark:border-neutral-800 my-1.5 mx-2" />
+
+          {/* Theme Toggle in Dropdown */}
+          <div className="px-1">
+            <ThemeToggle variant="menu-item" showLabel={true} />
+          </div>
+
           {/* Divider before Settings */}
-          <hr className="border-gray-100 my-1.5 mx-2" />
+          <hr className="border-gray-100 dark:border-neutral-800 my-1.5 mx-2" />
 
           {/* Settings link */}
           <div className="px-1">
             <Link
               href="/settings"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all cursor-pointer"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-neutral-800/80 transition-all cursor-pointer"
             >
-              <Settings className="w-4 h-4 text-gray-500 shrink-0" />
+              <Settings className="w-4 h-4 text-gray-500 dark:text-neutral-400 shrink-0" />
               <span>Settings</span>
             </Link>
           </div>
 
           {/* Divider before Log Out */}
-          <hr className="border-gray-100 my-1.5 mx-2" />
+          <hr className="border-gray-100 dark:border-neutral-800 my-1.5 mx-2" />
 
           {/* Log Out link */}
           <div className="px-1">
@@ -122,9 +131,9 @@ export default function UserDropdown({ userName }) {
               type="button"
               onClick={handleLogout}
               disabled={loading}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 transition-all cursor-pointer text-left disabled:opacity-50"
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all cursor-pointer text-left disabled:opacity-50"
             >
-              <LogOut className="w-4 h-4 text-red-500 shrink-0" />
+              <LogOut className="w-4 h-4 text-red-500 dark:text-red-400 shrink-0" />
               <span>{loading ? 'Logging out...' : 'Log Out'}</span>
             </button>
           </div>

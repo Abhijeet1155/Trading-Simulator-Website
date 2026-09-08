@@ -394,12 +394,12 @@ export default function BarReplayEngine() {
     <div className="w-full flex flex-col gap-4 font-sans select-none">
       
       {/* 1. Header Toolbar (Symbol, Timeframe, Indicator Manager Button, Quick Toggles) */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:px-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <div className="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#2A2A2A] rounded-2xl p-3 sm:px-4 flex flex-wrap items-center justify-between gap-3 shadow-xs transition-colors">
         
         {/* Left: Symbol & Timeframe Switcher */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Symbol Selector Pills */}
-          <div className="flex items-center bg-gray-50 p-1 rounded-xl border border-gray-200">
+          <div className="flex items-center bg-gray-50 dark:bg-neutral-800/80 p-1 rounded-xl border border-gray-200 dark:border-neutral-700">
             {AVAILABLE_SYMBOLS.map((s) => (
               <button
                 key={s.id}
@@ -408,7 +408,7 @@ export default function BarReplayEngine() {
                 className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
                   selectedSymbol === s.id
                     ? 'bg-[#2563EB] text-white shadow-2xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {s.id}
@@ -417,7 +417,7 @@ export default function BarReplayEngine() {
           </div>
 
           {/* Timeframe Selector Pills */}
-          <div className="flex items-center bg-gray-50 p-1 rounded-xl border border-gray-200">
+          <div className="flex items-center bg-gray-50 dark:bg-neutral-800/80 p-1 rounded-xl border border-gray-200 dark:border-neutral-700">
             {AVAILABLE_TIMEFRAMES.map((tf) => (
               <button
                 key={tf.id}
@@ -426,7 +426,7 @@ export default function BarReplayEngine() {
                 className={`px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer ${
                   selectedTimeframe === tf.id
                     ? 'bg-amber-500 text-white font-bold shadow-2xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {tf.label}
@@ -434,13 +434,13 @@ export default function BarReplayEngine() {
             ))}
           </div>
 
-          <div className="h-5 w-[1px] bg-gray-200 hidden md:block" />
+          <div className="h-5 w-[1px] bg-gray-200 dark:bg-neutral-700 hidden md:block" />
 
           {/* Master Indicators Drawer Button */}
           <button
             type="button"
             onClick={() => setIsIndicatorModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#2563EB] text-xs font-mono font-bold transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-900/50 text-[#2563EB] dark:text-blue-300 text-xs font-mono font-bold transition-all cursor-pointer"
           >
             <Layers className="w-3.5 h-3.5" />
             <span>Indicators ({activeIndicatorCount})</span>
@@ -456,8 +456,8 @@ export default function BarReplayEngine() {
             onClick={() => toggleIndicatorQuick('fvg')}
             className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
               indicatorSettings.fvg.enabled
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold'
-                : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 font-bold'
+                : 'bg-gray-50 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
             FVG: {indicatorSettings.fvg.enabled ? 'ON' : 'OFF'}
@@ -469,8 +469,8 @@ export default function BarReplayEngine() {
             onClick={() => toggleIndicatorQuick('orderBlocks')}
             className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
               indicatorSettings.orderBlocks.enabled
-                ? 'bg-blue-50 text-blue-700 border-blue-200 font-bold'
-                : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700'
+                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 font-bold'
+                : 'bg-gray-50 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
             OB: {indicatorSettings.orderBlocks.enabled ? 'ON' : 'OFF'}
@@ -482,8 +482,8 @@ export default function BarReplayEngine() {
             onClick={() => toggleIndicatorQuick('killzones')}
             className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
               indicatorSettings.killzones.enabled
-                ? 'bg-amber-50 text-amber-700 border-amber-200 font-bold'
-                : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700'
+                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 font-bold'
+                : 'bg-gray-50 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
             Killzones: {indicatorSettings.killzones.enabled ? 'ON' : 'OFF'}
@@ -495,8 +495,8 @@ export default function BarReplayEngine() {
             onClick={() => toggleIndicatorQuick('liquiditySweeps')}
             className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
               indicatorSettings.liquiditySweeps.enabled
-                ? 'bg-sky-50 text-sky-700 border-sky-200 font-bold'
-                : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700'
+                ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800 font-bold'
+                : 'bg-gray-50 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
             Liquidity: {indicatorSettings.liquiditySweeps.enabled ? 'ON' : 'OFF'}
@@ -508,8 +508,8 @@ export default function BarReplayEngine() {
             onClick={() => toggleIndicatorQuick('emaRibbon')}
             className={`px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
               indicatorSettings.emaRibbon.enabled
-                ? 'bg-purple-50 text-purple-700 border-purple-200 font-bold'
-                : 'bg-gray-50 text-gray-500 border-gray-200 hover:text-gray-700'
+                ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 font-bold'
+                : 'bg-gray-50 dark:bg-neutral-800/80 text-gray-500 dark:text-neutral-400 border-gray-200 dark:border-neutral-700 hover:text-gray-700 dark:hover:text-white'
             }`}
           >
             EMA: {indicatorSettings.emaRibbon.enabled ? 'ON' : 'OFF'}
@@ -518,12 +518,12 @@ export default function BarReplayEngine() {
 
         {/* Far Right: Replay Live Indicator */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-200 text-xs font-mono">
+          <div className="flex items-center gap-2 bg-gray-50 dark:bg-neutral-800/80 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-neutral-700 text-xs font-mono">
             <span className="relative flex h-2 w-2">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isPlaying ? 'bg-amber-400' : 'bg-emerald-500'}`}></span>
               <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-amber-500' : 'bg-emerald-600'}`}></span>
             </span>
-            <span className="text-gray-700 font-bold">
+            <span className="text-gray-700 dark:text-neutral-200 font-bold">
               {isPlaying ? 'REPLAY PLAYING' : 'REPLAY PAUSED'}
             </span>
           </div>
@@ -538,7 +538,7 @@ export default function BarReplayEngine() {
         <div className="lg:col-span-3 flex flex-col gap-3">
           
           {/* Chart Canvas Card */}
-          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden h-[540px] relative shadow-xs">
+          <div className="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#2A2A2A] rounded-2xl overflow-hidden h-[540px] relative shadow-xs transition-colors">
             <ReplayChartCanvas
               candles={dataset.candles}
               visibleIndex={visibleIndex}

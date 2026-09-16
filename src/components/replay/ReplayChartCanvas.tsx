@@ -1,17 +1,22 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { CandleData, ReplayPosition } from '../../types/replay';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { 
-  FVGZone, 
-  OrderBlockZone, 
-  LiquidityLevel, 
-  KillzoneBand, 
-  EMAData, 
-  IndicatorSettings 
-} from '../../types/indicators';
-import { Scissors, TrendingUp, TrendingDown, Target, ShieldAlert, Zap } from 'lucide-react';
+  createChart, 
+  CandlestickSeries, 
+  HistogramSeries, 
+  LineStyle,
+  createSeriesMarkers,
+  IChartApi, 
+  ISeriesApi, 
+  IPriceLine,
+  UTCTimestamp,
+  Time,
+  SeriesMarker
+} from 'lightweight-charts';
+import { CandleData, ReplayPosition } from '../../types/replay';
 import { useTheme } from '@/context/ThemeContext';
+import { Scissors } from 'lucide-react';
 
 interface ReplayChartCanvasProps {
   candles: CandleData[];
@@ -19,14 +24,9 @@ interface ReplayChartCanvasProps {
   isScissorsActive: boolean;
   onCutAt: (index: number) => void;
   activePosition: ReplayPosition | null;
+  tradeHistory?: ReplayPosition[];
   symbol: string;
   timeframe: string;
-  fvgs?: FVGZone[];
-  orderBlocks?: OrderBlockZone[];
-  liquidityLevels?: LiquidityLevel[];
-  killzones?: KillzoneBand[];
-  emas?: EMAData[];
-  indicatorSettings?: IndicatorSettings;
 }
 
 export default function ReplayChartCanvas({
@@ -35,752 +35,425 @@ export default function ReplayChartCanvas({
   isScissorsActive,
   onCutAt,
   activePosition,
+  tradeHistory = [],
   symbol,
   timeframe,
-  fvgs = [],
-  orderBlocks = [],
-  liquidityLevels = [],
-  killzones = [],
-  emas = [],
-  indicatorSettings
 }: ReplayChartCanvasProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<IChartApi | null>(null);
+  const candleSeriesRef = useRef<ISeriesApi<'Candlestick', Time> | null>(null);
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram', Time> | null>(null);
+  const markersPluginRef = useRef<any>(null);
 
-  // Viewport navigation state (Pan & Zoom)
-  const [candleWidth, setCandleWidth] = useState(8); // pixel width per bar
-  const [scrollOffset, setScrollOffset] = useState<number | null>(null); // offset from right edge
-  const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartX, setDragStartX] = useState(0);
-  const [dragStartOffset, setDragStartOffset] = useState(0);
+  // Active position price lines
+  const entryLineRef = useRef<IPriceLine | null>(null);
+  const slLineRef = useRef<IPriceLine | null>(null);
+  const tpLineRef = useRef<IPriceLine | null>(null);
 
-  // Sliced data (0 to visibleIndex)
-  const visibleCandles = candles.slice(0, visibleIndex + 1);
-  const currentLastBar = visibleCandles[visibleCandles.length - 1];
+  // Track previously rendered visibleIndex to detect single-step vs seek
+  const prevVisibleIndexRef = useRef<number>(-1);
+  const prevDatasetLengthRef = useRef<number>(0);
+  const prevSymbolRef = useRef<string>('');
 
-  // Auto-align scroll when visibleIndex changes and user is not manually scrolled back
+  // Hovered bar state for legend display
+  const [hoveredCandle, setHoveredCandle] = useState<{
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+    time: string;
+  } | null>(null);
+
+  // Helper to format candle for Lightweight Charts
+  const formatCandleForChart = useCallback((c: CandleData) => {
+    return {
+      time: (c.timestamp || Math.floor(new Date(c.time).getTime() / 1000)) as UTCTimestamp,
+      open: c.open,
+      high: c.high,
+      low: c.low,
+      close: c.close,
+    };
+  }, []);
+
+  const formatVolumeForChart = useCallback((c: CandleData) => {
+    const isUp = c.close >= c.open;
+    return {
+      time: (c.timestamp || Math.floor(new Date(c.time).getTime() / 1000)) as UTCTimestamp,
+      value: c.volume || 0,
+      color: isUp ? 'rgba(8, 153, 129, 0.5)' : 'rgba(242, 54, 69, 0.5)',
+    };
+  }, []);
+
+  // 1. Initialize TradingView Lightweight Chart
   useEffect(() => {
-    if (scrollOffset === null || scrollOffset <= 5) {
-      setScrollOffset(0);
-    }
-  }, [visibleIndex]);
+    if (!containerRef.current) return;
 
-  // Main Canvas Rendering Loop
-  const renderChart = useCallback(() => {
-    const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    const width = container.clientWidth || 800;
+    const height = container.clientHeight || 500;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-
-    // Resize canvas for sharp high-DPI displays
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-    }
-
-    ctx.save();
-    ctx.scale(dpr, dpr);
-
-    // 1. Clear background
-    ctx.fillStyle = isDark ? '#121212' : '#ffffff';
-    ctx.fillRect(0, 0, width, height);
-
-    if (visibleCandles.length === 0) {
-      ctx.restore();
-      return;
-    }
-
-    // Layout dimensions
-    const priceScaleWidth = 72;
-    const timeScaleHeight = 28;
-    const chartWidth = width - priceScaleWidth;
-    const chartHeight = height - timeScaleHeight;
-    const volumeHeight = Math.min(65, chartHeight * 0.16);
-    const mainChartHeight = chartHeight - volumeHeight;
-
-    // Calculate visible bars in viewport
-    const effectiveOffset = scrollOffset ?? 0;
-    const barSpacing = candleWidth + 3; // gap between bars
-    const maxBarsInView = Math.ceil(chartWidth / barSpacing) + 2;
-
-    const rightMarginBars = 4; // empty space on right for forward price projection
-    const endIndex = Math.min(
-      visibleCandles.length - 1,
-      Math.max(0, visibleCandles.length - 1 - Math.floor(effectiveOffset / barSpacing) + rightMarginBars)
-    );
-    const startIndex = Math.max(0, endIndex - maxBarsInView);
-
-    const barsInView = visibleCandles.slice(startIndex, endIndex + 1);
-
-    // Compute Min / Max Prices in Viewport
-    let minPrice = Infinity;
-    let maxPrice = -Infinity;
-    let maxVolume = 0;
-
-    barsInView.forEach((b) => {
-      if (b.low < minPrice) minPrice = b.low;
-      if (b.high > maxPrice) maxPrice = b.high;
-      if (b.volume > maxVolume) maxVolume = b.volume;
+    const chart = createChart(container, {
+      width,
+      height,
+      layout: {
+        background: { color: isDark ? '#131722' : '#ffffff' },
+        textColor: isDark ? '#94a3b8' : '#475569',
+        fontSize: 11,
+        fontFamily: "'JetBrains Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      },
+      grid: {
+        vertLines: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' },
+        horzLines: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' },
+      },
+      crosshair: {
+        mode: 1, // Normal crosshair
+        vertLine: {
+          color: isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
+          width: 1,
+          style: LineStyle.Dashed,
+        },
+        horzLine: {
+          color: isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
+          width: 1,
+          style: LineStyle.Dashed,
+        },
+      },
+      rightPriceScale: {
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        scaleMargins: {
+          top: 0.08,
+          bottom: 0.22, // leaves room for bottom volume bars
+        },
+      },
+      timeScale: {
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+        timeVisible: true,
+        secondsVisible: false,
+        rightOffset: 12,
+        barSpacing: 8,
+        minBarSpacing: 3,
+      },
     });
 
-    // Also factor in active order SL / TP levels so they don't clip off screen
-    if (activePosition) {
-      minPrice = Math.min(minPrice, activePosition.entryPrice);
-      maxPrice = Math.max(maxPrice, activePosition.entryPrice);
-      if (activePosition.sl) {
-        minPrice = Math.min(minPrice, activePosition.sl);
-        maxPrice = Math.max(maxPrice, activePosition.sl);
-      }
-      if (activePosition.tp) {
-        minPrice = Math.min(minPrice, activePosition.tp);
-        maxPrice = Math.max(maxPrice, activePosition.tp);
-      }
-    }
-
-    if (minPrice === Infinity || maxPrice === -Infinity) {
-      minPrice = 100;
-      maxPrice = 101;
-    }
-
-    // Add 8% vertical padding to top & bottom of chart
-    const priceRange = maxPrice - minPrice || 1;
-    const paddedMinPrice = minPrice - priceRange * 0.08;
-    const paddedMaxPrice = maxPrice + priceRange * 0.08;
-    const paddedPriceRange = paddedMaxPrice - paddedMinPrice;
-
-    // Price to Y conversion function
-    const getY = (price: number) => {
-      return mainChartHeight - ((price - paddedMinPrice) / paddedPriceRange) * mainChartHeight;
-    };
-
-    // Y to Price conversion function
-    const getPrice = (y: number) => {
-      return paddedMaxPrice - (y / mainChartHeight) * paddedPriceRange;
-    };
-
-    // Index to X coordinate conversion function
-    const getX = (idx: number) => {
-      const offsetFromEnd = visibleCandles.length - 1 - idx;
-      return chartWidth - (offsetFromEnd + rightMarginBars) * barSpacing + effectiveOffset;
-    };
-
-    // 2. Draw Horizontal Grid Lines & Price Labels
-    const gridStepCount = 7;
-    const priceStep = paddedPriceRange / gridStepCount;
-    ctx.strokeStyle = isDark ? '#1e293b' : '#f1f5f9';
-    ctx.lineWidth = 1;
-    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'middle';
-
-    for (let i = 0; i <= gridStepCount; i++) {
-      const priceVal = paddedMinPrice + i * priceStep;
-      const y = getY(priceVal);
-
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(chartWidth, y);
-      ctx.stroke();
-
-      // Right Price Scale Label
-      const decimals = symbol === 'EURUSD' ? 5 : 2;
-      ctx.fillText(priceVal.toFixed(decimals), chartWidth + 6, y);
-    }
-
-    // 3. Draw Vertical Session / Time Grids & Killzones Shading
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    const timeStep = Math.max(1, Math.floor(barsInView.length / 6));
-
-    barsInView.forEach((bar, viewIdx) => {
-      const actualIdx = startIndex + viewIdx;
-      if (actualIdx % timeStep === 0) {
-        const x = getX(actualIdx);
-        ctx.beginPath();
-        ctx.strokeStyle = isDark ? '#1e293b' : '#f1f5f9';
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, chartHeight);
-        ctx.stroke();
-
-        // Bottom Time Scale Label
-        ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
-        ctx.fillText(bar.time, x, chartHeight + 8);
-      }
+    // Main Candlestick Series (Professional Emerald Green & Crimson Red)
+    const candleSeries = chart.addSeries(CandlestickSeries, {
+      upColor: '#089981',
+      downColor: '#f23645',
+      borderUpColor: '#089981',
+      borderDownColor: '#f23645',
+      wickUpColor: '#089981',
+      wickDownColor: '#f23645',
     });
 
-    // 4. DRAW KILLZONE BACKGROUND BANDS (Institutional Shaded Windows)
-    if (killzones.length > 0) {
-      killzones.forEach((kz) => {
-        const xStart = getX(kz.startBarIndex) - barSpacing / 2;
-        const xEnd = getX(kz.endBarIndex) + barSpacing / 2;
-        const kzWidth = Math.max(2, xEnd - xStart);
-
-        if (xEnd >= 0 && xStart <= chartWidth) {
-          ctx.fillStyle = kz.color === '#2563eb' 
-            ? 'rgba(37, 99, 235, 0.08)' 
-            : kz.color === '#f59e0b' 
-            ? 'rgba(245, 158, 11, 0.08)' 
-            : 'rgba(100, 116, 139, 0.05)';
-          
-          ctx.fillRect(Math.max(0, xStart), 0, Math.min(chartWidth, kzWidth), mainChartHeight);
-
-          // Killzone Header Tag
-          ctx.font = 'bold 9px monospace';
-          ctx.fillStyle = kz.color === '#2563eb' ? '#2563eb' : kz.color === '#f59e0b' ? '#d97706' : '#64748b';
-          ctx.textAlign = 'left';
-          ctx.fillText(kz.label, Math.max(6, xStart + 4), 6);
-        }
-      });
-    }
-
-    // 5. DRAW FAIR VALUE GAPS (FVG) OVERLAYS
-    if (fvgs.length > 0) {
-      fvgs.forEach((fvg) => {
-        const xStart = getX(fvg.startBarIndex);
-        const xEnd = getX(fvg.endBarIndex) + barSpacing / 2;
-        const fvgWidth = Math.max(4, xEnd - xStart);
-
-        const yTop = getY(Math.max(fvg.topPrice, fvg.bottomPrice));
-        const yBottom = getY(Math.min(fvg.topPrice, fvg.bottomPrice));
-        const fvgHeight = Math.max(2, yBottom - yTop);
-
-        if (xEnd >= 0 && xStart <= chartWidth) {
-          const isBull = fvg.type === 'BULLISH';
-          const baseColor = isBull ? (indicatorSettings?.fvg.bullishColor || '#10b981') : (indicatorSettings?.fvg.bearishColor || '#f43f5e');
-          const opacity = indicatorSettings?.fvg.opacity || 0.18;
-
-          // Box Fill
-          ctx.fillStyle = isBull 
-            ? `rgba(16, 185, 129, ${opacity})` 
-            : `rgba(244, 63, 94, ${opacity})`;
-          ctx.fillRect(xStart, yTop, fvgWidth, fvgHeight);
-
-          // 1px Border Line
-          ctx.strokeStyle = baseColor;
-          ctx.lineWidth = 1;
-          ctx.strokeRect(xStart, yTop, fvgWidth, fvgHeight);
-
-          // 50% Consequent Encroachment (CE) dashed line
-          if (indicatorSettings?.fvg.showCE) {
-            const yMid = getY(fvg.midPrice);
-            ctx.strokeStyle = baseColor;
-            ctx.setLineDash([2, 2]);
-            ctx.beginPath();
-            ctx.moveTo(xStart, yMid);
-            ctx.lineTo(xEnd, yMid);
-            ctx.stroke();
-            ctx.setLineDash([]);
-          }
-
-          // FVG Label Tag
-          ctx.fillStyle = baseColor;
-          ctx.font = 'bold 8.5px monospace';
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'top';
-          ctx.fillText(`${isBull ? '+FVG' : '-FVG'}`, xStart + 2, yTop + 2);
-        }
-      });
-    }
-
-    // 6. DRAW SMC ORDER BLOCKS (OB) OVERLAYS
-    if (orderBlocks.length > 0) {
-      orderBlocks.forEach((ob) => {
-        const xStart = getX(ob.barIndex);
-        const xEnd = getX(ob.endBarIndex) + barSpacing / 2;
-        const obWidth = Math.max(4, xEnd - xStart);
-
-        const yTop = getY(Math.max(ob.topPrice, ob.bottomPrice));
-        const yBottom = getY(Math.min(ob.topPrice, ob.bottomPrice));
-        const obHeight = Math.max(2, yBottom - yTop);
-
-        if (xEnd >= 0 && xStart <= chartWidth) {
-          const isBull = ob.type === 'BULLISH';
-          const baseColor = isBull ? (indicatorSettings?.orderBlocks.bullishColor || '#3b82f6') : (indicatorSettings?.orderBlocks.bearishColor || '#f97316');
-          const opacity = indicatorSettings?.orderBlocks.opacity || 0.22;
-
-          // Box Fill
-          ctx.fillStyle = isBull 
-            ? `rgba(59, 130, 246, ${opacity})` 
-            : `rgba(249, 115, 22, ${opacity})`;
-          ctx.fillRect(xStart, yTop, obWidth, obHeight);
-
-          // Border Line
-          ctx.strokeStyle = baseColor;
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(xStart, yTop, obWidth, obHeight);
-
-          // 50% Mean Threshold (MT) Midline
-          if (indicatorSettings?.orderBlocks.showMeanThreshold) {
-            const yMid = getY(ob.meanThreshold);
-            ctx.strokeStyle = baseColor;
-            ctx.setLineDash([3, 2]);
-            ctx.beginPath();
-            ctx.moveTo(xStart, yMid);
-            ctx.lineTo(xEnd, yMid);
-            ctx.stroke();
-            ctx.setLineDash([]);
-          }
-
-          // OB Label Tag
-          ctx.fillStyle = baseColor;
-          ctx.font = 'bold 8.5px monospace';
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'top';
-          ctx.fillText(`${isBull ? '+OB' : '-OB'}`, xStart + 2, yTop + 2);
-        }
-      });
-    }
-
-    // 7. DRAW LIQUIDITY LEVELS & SWEEPS (BSL / SSL)
-    if (liquidityLevels.length > 0) {
-      liquidityLevels.forEach((liq) => {
-        const xStart = getX(liq.startBarIndex);
-        const xEnd = getX(liq.endBarIndex);
-        const y = getY(liq.price);
-
-        if (xEnd >= 0 && xStart <= chartWidth) {
-          ctx.strokeStyle = liq.type === 'BSL' ? '#0284c7' : '#e11d48';
-          ctx.lineWidth = 1;
-          ctx.setLineDash([4, 3]);
-          ctx.beginPath();
-          ctx.moveTo(Math.max(0, xStart), y);
-          ctx.lineTo(Math.min(chartWidth, xEnd), y);
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          // Liquidity Level Label
-          ctx.fillStyle = liq.type === 'BSL' ? '#0284c7' : '#e11d48';
-          ctx.font = '9px monospace';
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'bottom';
-          ctx.fillText(`${liq.name}`, Math.max(6, xStart + 4), y - 2);
-
-          // Sweep Marker if Swept
-          if (liq.isSwept && liq.sweptBarIndex !== undefined && indicatorSettings?.liquiditySweeps.showSweptLabels) {
-            const sweepX = getX(liq.sweptBarIndex);
-            if (sweepX >= 0 && sweepX <= chartWidth) {
-              ctx.fillStyle = '#d97706';
-              ctx.beginPath();
-              ctx.arc(sweepX, y, 3, 0, Math.PI * 2);
-              ctx.fill();
-
-              ctx.font = 'bold 8.5px sans-serif';
-              ctx.fillText('⚡ SWEPT', sweepX - 14, y - 10);
-            }
-          }
-        }
-      });
-    }
-
-    // 8. Draw Volume Histogram Sub-Panel
-    const volumeBaseY = chartHeight;
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(0, mainChartHeight, chartWidth, volumeHeight);
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.strokeRect(0, mainChartHeight, chartWidth, 1);
-
-    barsInView.forEach((bar, viewIdx) => {
-      const actualIdx = startIndex + viewIdx;
-      const x = getX(actualIdx);
-      const isUp = bar.close >= bar.open;
-      const volHeight = maxVolume > 0 ? (bar.volume / maxVolume) * (volumeHeight - 8) : 0;
-      const volY = volumeBaseY - volHeight;
-
-      ctx.fillStyle = isUp ? 'rgba(16, 185, 129, 0.35)' : 'rgba(244, 63, 94, 0.35)';
-      ctx.fillRect(x - candleWidth / 2, volY, candleWidth, volHeight);
+    // Volume Histogram Series (Bottom overlay)
+    const volumeSeries = chart.addSeries(HistogramSeries, {
+      priceFormat: {
+        type: 'volume',
+      },
+      priceScaleId: '', // overlay mode
     });
 
-    // 9. DRAW EXPONENTIAL MOVING AVERAGES (EMA 20, 50, 200)
-    if (emas.length > 0) {
-      emas.forEach((ema) => {
-        ctx.strokeStyle = ema.color;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        let hasStarted = false;
-
-        barsInView.forEach((_, viewIdx) => {
-          const actualIdx = startIndex + viewIdx;
-          const val = ema.values[actualIdx];
-          if (val !== null && val !== undefined) {
-            const x = getX(actualIdx);
-            const y = getY(val);
-            if (!hasStarted) {
-              ctx.moveTo(x, y);
-              hasStarted = true;
-            } else {
-              ctx.lineTo(x, y);
-            }
-          }
-        });
-
-        ctx.stroke();
-      });
-    }
-
-    // 10. Draw Candlesticks (Wicks + Bodies)
-    barsInView.forEach((bar, viewIdx) => {
-      const actualIdx = startIndex + viewIdx;
-      const x = getX(actualIdx);
-      const isUp = bar.close >= bar.open;
-
-      const openY = getY(bar.open);
-      const closeY = getY(bar.close);
-      const highY = getY(bar.high);
-      const lowY = getY(bar.low);
-
-      const color = isUp ? '#10b981' : '#f43f5e';
-
-      // Draw Wick
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(x, highY);
-      ctx.lineTo(x, lowY);
-      ctx.stroke();
-
-      // Draw Candle Body
-      const bodyTop = Math.min(openY, closeY);
-      const bodyHeight = Math.max(1.5, Math.abs(closeY - openY));
-
-      ctx.fillStyle = color;
-      ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+    volumeSeries.priceScale().applyOptions({
+      scaleMargins: {
+        top: 0.80, // Volume occupies bottom 20%
+        bottom: 0,
+      },
     });
 
-    // 11. Draw Current Live / Visible Bar Price Line
-    if (currentLastBar) {
-      const currentY = getY(currentLastBar.close);
-      const isUp = currentLastBar.close >= currentLastBar.open;
-      const color = isUp ? '#10b981' : '#f43f5e';
+    // Initialize Markers Plugin for Entry / Exit Markers
+    const markersPlugin = createSeriesMarkers(candleSeries, []);
 
-      ctx.strokeStyle = color;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(0, currentY);
-      ctx.lineTo(chartWidth, currentY);
-      ctx.stroke();
-      ctx.setLineDash([]);
+    chartRef.current = chart;
+    candleSeriesRef.current = candleSeries;
+    volumeSeriesRef.current = volumeSeries;
+    markersPluginRef.current = markersPlugin;
 
-      // Current Price Badge on Right Scale
-      ctx.fillStyle = color;
-      ctx.fillRect(chartWidth, currentY - 10, priceScaleWidth, 20);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 10.5px monospace';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      const decimals = symbol === 'EURUSD' ? 5 : 2;
-      ctx.fillText(currentLastBar.close.toFixed(decimals), chartWidth + 5, currentY);
-    }
-
-    // 12. Draw Active Position Overlay (Entry, SL, TP Lines & Badges)
-    if (activePosition && activePosition.status === 'OPEN') {
-      const entryY = getY(activePosition.entryPrice);
-      const isBuy = activePosition.type === 'BUY';
-
-      // Entry Price Line (Blue)
-      ctx.strokeStyle = '#2563EB';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([6, 3]);
-      ctx.beginPath();
-      ctx.moveTo(0, entryY);
-      ctx.lineTo(chartWidth, entryY);
-      ctx.stroke();
-
-      // Entry Label
-      ctx.fillStyle = '#1d4ed8';
-      ctx.fillRect(10, entryY - 11, 140, 22);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 10px monospace';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(
-        `${activePosition.type} ${activePosition.lots}L @ ${activePosition.entryPrice.toFixed(symbol === 'EURUSD' ? 5 : 2)}`,
-        16,
-        entryY
-      );
-
-      // Stop Loss Line (Red)
-      if (activePosition.sl) {
-        const slY = getY(activePosition.sl);
-        ctx.strokeStyle = '#f43f5e';
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(0, slY);
-        ctx.lineTo(chartWidth, slY);
-        ctx.stroke();
-
-        ctx.fillStyle = '#be123c';
-        ctx.fillRect(10, slY - 9, 100, 18);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(`SL: ${activePosition.sl.toFixed(symbol === 'EURUSD' ? 5 : 2)}`, 16, slY);
-      }
-
-      // Take Profit Line (Green)
-      if (activePosition.tp) {
-        const tpY = getY(activePosition.tp);
-        ctx.strokeStyle = '#10b981';
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.moveTo(0, tpY);
-        ctx.lineTo(chartWidth, tpY);
-        ctx.stroke();
-
-        ctx.fillStyle = '#047857';
-        ctx.fillRect(10, tpY - 9, 100, 18);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(`TP: ${activePosition.tp.toFixed(symbol === 'EURUSD' ? 5 : 2)}`, 16, tpY);
-      }
-      ctx.setLineDash([]);
-    }
-
-    // 13. Scissors Mode Cut Line OR Normal Crosshair
-    if (mousePos && mousePos.x <= chartWidth && mousePos.y <= chartHeight) {
-      if (isScissorsActive && hoveredBarIndex !== null) {
-        // Draw Vivid Scissors Cut Line
-        const cutX = getX(hoveredBarIndex);
-        ctx.strokeStyle = '#d97706'; // Amber Gold
-        ctx.lineWidth = 2;
-        ctx.setLineDash([4, 4]);
-        ctx.beginPath();
-        ctx.moveTo(cutX, 0);
-        ctx.lineTo(cutX, chartHeight);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        // Cut badge at cursor
-        const hoveredBar = visibleCandles[hoveredBarIndex];
-        if (hoveredBar) {
-          ctx.fillStyle = '#b45309';
-          ctx.fillRect(cutX - 60, mousePos.y - 12, 120, 24);
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 10px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(`✂️ Cut at ${hoveredBar.time}`, cutX, mousePos.y);
-        }
+    // Crosshair Move Subscription (Legend update)
+    chart.subscribeCrosshairMove((param) => {
+      if (
+        param.point === undefined ||
+        !param.time ||
+        param.point.x < 0 ||
+        param.point.x > container.clientWidth ||
+        param.point.y < 0 ||
+        param.point.y > container.clientHeight
+      ) {
+        setHoveredCandle(null);
       } else {
-        // Standard Trading Crosshair
-        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.18)' : 'rgba(15, 23, 42, 0.15)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([3, 3]);
+        const cData = param.seriesData.get(candleSeries) as any;
+        const vData = param.seriesData.get(volumeSeries) as any;
+        if (cData) {
+          const date = new Date((param.time as number) * 1000);
+          const timeStr = `${date.getUTCHours().toString().padStart(2, '0')}:${date.getUTCMinutes().toString().padStart(2, '0')} UTC`;
+          setHoveredCandle({
+            open: cData.open,
+            high: cData.high,
+            low: cData.low,
+            close: cData.close,
+            volume: vData?.value || 0,
+            time: timeStr,
+          });
+        }
+      }
+    });
 
-        // Horizontal line
-        ctx.beginPath();
-        ctx.moveTo(0, mousePos.y);
-        ctx.lineTo(chartWidth, mousePos.y);
-        ctx.stroke();
+    // Scissors Click Subscription
+    chart.subscribeClick((param) => {
+      if (!param.time) return;
+      const clickedTimestamp = param.time as number;
+      
+      // Find index in candles
+      const idx = candles.findIndex((c) => {
+        const cTime = c.timestamp || Math.floor(new Date(c.time).getTime() / 1000);
+        return cTime === clickedTimestamp;
+      });
 
-        // Vertical line
-        ctx.beginPath();
-        ctx.moveTo(mousePos.x, 0);
-        ctx.lineTo(mousePos.x, chartHeight);
-        ctx.stroke();
-        ctx.setLineDash([]);
+      if (idx !== -1) {
+        onCutAt(idx);
+      }
+    });
 
-        // Crosshair Price Badge
-        const hoveredPrice = getPrice(mousePos.y);
-        ctx.fillStyle = isDark ? '#262626' : '#0f172a';
-        ctx.fillRect(chartWidth, mousePos.y - 10, priceScaleWidth, 20);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '10px monospace';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(hoveredPrice.toFixed(symbol === 'EURUSD' ? 5 : 2), chartWidth + 5, mousePos.y);
+    // Handle Container Resize
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!entries || entries.length === 0 || !chartRef.current) return;
+      const { width: newWidth, height: newHeight } = entries[0].contentRect;
+      if (newWidth > 0 && newHeight > 0) {
+        chartRef.current.applyOptions({ width: newWidth, height: newHeight });
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    // Initial population
+    if (candles.length > 0 && visibleIndex >= 0) {
+      const initialSlice = candles.slice(0, visibleIndex + 1);
+      const formattedCandles = initialSlice.map(formatCandleForChart);
+      const formattedVolumes = initialSlice.map(formatVolumeForChart);
+      candleSeries.setData(formattedCandles);
+      volumeSeries.setData(formattedVolumes);
+      chart.timeScale().scrollToRealTime();
+      prevVisibleIndexRef.current = visibleIndex;
+      prevDatasetLengthRef.current = candles.length;
+      prevSymbolRef.current = symbol;
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+      chart.remove();
+      chartRef.current = null;
+      candleSeriesRef.current = null;
+      volumeSeriesRef.current = null;
+      markersPluginRef.current = null;
+      entryLineRef.current = null;
+      slLineRef.current = null;
+      tpLineRef.current = null;
+    };
+  }, [isDark]); // Re-create if theme changes
+
+  // 2. Handle Replay Sync: Smooth updates (update() vs setData())
+  useEffect(() => {
+    const candleSeries = candleSeriesRef.current;
+    const volumeSeries = volumeSeriesRef.current;
+    const chart = chartRef.current;
+    if (!candleSeries || !volumeSeries || !chart || candles.length === 0) return;
+
+    const isSameDataset = prevDatasetLengthRef.current === candles.length && prevSymbolRef.current === symbol;
+    const isSingleStepForward = isSameDataset && visibleIndex === prevVisibleIndexRef.current + 1;
+
+    if (isSingleStepForward && candles[visibleIndex]) {
+      // SMOOTH ANIMATION: Add exactly one bar via update() - Zero flickering!
+      const newCandle = formatCandleForChart(candles[visibleIndex]);
+      const newVol = formatVolumeForChart(candles[visibleIndex]);
+      candleSeries.update(newCandle);
+      volumeSeries.update(newVol);
+      chart.timeScale().scrollToPosition(0, false);
+    } else {
+      // Seek / Scrub / Cut / Symbol Change: Set full sliced dataset up to visibleIndex
+      const sliced = candles.slice(0, visibleIndex + 1);
+      const formattedCandles = sliced.map(formatCandleForChart);
+      const formattedVolumes = sliced.map(formatVolumeForChart);
+      candleSeries.setData(formattedCandles);
+      volumeSeries.setData(formattedVolumes);
+      
+      if (!isSameDataset) {
+        // Fit all bars in view on new symbol/dataset load
+        chart.timeScale().fitContent();
+      } else {
+        chart.timeScale().scrollToPosition(0, false);
       }
     }
 
-    // 14. Outer Border Lines
-    ctx.strokeStyle = isDark ? '#262626' : '#e2e8f0';
-    ctx.strokeRect(0, 0, chartWidth, chartHeight);
-    ctx.strokeRect(chartWidth, 0, priceScaleWidth, chartHeight);
-    ctx.strokeRect(0, chartHeight, width, timeScaleHeight);
+    prevVisibleIndexRef.current = visibleIndex;
+    prevDatasetLengthRef.current = candles.length;
+    prevSymbolRef.current = symbol;
+  }, [candles, visibleIndex, symbol, formatCandleForChart, formatVolumeForChart]);
 
-    ctx.restore();
-  }, [
-    visibleCandles,
-    scrollOffset,
-    candleWidth,
-    symbol,
-    timeframe,
-    activePosition,
-    mousePos,
-    isScissorsActive,
-    hoveredBarIndex,
-    fvgs,
-    orderBlocks,
-    liquidityLevels,
-    killzones,
-    emas,
-    indicatorSettings,
-    isDark
-  ]);
-
-  // Trigger re-render on dependency change
+  // 3. Handle Active Position Lines (ENTRY / SL / TP)
   useEffect(() => {
-    renderChart();
-  }, [renderChart]);
+    const candleSeries = candleSeriesRef.current;
+    if (!candleSeries) return;
 
-  // Window Resize Observer
+    // Clean up previous price lines
+    if (entryLineRef.current) {
+      try { candleSeries.removePriceLine(entryLineRef.current); } catch {}
+      entryLineRef.current = null;
+    }
+    if (slLineRef.current) {
+      try { candleSeries.removePriceLine(slLineRef.current); } catch {}
+      slLineRef.current = null;
+    }
+    if (tpLineRef.current) {
+      try { candleSeries.removePriceLine(tpLineRef.current); } catch {}
+      tpLineRef.current = null;
+    }
+
+    // If active open position exists, draw new price lines
+    if (activePosition && activePosition.status === 'OPEN') {
+      const decimals = symbol.includes('EUR') ? 5 : 2;
+      
+      // Entry Line
+      entryLineRef.current = candleSeries.createPriceLine({
+        price: activePosition.entryPrice,
+        color: '#00b4d8',
+        lineWidth: 2,
+        lineStyle: LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: `${activePosition.type} ${activePosition.lots}L @ ${activePosition.entryPrice.toFixed(decimals)}`,
+      });
+
+      // Stop Loss Line
+      if (activePosition.sl) {
+        slLineRef.current = candleSeries.createPriceLine({
+          price: activePosition.sl,
+          color: '#ef4444',
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true,
+          title: `SL: ${activePosition.sl.toFixed(decimals)}`,
+        });
+      }
+
+      // Take Profit Line
+      if (activePosition.tp) {
+        tpLineRef.current = candleSeries.createPriceLine({
+          price: activePosition.tp,
+          color: '#10b981',
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true,
+          title: `TP: ${activePosition.tp.toFixed(decimals)}`,
+        });
+      }
+    }
+  }, [activePosition, symbol]);
+
+  // 4. Handle Entry / Exit Markers on Candlestick Series
   useEffect(() => {
-    const handleResize = () => renderChart();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [renderChart]);
+    const markersPlugin = markersPluginRef.current;
+    if (!markersPlugin || candles.length === 0) return;
 
-  // Mouse Wheel Zoom
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.ctrlKey || e.metaKey || Math.abs(e.deltaY) > 0) {
-      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-      setCandleWidth((prev) => Math.min(28, Math.max(3, prev * zoomFactor)));
+    const markers: SeriesMarker<Time>[] = [];
+    const allTrades = [...(activePosition ? [activePosition] : []), ...tradeHistory];
+
+    allTrades.forEach((trade) => {
+      const openIdx = trade.openBarIndex ?? 0;
+      const closeIdx = trade.closeBarIndex;
+      const openCandle = candles[openIdx];
+
+      // Entry Marker (Green Up Arrow for BUY / Blue for SELL)
+      if (openCandle && openIdx <= visibleIndex) {
+        const time = (openCandle.timestamp || Math.floor(new Date(openCandle.time).getTime() / 1000)) as UTCTimestamp;
+        markers.push({
+          time,
+          position: trade.type === 'BUY' ? 'belowBar' : 'aboveBar',
+          color: trade.type === 'BUY' ? '#10b981' : '#3b82f6',
+          shape: trade.type === 'BUY' ? 'arrowUp' : 'arrowDown',
+          text: `${trade.type} ${trade.lots}L @ ${trade.entryPrice.toFixed(symbol.includes('EUR') ? 5 : 2)}`,
+        });
+      }
+
+      // Exit Marker (Red / Green Arrow at Close bar)
+      if (closeIdx !== undefined && closeIdx <= visibleIndex && candles[closeIdx]) {
+        const closeCandle = candles[closeIdx];
+        const time = (closeCandle.timestamp || Math.floor(new Date(closeCandle.time).getTime() / 1000)) as UTCTimestamp;
+        const isProfit = (trade.pnl || 0) >= 0;
+        markers.push({
+          time,
+          position: trade.type === 'BUY' ? 'aboveBar' : 'belowBar',
+          color: isProfit ? '#10b981' : '#ef4444',
+          shape: 'circle',
+          text: `EXIT (${isProfit ? '+' : ''}$${(trade.pnl || 0).toFixed(2)})`,
+        });
+      }
+    });
+
+    // Sort markers by time ASC (Required by Lightweight Charts)
+    markers.sort((a, b) => (a.time as number) - (b.time as number));
+
+    try {
+      markersPlugin.setMarkers(markers);
+    } catch (err) {
+      console.warn('[Replay Markers Plugin Error]:', err);
     }
-  };
+  }, [activePosition, tradeHistory, visibleIndex, candles, symbol]);
 
-  // Mouse Down for Pan Dragging
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isScissorsActive) return; // In scissors mode, click cuts instead of drag
-    setIsDragging(true);
-    setDragStartX(e.clientX);
-    setDragStartOffset(scrollOffset ?? 0);
-  };
+  const currentBar = candles[visibleIndex] || candles[0];
+  const displayCandle = hoveredCandle || (currentBar ? {
+    open: currentBar.open,
+    high: currentBar.high,
+    low: currentBar.low,
+    close: currentBar.close,
+    volume: currentBar.volume,
+    time: currentBar.time,
+  } : null);
 
-  // Mouse Move for Crosshair & Pan
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setMousePos({ x, y });
-
-    // Find closest bar index to cursor
-    const priceScaleWidth = 72;
-    const chartWidth = container.clientWidth - priceScaleWidth;
-    const barSpacing = candleWidth + 3;
-    const rightMarginBars = 4;
-    const effectiveOffset = scrollOffset ?? 0;
-
-    const offsetFromRight = chartWidth - x + effectiveOffset;
-    const barIndexFromRight = Math.round(offsetFromRight / barSpacing) - rightMarginBars;
-    const computedIndex = visibleCandles.length - 1 - barIndexFromRight;
-
-    if (computedIndex >= 0 && computedIndex < visibleCandles.length) {
-      setHoveredBarIndex(computedIndex);
-    } else {
-      setHoveredBarIndex(null);
-    }
-
-    // Handle Drag Pan
-    if (isDragging) {
-      const deltaX = e.clientX - dragStartX;
-      setScrollOffset(Math.max(0, dragStartOffset + deltaX));
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-    setMousePos(null);
-    setHoveredBarIndex(null);
-  };
-
-  // Handle Cut Tool Click
-  const handleClick = () => {
-    if (isScissorsActive && hoveredBarIndex !== null) {
-      onCutAt(hoveredBarIndex);
-    }
-  };
-
-  // Selected or hovered bar info for top header banner
-  const activeBarInfo = hoveredBarIndex !== null && visibleCandles[hoveredBarIndex]
-    ? visibleCandles[hoveredBarIndex]
-    : currentLastBar;
+  const decimals = symbol.includes('EUR') ? 5 : 2;
+  const isUp = displayCandle ? displayCandle.close >= displayCandle.open : true;
+  const priceChange = displayCandle ? displayCandle.close - displayCandle.open : 0;
+  const priceChangePercent = displayCandle && displayCandle.open > 0 ? (priceChange / displayCandle.open) * 100 : 0;
 
   return (
-    <div 
-      ref={containerRef} 
-      className={`relative w-full h-full select-none bg-white dark:bg-[#121212] overflow-hidden ${
-        isScissorsActive ? 'cursor-crosshair' : isDragging ? 'cursor-grabbing' : 'cursor-crosshair'
-      }`}
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
-    >
-      {/* Top Bar OHLCV Live HUD */}
-      {activeBarInfo && (
-        <div className="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-3 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-gray-200 dark:border-neutral-800 text-[11px] font-mono shadow-xs">
-          <div className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">
-            <span className="text-[#2563EB] dark:text-blue-400">{symbol}</span>
-            <span className="text-gray-300 dark:text-neutral-700">•</span>
-            <span className="text-amber-600 dark:text-amber-400">{timeframe}</span>
-          </div>
+    <div className="w-full h-full relative flex flex-col bg-white dark:bg-[#131722] select-none overflow-hidden">
+      
+      {/* Top Legend Overlay */}
+      <div className="absolute top-2 left-3 z-20 flex flex-wrap items-center gap-3 text-[11px] font-mono pointer-events-none bg-white/85 dark:bg-[#131722]/85 backdrop-blur-sm px-2.5 py-1 rounded-md border border-gray-200/60 dark:border-white/[0.06] shadow-2xs">
+        <div className="flex items-center gap-1.5 font-bold">
+          <span className="text-gray-900 dark:text-neutral-100">{symbol}</span>
+          <span className="text-gray-400 dark:text-neutral-500">•</span>
+          <span className="text-[#2563EB] dark:text-blue-400">{timeframe}</span>
+        </div>
 
-          <div className="hidden sm:flex items-center gap-3">
-            <div><span className="text-gray-400 dark:text-neutral-500">O:</span> <span className="text-gray-700 dark:text-neutral-300 font-semibold">{activeBarInfo.open.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400 dark:text-neutral-500">H:</span> <span className="text-emerald-600 font-semibold">{activeBarInfo.high.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400 dark:text-neutral-500">L:</span> <span className="text-rose-600 font-semibold">{activeBarInfo.low.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400 dark:text-neutral-500">C:</span> <span className={activeBarInfo.close >= activeBarInfo.open ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}>{activeBarInfo.close.toFixed(symbol === 'EURUSD' ? 5 : 2)}</span></div>
-            <div><span className="text-gray-400 dark:text-neutral-500">Vol:</span> <span className="text-gray-600 dark:text-neutral-400">{activeBarInfo.volume.toLocaleString()}</span></div>
-          </div>
-
-          {activeBarInfo.session && (
-            <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold uppercase ${
-              activeBarInfo.session === 'london' 
-                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40' 
-                : activeBarInfo.session === 'ny'
-                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40'
-                : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-neutral-400'
-            }`}>
-              {activeBarInfo.session} session
+        {displayCandle && (
+          <div className="flex items-center gap-2 text-[10px]">
+            <span>O: <span className={isUp ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>{displayCandle.open.toFixed(decimals)}</span></span>
+            <span>H: <span className={isUp ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>{displayCandle.high.toFixed(decimals)}</span></span>
+            <span>L: <span className={isUp ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>{displayCandle.low.toFixed(decimals)}</span></span>
+            <span>C: <span className={isUp ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'}>{displayCandle.close.toFixed(decimals)}</span></span>
+            <span>Vol: <span className="text-gray-700 dark:text-neutral-300 font-semibold">{displayCandle.volume.toLocaleString()}</span></span>
+            <span className={`font-bold ml-1 ${isUp ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+              {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(decimals)} ({priceChangePercent >= 0 ? '+' : ''}{priceChangePercent.toFixed(2)}%)
             </span>
-          )}
+          </div>
+        )}
+      </div>
 
-          {/* Active EMA HUD Indicator */}
-          {emas.length > 0 && (
-            <div className="hidden md:flex items-center gap-2 border-l border-gray-200 dark:border-neutral-800 pl-2">
-              {emas.map((ema) => {
-                const currentVal = ema.values[visibleCandles.length - 1];
-                return (
-                  <div key={ema.period} className="flex items-center gap-1 text-[10px]">
-                    <span style={{ color: ema.color }} className="font-bold">EMA{ema.period}:</span>
-                    <span className="text-gray-700 dark:text-neutral-300 font-semibold">{currentVal !== null ? currentVal.toFixed(symbol === 'EURUSD' ? 5 : 2) : '—'}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Scissors Active Banner */}
+      {/* Scissors Cut Tool Active Floating Banner */}
       {isScissorsActive && (
-        <div className="absolute top-3 right-20 z-20 flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-xl text-xs font-mono backdrop-blur-md shadow-xs animate-pulse">
-          <Scissors className="w-3.5 h-3.5 rotate-90 text-amber-600" />
-          <span>Click any candle on chart to cut history</span>
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 bg-amber-500 text-slate-950 px-3.5 py-1 rounded-full shadow-lg text-xs font-mono font-bold flex items-center gap-2 animate-bounce">
+          <Scissors className="w-3.5 h-3.5 rotate-90" />
+          <span>Click any candle on the chart to cut replay timeline to that point</span>
         </div>
       )}
 
-      {/* Canvas Element */}
-      <canvas ref={canvasRef} className="w-full h-full block" />
+      {/* Lightweight Chart DOM Container */}
+      <div 
+        ref={containerRef} 
+        className={`w-full h-full flex-1 ${isScissorsActive ? 'cursor-crosshair' : 'cursor-default'}`} 
+      />
     </div>
   );
 }
-

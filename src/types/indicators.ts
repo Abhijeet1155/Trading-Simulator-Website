@@ -49,7 +49,57 @@ export interface EMAData {
   values: (number | null)[];
 }
 
+export interface RSIData {
+  period: number;
+  color: string;
+  values: (number | null)[];
+}
+
+export interface MACDData {
+  fastPeriod: number;
+  slowPeriod: number;
+  signalPeriod: number;
+  macd: (number | null)[];
+  signal: (number | null)[];
+  histogram: (number | null)[];
+}
+
+export interface BollingerBandsData {
+  period: number;
+  stdDev: number;
+  upper: (number | null)[];
+  middle: (number | null)[];
+  lower: (number | null)[];
+}
+
 export interface IndicatorSettings {
+  // Classic Studies
+  ma: {
+    enabled: boolean;
+    period: number;
+    color: string;
+  };
+  rsi: {
+    enabled: boolean;
+    period: number;
+    color: string;
+  };
+  macd: {
+    enabled: boolean;
+    fastPeriod: number;
+    slowPeriod: number;
+    signalPeriod: number;
+  };
+  bollinger: {
+    enabled: boolean;
+    period: number;
+    stdDev: number;
+    color: string;
+  };
+  volume: {
+    enabled: boolean;
+  };
+  // ICT & SMC Studies
   fvg: {
     enabled: boolean;
     showUnmitigatedOnly: boolean;
@@ -92,8 +142,33 @@ export interface IndicatorSettings {
 }
 
 export const DEFAULT_INDICATOR_SETTINGS: IndicatorSettings = {
-  fvg: {
+  ma: {
     enabled: true,
+    period: 20,
+    color: '#06b6d4', // Cyan
+  },
+  rsi: {
+    enabled: false,
+    period: 14,
+    color: '#a855f7', // Purple
+  },
+  macd: {
+    enabled: false,
+    fastPeriod: 12,
+    slowPeriod: 26,
+    signalPeriod: 9,
+  },
+  bollinger: {
+    enabled: false,
+    period: 20,
+    stdDev: 2,
+    color: '#38bdf8', // Sky
+  },
+  volume: {
+    enabled: true,
+  },
+  fvg: {
+    enabled: false,
     showUnmitigatedOnly: true,
     bullishColor: '#10b981', // Emerald Green
     bearishColor: '#f43f5e', // Rose Red
@@ -101,7 +176,7 @@ export const DEFAULT_INDICATOR_SETTINGS: IndicatorSettings = {
     showCE: true,
   },
   orderBlocks: {
-    enabled: true,
+    enabled: false,
     showUnmitigatedOnly: true,
     bullishColor: '#3b82f6', // Royal Blue
     bearishColor: '#f97316', // Amber Orange
@@ -109,14 +184,14 @@ export const DEFAULT_INDICATOR_SETTINGS: IndicatorSettings = {
     showMeanThreshold: true,
   },
   liquiditySweeps: {
-    enabled: true,
+    enabled: false,
     showAsia: true,
     showLondon: true,
     showNY: true,
     showSweptLabels: true,
   },
   killzones: {
-    enabled: true,
+    enabled: false,
     showAsia: true,
     showLondon: true,
     showNY: true,
@@ -127,8 +202,24 @@ export const DEFAULT_INDICATOR_SETTINGS: IndicatorSettings = {
     ema20: true,
     ema50: true,
     ema200: true,
-    ema20Color: '#38bdf8', // Light Blue
-    ema50Color: '#fbbf24', // Amber Yellow
-    ema200Color: '#a855f7', // Purple
+    ema20Color: '#38bdf8',
+    ema50Color: '#fbbf24',
+    ema200Color: '#a855f7',
   },
 };
+
+// Drawing Tools Types
+export type DrawingToolType = 'cursor' | 'line' | 'horizontal' | 'trendline' | 'rectangle' | 'text';
+
+export interface DrawingItem {
+  id: string;
+  type: DrawingToolType;
+  startBarIndex: number;
+  startPrice: number;
+  endBarIndex?: number;
+  endPrice?: number;
+  text?: string;
+  color: string;
+  lineWidth: number;
+}
+

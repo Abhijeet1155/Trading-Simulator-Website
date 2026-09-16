@@ -201,6 +201,12 @@ export const AVAILABLE_SYMBOLS = [
   { id: 'EURUSD', name: 'Euro / US Dollar', category: 'Forex', precision: 5, pipSize: 0.0001, pipValuePerLot: 10 },
   { id: 'BTCUSD', name: 'Bitcoin / US Dollar', category: 'Crypto', precision: 2, pipSize: 1.0, pipValuePerLot: 1 },
   { id: 'NAS100', name: 'Nasdaq 100 Index', category: 'Indices', precision: 2, pipSize: 1.0, pipValuePerLot: 20 },
+  { id: 'US30', name: 'Dow Jones 30 Index', category: 'Indices', precision: 2, pipSize: 1.0, pipValuePerLot: 20 },
+  { id: 'SPX500', name: 'S&P 500 Index', category: 'Indices', precision: 2, pipSize: 1.0, pipValuePerLot: 50 },
+  { id: 'ETHUSD', name: 'Ethereum / US Dollar', category: 'Crypto', precision: 2, pipSize: 1.0, pipValuePerLot: 1 },
+  { id: 'SOLUSD', name: 'Solana / US Dollar', category: 'Crypto', precision: 2, pipSize: 0.1, pipValuePerLot: 10 },
+  { id: 'GBPUSD', name: 'British Pound / US Dollar', category: 'Forex', precision: 5, pipSize: 0.0001, pipValuePerLot: 10 },
+  { id: 'USDJPY', name: 'US Dollar / Japanese Yen', category: 'Forex', precision: 2, pipSize: 0.01, pipValuePerLot: 10 },
 ];
 
 export const AVAILABLE_TIMEFRAMES = [

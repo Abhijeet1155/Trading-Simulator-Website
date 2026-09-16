@@ -22,3 +22,7 @@ export function createAdminClient() {
     },
   });
 }
+
+// Lazy/Instance export for direct consumption
+export const supabaseAdmin = createAdminClient();
+export default createAdminClient;

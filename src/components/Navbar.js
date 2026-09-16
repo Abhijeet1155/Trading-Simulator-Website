@@ -74,13 +74,20 @@ export default function Navbar({ userName }) {
             <div className="h-5 w-[1px] bg-gray-200 dark:bg-neutral-800 hidden md:block" />
 
             {/* Desktop Primary Navigation */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden md:flex items-center gap-1" suppressHydrationWarning>
               {primaryNavLinks.map((link) => {
-                const isActive = pathname === link.href || (link.href === '/dashboard' && pathname === '/') || (link.href === '/accounts' && pathname === '/account-setup');
+                const currentPath = pathname || '';
+                const isActive = 
+                  currentPath === link.href || 
+                  (link.href !== '/' && link.href !== '/dashboard' && currentPath.startsWith(link.href)) ||
+                  (link.href === '/dashboard' && (currentPath === '/' || currentPath === '/dashboard')) ||
+                  (link.href === '/accounts' && currentPath === '/account-setup');
+
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
+                    suppressHydrationWarning
                     className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all capitalize ${
                       isActive 
                         ? 'bg-blue-50 dark:bg-blue-950/50 text-[#2563EB] dark:text-blue-400 font-bold shadow-2xs' 
@@ -127,11 +134,18 @@ export default function Navbar({ userName }) {
                     </div>
                     {primaryNavLinks.map((link) => {
                       const Icon = link.icon;
-                      const isActive = pathname === link.href || (link.href === '/dashboard' && pathname === '/') || (link.href === '/accounts' && pathname === '/account-setup');
+                      const currentPath = pathname || '';
+                      const isActive = 
+                        currentPath === link.href || 
+                        (link.href !== '/' && link.href !== '/dashboard' && currentPath.startsWith(link.href)) ||
+                        (link.href === '/dashboard' && (currentPath === '/' || currentPath === '/dashboard')) ||
+                        (link.href === '/accounts' && currentPath === '/account-setup');
+
                       return (
                         <Link
                           key={link.href}
                           href={link.href}
+                          suppressHydrationWarning
                           onClick={() => setIsMenuOpen(false)}
                           className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                             isActive

@@ -406,3 +406,180 @@ export function calculateEMAs(
 
   return results;
 }
+
+/**
+ * 6. Simple / Exponential Moving Average Calculation
+ */
+export function calculateMA(
+  candles: CandleData[],
+  settings: IndicatorSettings['ma']
+): { period: number; color: string; values: (number | null)[] } | null {
+  if (!settings.enabled || candles.length === 0) return null;
+  const period = settings.period || 20;
+  const values: (number | null)[] = new Array(candles.length).fill(null);
+  
+  if (candles.length < period) return { period, color: settings.color, values };
+
+  let sum = 0;
+  for (let i = 0; i < period; i++) {
+    sum += candles[i].close;
+  }
+  values[period - 1] = sum / period;
+
+  for (let i = period; i < candles.length; i++) {
+    sum += candles[i].close - candles[i - period].close;
+    values[i] = sum / period;
+  }
+
+  return { period, color: settings.color, values };
+}
+
+/**
+ * 7. RSI (Relative Strength Index) Calculation
+ */
+export function calculateRSI(
+  candles: CandleData[],
+  settings: IndicatorSettings['rsi']
+): { period: number; color: string; values: (number | null)[] } | null {
+  if (!settings.enabled || candles.length === 0) return null;
+  const period = settings.period || 14;
+  const values: (number | null)[] = new Array(candles.length).fill(null);
+
+  if (candles.length <= period) return { period, color: settings.color, values };
+
+  let gains = 0;
+  let losses = 0;
+
+  for (let i = 1; i <= period; i++) {
+    const diff = candles[i].close - candles[i - 1].close;
+    if (diff >= 0) gains += diff;
+    else losses += Math.abs(diff);
+  }
+
+  let avgGain = gains / period;
+  let avgLoss = losses / period;
+
+  let rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+  values[period] = 100 - (100 / (1 + rs));
+
+  for (let i = period + 1; i < candles.length; i++) {
+    const diff = candles[i].close - candles[i - 1].close;
+    const gain = diff > 0 ? diff : 0;
+    const loss = diff < 0 ? Math.abs(diff) : 0;
+
+    avgGain = (avgGain * (period - 1) + gain) / period;
+    avgLoss = (avgLoss * (period - 1) + loss) / period;
+
+    rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+    values[i] = +(100 - (100 / (1 + rs))).toFixed(2);
+  }
+
+  return { period, color: settings.color, values };
+}
+
+/**
+ * 8. MACD (Moving Average Convergence Divergence) Calculation
+ */
+export function calculateMACD(
+  candles: CandleData[],
+  settings: IndicatorSettings['macd']
+): { fastPeriod: number; slowPeriod: number; signalPeriod: number; macd: (number | null)[]; signal: (number | null)[]; histogram: (number | null)[] } | null {
+  if (!settings.enabled || candles.length === 0) return null;
+  const { fastPeriod = 12, slowPeriod = 26, signalPeriod = 9 } = settings;
+
+  const macdValues: (number | null)[] = new Array(candles.length).fill(null);
+  const signalValues: (number | null)[] = new Array(candles.length).fill(null);
+  const histValues: (number | null)[] = new Array(candles.length).fill(null);
+
+  if (candles.length < slowPeriod) {
+    return { fastPeriod, slowPeriod, signalPeriod, macd: macdValues, signal: signalValues, histogram: histValues };
+  }
+
+  // Calculate Fast EMA & Slow EMA
+  const calcEmaArray = (p: number) => {
+    const arr: (number | null)[] = new Array(candles.length).fill(null);
+    const alpha = 2 / (p + 1);
+    let s = 0;
+    for (let i = 0; i < p; i++) s += candles[i].close;
+    let prev = s / p;
+    arr[p - 1] = prev;
+    for (let i = p; i < candles.length; i++) {
+      const cur = candles[i].close * alpha + prev * (1 - alpha);
+      arr[i] = cur;
+      prev = cur;
+    }
+    return arr;
+  };
+
+  const fastEma = calcEmaArray(fastPeriod);
+  const slowEma = calcEmaArray(slowPeriod);
+
+  for (let i = slowPeriod - 1; i < candles.length; i++) {
+    if (fastEma[i] !== null && slowEma[i] !== null) {
+      macdValues[i] = (fastEma[i] as number) - (slowEma[i] as number);
+    }
+  }
+
+  // Signal line EMA of MACD
+  const signalAlpha = 2 / (signalPeriod + 1);
+  let sigSum = 0;
+  const startSigIdx = slowPeriod - 1 + signalPeriod - 1;
+  if (candles.length > startSigIdx) {
+    for (let i = slowPeriod - 1; i <= startSigIdx; i++) {
+      sigSum += macdValues[i] || 0;
+    }
+    let prevSig = sigSum / signalPeriod;
+    signalValues[startSigIdx] = prevSig;
+    histValues[startSigIdx] = (macdValues[startSigIdx] || 0) - prevSig;
+
+    for (let i = startSigIdx + 1; i < candles.length; i++) {
+      const curMacd = macdValues[i] || 0;
+      const curSig = curMacd * signalAlpha + prevSig * (1 - signalAlpha);
+      signalValues[i] = curSig;
+      histValues[i] = curMacd - curSig;
+      prevSig = curSig;
+    }
+  }
+
+  return { fastPeriod, slowPeriod, signalPeriod, macd: macdValues, signal: signalValues, histogram: histValues };
+}
+
+/**
+ * 9. Bollinger Bands Calculation
+ */
+export function calculateBollingerBands(
+  candles: CandleData[],
+  settings: IndicatorSettings['bollinger']
+): { period: number; stdDev: number; color: string; upper: (number | null)[]; middle: (number | null)[]; lower: (number | null)[] } | null {
+  if (!settings.enabled || candles.length === 0) return null;
+  const period = settings.period || 20;
+  const mult = settings.stdDev || 2;
+
+  const upper: (number | null)[] = new Array(candles.length).fill(null);
+  const middle: (number | null)[] = new Array(candles.length).fill(null);
+  const lower: (number | null)[] = new Array(candles.length).fill(null);
+
+  if (candles.length < period) {
+    return { period, stdDev: mult, color: settings.color, upper, middle, lower };
+  }
+
+  for (let i = period - 1; i < candles.length; i++) {
+    let sum = 0;
+    for (let k = i - period + 1; k <= i; k++) {
+      sum += candles[k].close;
+    }
+    const sma = sum / period;
+    middle[i] = sma;
+
+    let varianceSum = 0;
+    for (let k = i - period + 1; k <= i; k++) {
+      varianceSum += Math.pow(candles[k].close - sma, 2);
+    }
+    const std = Math.sqrt(varianceSum / period);
+    upper[i] = sma + mult * std;
+    lower[i] = sma - mult * std;
+  }
+
+  return { period, stdDev: mult, color: settings.color, upper, middle, lower };
+}
+

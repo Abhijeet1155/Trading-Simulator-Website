@@ -1072,24 +1072,29 @@ export default function TradeClientPage({
   };
 
   // Calculate dynamic P&Ls based on live prices
+  const getLotMultiplier = (sym = selectedAsset) => {
+    const clean = (sym || '').toUpperCase().replace('/', '').trim();
+    if (FOREX_SYMBOLS.some(f => f.replace('/', '') === clean) || ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'AUDCAD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY'].includes(clean)) {
+      return 100000;
+    }
+    if (clean === 'XAUUSD' || clean === 'GOLD' || clean.startsWith('XAU')) return 100;
+    if (['NQ1!', 'NAS100', 'NDX', 'USTEC'].includes(clean)) return 20;
+    if (['ES1!', 'US500', 'SPX'].includes(clean)) return 50;
+    return 1;
+  };
+
+  // Calculate dynamic P&Ls based on live prices
   const getPositionPnL = (pos) => {
     const currentPrice = prices[pos.symbol] || pos.entry;
-    if (pos.side?.toLowerCase() === 'buy') {
-      if (FOREX_SYMBOLS.includes(pos.symbol)) {
-        return (currentPrice - pos.entry) * 100000 * pos.size;
-      }
-      if (pos.symbol === 'XAU/USD') {
-        return (currentPrice - pos.entry) * 100 * pos.size;
-      }
-      return (currentPrice - pos.entry) * pos.size;
+    const lotMultiplier = getLotMultiplier(pos.symbol);
+    const parsedSize = parseFloat(pos.quantity || pos.size || pos.lot_size || 0);
+    const side = (pos.side || 'buy').toLowerCase();
+    const isLong = side === 'buy' || side === 'long' || pos.direction === 'LONG';
+    
+    if (isLong) {
+      return (currentPrice - pos.entry) * lotMultiplier * parsedSize;
     } else {
-      if (FOREX_SYMBOLS.includes(pos.symbol)) {
-        return (pos.entry - currentPrice) * 100000 * pos.size;
-      }
-      if (pos.symbol === 'XAU/USD') {
-        return (pos.entry - currentPrice) * 100 * pos.size;
-      }
-      return (pos.entry - currentPrice) * pos.size;
+      return (pos.entry - currentPrice) * lotMultiplier * parsedSize;
     }
   };
 
@@ -1115,10 +1120,6 @@ export default function TradeClientPage({
       clearTimeout(clearTimer);
     };
   }, [livePrice, prevPrice]);
-
-  const getLotMultiplier = (sym = selectedAsset) => {
-    return FOREX_SYMBOLS.includes(sym) ? 100000 : sym === 'XAU/USD' ? 100 : 1;
-  };
 
   const getExecutionPrice = (side = orderType, subtype = orderSubtype, customRate = limitPrice) => {
     if (subtype === 'Market') {
@@ -1385,18 +1386,28 @@ export default function TradeClientPage({
   const handlePlaceOrder = async () => {
     if (isPlacingOrder) return;
     setIsPlacingOrder(true);
+    setErrorMsg('');
     const lotMultiplier = getLotMultiplier();
     const entryPrice = getExecutionPrice();
-    const fullOrderValue = (parseFloat(vol) || 0) * entryPrice * lotMultiplier;
-    const marginRequired = fullOrderValue / leverage;
-
-    if (parseFloat(vol) <= 0 || isNaN(parseFloat(vol))) {
+    const parsedVol = parseFloat(vol);
+    
+    if (!parsedVol || parsedVol <= 0 || isNaN(parsedVol)) {
       setErrorMsg('Please enter a valid volume.');
       setIsPlacingOrder(false);
       return;
     }
+
+    if (!entryPrice || entryPrice <= 0 || isNaN(entryPrice)) {
+      setErrorMsg('Market price is not available yet. Please wait a moment.');
+      setIsPlacingOrder(false);
+      return;
+    }
+
+    const fullOrderValue = parsedVol * entryPrice * lotMultiplier;
+    const marginRequired = fullOrderValue / (leverage || 100);
+
     if (marginRequired > freeMargin) {
-      setErrorMsg('Required margin exceeds available free margin.');
+      setErrorMsg(`Required margin ($${marginRequired.toFixed(2)}) exceeds available free margin ($${freeMargin.toFixed(2)}).`);
       setIsPlacingOrder(false);
       return;
     }
@@ -1410,7 +1421,7 @@ export default function TradeClientPage({
           wallet_id: accountData?.activeAccount?.id || activeAccountId,
           symbol: selectedAsset,
           side: orderType, // 'buy' or 'sell'
-          quantity: parseFloat(vol),
+          quantity: parsedVol,
           entry_price: entryPrice,
           leverage: leverage,
           usd_amount: marginRequired,
@@ -1426,8 +1437,10 @@ export default function TradeClientPage({
         return;
       }
 
-      showToast('Order placed successfully', 'success');
-      setBalance(data.newBalance);
+      showToast(`Order placed: ${orderType.toUpperCase()} ${parsedVol} ${selectedAsset}`, 'success');
+      if (data.newBalance !== undefined) {
+        setBalance(data.newBalance);
+      }
       refreshOpenTrades();
       
       // Reset limit inputs
@@ -2415,7 +2428,7 @@ export default function TradeClientPage({
               <button
                 type="button"
                 onClick={handlePlaceOrder}
-                disabled={isPlacingOrder || !!errorMsg || isInsufficientMargin || !totalUSDT || parseFloat(totalUSDT) <= 0}
+                disabled={isPlacingOrder || isInsufficientMargin || !parseFloat(vol) || parseFloat(vol) <= 0}
                 className="w-full text-white py-2 rounded-md font-semibold transition-colors cursor-pointer text-xs disabled:opacity-50 disabled:cursor-not-allowed capitalize min-h-[44px] flex items-center justify-center animate-fade-in"
                 style={{
                   backgroundColor: isInsufficientMargin ? '#9CA3AF' : (orderType === 'buy' ? '#2563EB' : '#f23645')

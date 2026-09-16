@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabaseAdmin';
 import { getActiveWallet } from '@/lib/activeWallet';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 // Multiplier Helper
 const getMultiplier = (symbol) => {
@@ -12,11 +13,12 @@ const getMultiplier = (symbol) => {
     return 100000;
   }
   if (cleanSym === 'XAUUSD' || cleanSym === 'GOLD' || cleanSym.startsWith('XAU')) return 100;
-  if (['AAPL', 'TSLA', 'NVDA', 'MSFT', 'AMZN', 'GOOGL', 'META'].includes(cleanSym)) return 100;
   if (['NQ1!', 'NAS100', 'NDX', 'USTEC'].includes(cleanSym)) return 20;
   if (['ES1!', 'US500', 'SPX'].includes(cleanSym)) return 50;
   return 1;
 };
+
+const isUuid = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
 // GET: Fetch trades for the logged-in user with filters
 export async function GET(request) {
@@ -38,7 +40,6 @@ export async function GET(request) {
     const supabaseAdmin = createAdminClient();
 
     let rawTrades = [];
-    let supabaseSuccess = false;
 
     if (!useLocalFallback) {
       try {
@@ -49,36 +50,42 @@ export async function GET(request) {
 
         if (!allWallets && (accountId || activeWallet?.id)) {
           const targetWalletId = accountId || activeWallet.id;
-          query = query.or(`wallet_id.eq.${targetWalletId},wallet_id.is.null`);
+          if (isUuid(targetWalletId)) {
+            query = query.or(`wallet_id.eq.${targetWalletId},wallet_id.is.null`);
+          }
         }
 
         const { data, error } = await query;
         if (!error && data) {
           rawTrades = data;
-          supabaseSuccess = true;
+        } else if (error) {
+          console.warn('[Trades API GET Supabase Warning]:', error.message);
         }
       } catch (err) {
         console.warn('[Trades API GET Supabase Warning]:', err.message);
       }
     }
 
-    // Fallback to local_db.json if supabase failed or returned 0
-    if (!supabaseSuccess || rawTrades.length === 0) {
-      const localDbPath = path.join(process.cwd(), 'local_db.json');
-      if (fs.existsSync(localDbPath)) {
-        try {
-          const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
-          let dbTrades = (db.trades || []).filter(t => t.user_id === user.id);
-          if (!allWallets && (accountId || activeWallet?.id)) {
-            const targetWalletId = accountId || activeWallet.id;
-            dbTrades = dbTrades.filter(t => !t.wallet_id || t.wallet_id === targetWalletId);
-          }
-          if (dbTrades.length > 0) {
-            rawTrades = dbTrades;
-          }
-        } catch (e) {
-          console.error('Error reading local_db in trades GET:', e);
+    // Fallback and merge with local_db.json
+    const localDbPath = path.join(process.cwd(), 'local_db.json');
+    if (fs.existsSync(localDbPath)) {
+      try {
+        const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
+        let dbTrades = (db.trades || []).filter(t => t.user_id === user.id);
+        if (!allWallets && (accountId || activeWallet?.id)) {
+          const targetWalletId = accountId || activeWallet.id;
+          dbTrades = dbTrades.filter(t => !t.wallet_id || t.wallet_id === targetWalletId);
         }
+        
+        const existingIds = new Set(rawTrades.map(t => String(t.id)));
+        for (const lt of dbTrades) {
+          if (!existingIds.has(String(lt.id))) {
+            rawTrades.push(lt);
+            existingIds.add(String(lt.id));
+          }
+        }
+      } catch (e) {
+        console.error('Error reading local_db in trades GET:', e);
       }
     }
 
@@ -258,14 +265,29 @@ export async function POST(request) {
     let activeWallet = null;
 
     if (targetWalletId) {
-      const { data: specificWallet } = await supabaseAdmin
-        .from('wallets')
-        .select('*')
-        .eq('id', targetWalletId)
-        .eq('user_id', user.id)
-        .maybeSingle();
-      if (specificWallet) {
-        activeWallet = specificWallet;
+      try {
+        const { data: specificWallet } = await supabaseAdmin
+          .from('wallets')
+          .select('*')
+          .eq('id', targetWalletId)
+          .eq('user_id', user.id)
+          .maybeSingle();
+        if (specificWallet) {
+          activeWallet = specificWallet;
+        }
+      } catch (err) {
+        console.warn('Supabase targetWallet lookup warning:', err?.message);
+      }
+
+      if (!activeWallet) {
+        const localDbPath = path.join(process.cwd(), 'local_db.json');
+        if (fs.existsSync(localDbPath)) {
+          try {
+            const db = JSON.parse(fs.readFileSync(localDbPath, 'utf8'));
+            const localW = (db.wallets_multi || []).find(w => (w.id === targetWalletId || w.account_number === targetWalletId) && w.user_id === user.id);
+            if (localW) activeWallet = localW;
+          } catch (e) {}
+        }
       }
     }
 
@@ -290,10 +312,14 @@ export async function POST(request) {
       }
 
       newBalance = parseFloat((currentBal - numUsdAmount).toFixed(2));
-      await supabaseAdmin
-        .from('wallets')
-        .update({ virtual_balance: newBalance, updated_at: new Date().toISOString() })
-        .eq('id', activeWallet.id);
+      try {
+        await supabaseAdmin
+          .from('wallets')
+          .update({ virtual_balance: newBalance, updated_at: new Date().toISOString() })
+          .eq('id', activeWallet.id);
+      } catch (wErr) {
+        console.warn('[Trades API Wallet Update Supabase Error]:', wErr.message);
+      }
     }
 
     // Calculate PnL if logging a closed trade
@@ -304,12 +330,14 @@ export async function POST(request) {
     }
 
     const nowIso = new Date().toISOString();
-    const tradeId = bodyData.id || ('TRD-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5));
+    const tradeId = isUuid(bodyData.id) ? bodyData.id : crypto.randomUUID();
+    const validWalletId = isUuid(activeWallet.id) ? activeWallet.id : null;
 
-    let insertData = {
+    // Supabase compatible payload (only columns existing in database)
+    const supabasePayload = {
       id: tradeId,
       user_id: user.id,
-      wallet_id: activeWallet.id,
+      wallet_id: validWalletId,
       symbol: resolvedSymbol,
       side: resolvedSide,
       status: resolvedStatus,
@@ -318,7 +346,6 @@ export async function POST(request) {
       quantity: numQuantity,
       size: numQuantity,
       usd_amount: numUsdAmount,
-      leverage: numLeverage,
       pnl: calculatedPnl,
       take_profit: take_profit || takeProfit ? parseFloat(take_profit || takeProfit) : null,
       stop_loss: stop_loss || stopLoss ? parseFloat(stop_loss || stopLoss) : null,
@@ -333,12 +360,14 @@ export async function POST(request) {
     try {
       const { data, error } = await supabaseAdmin
         .from('trades')
-        .insert(insertData)
+        .insert(supabasePayload)
         .select()
         .single();
       
       if (!error && data) {
         tradeResult = data;
+      } else if (error) {
+        console.warn('[Trades API POST Supabase Insert Warning]:', error.message, error.details);
       }
     } catch (dbErr) {
       console.warn('[Trades API POST Supabase Insert Error]:', dbErr.message);
@@ -352,7 +381,8 @@ export async function POST(request) {
       
       // Store extended journal tags in local record
       const fullTradeRecord = {
-        ...insertData,
+        ...supabasePayload,
+        leverage: numLeverage,
         notes: notes || '',
         setupModel: setupModel || setup_model || 'Standard Execution',
         confluences: Array.isArray(confluences) ? confluences : [],
@@ -385,7 +415,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       message: resolvedStatus === 'closed' ? 'Trade logged successfully' : 'Order placed successfully',
-      trade: tradeResult || insertData,
+      trade: tradeResult || supabasePayload,
       newBalance
     });
   } catch (error) {

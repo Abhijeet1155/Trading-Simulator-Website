@@ -18,8 +18,11 @@ export interface ReplayPosition {
   symbol: string;
   type: OrderDirection;
   entryPrice: number;
-  entryTime: number;
-  entryBarIndex: number;
+  entryTime?: number | string;
+  entryBarIndex?: number;
+  openTime?: string | number;
+  openBarIndex?: number;
+  currentPrice?: number;
   lots: number;
   sl?: number;
   tp?: number;
@@ -27,7 +30,7 @@ export interface ReplayPosition {
   pnlPips: number;
   status: 'OPEN' | 'CLOSED';
   closePrice?: number;
-  closeTime?: number;
+  closeTime?: number | string;
   closeBarIndex?: number;
   closeReason?: 'TP' | 'SL' | 'MANUAL';
   realizedPnl?: number;
@@ -39,10 +42,14 @@ export interface ReplayAccountStats {
   equity: number;
   floatingPnl: number;
   realizedPnl: number;
+  margin: number;
+  freeMargin: number;
   totalTrades: number;
   winTrades: number;
   lossTrades: number;
   winRate: number;
+  accountName?: string;
+  isDemo?: boolean;
 }
 
 export interface SessionJumpPoint {

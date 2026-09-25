@@ -1,6 +1,10 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, createBrowserClient as createSupabaseBrowserClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+/**
+ * Creates a Supabase client for Server Components, Server Actions, and Route Handlers.
+ * Manages auth session and PKCE code verifiers via HTTP cookies.
+ */
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -19,11 +23,21 @@ export async function createClient() {
             );
           } catch (error) {
             // The `setAll` method can be called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+            // This can be ignored if you have middleware refreshing user sessions.
           }
         },
       },
     }
+  );
+}
+
+/**
+ * Creates a Supabase client for Client Components.
+ * Manages auth session and PKCE code verifiers in cookies within the browser.
+ */
+export function createBrowserClient() {
+  return createSupabaseBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
   );
 }

@@ -80,7 +80,7 @@ export default function JournalCardView({
               <div className="flex items-start justify-between gap-2 mb-2.5">
                 <div className="flex items-center gap-2">
                   {/* Direction Pill */}
-                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-extrabold tracking-wider uppercase flex items-center gap-1 ${
+                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-extrabold  capitalize flex items-center gap-1 ${
                     isLong 
                       ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60' 
                       : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60'
@@ -140,15 +140,15 @@ export default function JournalCardView({
               {/* Execution Mini Stats */}
               <div className="grid grid-cols-3 gap-1.5 bg-gray-50/80 dark:bg-[#151515] p-2.5 rounded-xl border border-gray-100 dark:border-neutral-800 text-xs font-mono mb-3">
                 <div>
-                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 uppercase block font-sans font-semibold">Entry</span>
+                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 capitalize block font-sans font-semibold">Entry</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">{trade.entryPrice}</span>
                 </div>
                 <div>
-                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 uppercase block font-sans font-semibold">Exit</span>
+                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 capitalize block font-sans font-semibold">Exit</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">{trade.exitPrice || '-'}</span>
                 </div>
                 <div>
-                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 uppercase block font-sans font-semibold">Size</span>
+                  <span className="text-[9.5px] text-gray-500 dark:text-neutral-400 capitalize block font-sans font-semibold">Size</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">{trade.lotSize} lots</span>
                 </div>
               </div>

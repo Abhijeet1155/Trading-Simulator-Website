@@ -285,7 +285,7 @@ export default function NewTradeModal({
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
+              <h2 className="text-base font-bold text-gray-900 dark:text-neutral-100">
                 {initialTrade ? 'Edit Trade Log' : 'Record New Trade'}
               </h2>
               <p className="text-[11px] text-gray-500 dark:text-neutral-400">
@@ -310,7 +310,7 @@ export default function NewTradeModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800">
             {/* Symbol */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 capitalize mb-1.5">
                 Asset / Symbol
               </label>
               <select
@@ -337,14 +337,14 @@ export default function NewTradeModal({
                   placeholder="e.g. SOLUSD"
                   value={customSymbol}
                   onChange={(e) => setCustomSymbol(e.target.value)}
-                  className="mt-2 w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-1.5 text-gray-900 dark:text-neutral-100 font-mono uppercase focus:outline-none focus:border-[#2563EB] shadow-2xs"
+                  className="mt-2 w-full bg-white dark:bg-[#181818] border border-gray-200 dark:border-neutral-800 rounded-xl px-3 py-1.5 text-gray-900 dark:text-neutral-100 font-mono capitalize focus:outline-none focus:border-[#2563EB] shadow-2xs"
                 />
               )}
             </div>
 
             {/* Direction (Long / Short) */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 capitalize mb-1.5">
                 Direction
               </label>
               <div className="grid grid-cols-2 gap-1.5 bg-white dark:bg-[#181818] p-1 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
@@ -358,7 +358,7 @@ export default function NewTradeModal({
                   }`}
                 >
                   <TrendingUp className="w-3.5 h-3.5" />
-                  <span>LONG</span>
+                  <span>Long</span>
                 </button>
                 <button
                   type="button"
@@ -370,14 +370,14 @@ export default function NewTradeModal({
                   }`}
                 >
                   <TrendingDown className="w-3.5 h-3.5" />
-                  <span>SHORT</span>
+                  <span>Short</span>
                 </button>
               </div>
             </div>
 
             {/* Session */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 capitalize mb-1.5">
                 Session
               </label>
               <select
@@ -395,7 +395,7 @@ export default function NewTradeModal({
 
             {/* Timeframe */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 capitalize mb-1.5">
                 Execution TF
               </label>
               <select
@@ -416,7 +416,7 @@ export default function NewTradeModal({
           {/* SECTION 2: Pricing & Execution & Calculator */}
           <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize flex items-center gap-1.5">
                 <Calculator className="w-3.5 h-3.5 text-[#2563EB] dark:text-blue-400" />
                 Execution Prices & PnL Calculator
               </span>
@@ -434,7 +434,7 @@ export default function NewTradeModal({
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {/* Entry Price */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Entry Price *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 capitalize font-mono font-semibold mb-1">Entry Price *</label>
                 <input
                   type="number"
                   step="any"
@@ -448,7 +448,7 @@ export default function NewTradeModal({
 
               {/* Exit Price */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Exit Price *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 capitalize font-mono font-semibold mb-1">Exit Price *</label>
                 <input
                   type="number"
                   step="any"
@@ -462,7 +462,7 @@ export default function NewTradeModal({
 
               {/* Stop Loss */}
               <div>
-                <label className="block text-[10.5px] text-rose-700 dark:text-rose-400 uppercase font-mono font-semibold mb-1">Stop Loss *</label>
+                <label className="block text-[10.5px] text-rose-700 dark:text-rose-400 capitalize font-mono font-semibold mb-1">Stop Loss *</label>
                 <input
                   type="number"
                   step="any"
@@ -476,7 +476,7 @@ export default function NewTradeModal({
 
               {/* Take Profit */}
               <div>
-                <label className="block text-[10.5px] text-emerald-700 dark:text-emerald-400 uppercase font-mono font-semibold mb-1">Take Profit</label>
+                <label className="block text-[10.5px] text-emerald-700 dark:text-emerald-400 capitalize font-mono font-semibold mb-1">Take Profit</label>
                 <input
                   type="number"
                   step="any"
@@ -489,7 +489,7 @@ export default function NewTradeModal({
 
               {/* Lot Size */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Lot Size *</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 capitalize font-mono font-semibold mb-1">Lot Size *</label>
                 <input
                   type="number"
                   step="any"
@@ -503,7 +503,7 @@ export default function NewTradeModal({
 
               {/* Commission */}
               <div>
-                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 uppercase font-mono font-semibold mb-1">Comm. ($)</label>
+                <label className="block text-[10.5px] text-gray-600 dark:text-neutral-400 capitalize font-mono font-semibold mb-1">Comm. ($)</label>
                 <input
                   type="number"
                   step="any"
@@ -563,7 +563,7 @@ export default function NewTradeModal({
           <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block">
+                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize block">
                   Scale Outs & Partials Tracker
                 </span>
                 <span className="text-[10.5px] text-gray-500 dark:text-neutral-400">Record staggered profit taking at key targets / liquidity pools.</span>
@@ -637,7 +637,7 @@ export default function NewTradeModal({
           {/* SECTION 4: Setup Models & Confluences */}
           <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
             <div>
-              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize mb-1.5">
                 Setup Model / Playbook
               </label>
               <select
@@ -664,7 +664,7 @@ export default function NewTradeModal({
 
             {/* Confluences pills */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider mb-2">
+              <label className="block text-[11px] font-bold text-gray-600 dark:text-neutral-400 capitalize mb-2">
                 Confluences & PD Arrays ({selectedConfluences.length} Selected)
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2.5">
@@ -715,7 +715,7 @@ export default function NewTradeModal({
 
           {/* SECTION 5: Chart Attachment & Screenshot */}
           <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-3">
-            <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block">
+            <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize block">
               Chart Snapshot / TradingView Link
             </span>
             <div className="flex items-center gap-2">
@@ -739,7 +739,7 @@ export default function NewTradeModal({
           {/* SECTION 6: Psychology, Rules & Execution Notes */}
           <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-xl border border-gray-200 dark:border-neutral-800 space-y-4">
             <div>
-              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize mb-2">
                 Psychology & Execution Discipline
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -764,7 +764,7 @@ export default function NewTradeModal({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize mb-2">
                 Mistakes / Rule Violations
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -792,7 +792,7 @@ export default function NewTradeModal({
 
             {/* Execution Notes / Markdown */}
             <div>
-              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize mb-1.5">
                 Trade Analysis & Review Notes
               </label>
               <textarea
@@ -806,7 +806,7 @@ export default function NewTradeModal({
 
             {/* Rating */}
             <div className="flex items-center justify-between pt-1">
-              <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 capitalize">
                 Execution Quality Rating
               </span>
               <div className="flex items-center gap-1">

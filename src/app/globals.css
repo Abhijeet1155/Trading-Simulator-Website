@@ -5,7 +5,7 @@
 @theme {
   /* Design System Theme Variables */
   --font-sans: var(--font-sans), Inter, sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-mono: var(--font-sans), Inter, sans-serif;
   
   --color-brand-bg: var(--bg-primary);
   --color-brand-bg-sec: var(--bg-secondary);
@@ -78,6 +78,10 @@
   --active-tab-text: #60A5FA;
 }
 
+*, *::before, *::after {
+  letter-spacing: normal !important;
+}
+
 html {
   scroll-behavior: smooth;
   color-scheme: light;
@@ -92,6 +96,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-sans);
+  letter-spacing: normal;
   line-height: 1.6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;

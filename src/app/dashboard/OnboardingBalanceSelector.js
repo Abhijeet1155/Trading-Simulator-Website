@@ -149,7 +149,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet, planType = 'fr
                     {isLocked && <Lock className="w-3 h-3 text-amber-500 shrink-0" />}
                   </div>
                   {isLocked && (
-                    <span className="absolute -top-2 right-2 px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-amber-600 text-[9px] font-bold text-white rounded-full uppercase tracking-wider shadow-xs">
+                    <span className="absolute -top-2 right-2 px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-amber-600 text-[9px] font-bold text-white rounded-full capitalize shadow-xs">
                       Pro
                     </span>
                   )}
@@ -194,7 +194,7 @@ export default function OnboardingBalanceSelector({ onBalanceSet, planType = 'fr
             {!isPremium && (
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                 <span className="px-2 py-0.5 bg-amber-50 border border-amber-200/60 text-amber-700 text-[10px] font-bold rounded-md flex items-center gap-1">
-                  <Lock className="w-2.5 h-2.5" /> PRO
+                  <Lock className="w-2.5 h-2.5" /> Pro
                 </span>
               </div>
             )}

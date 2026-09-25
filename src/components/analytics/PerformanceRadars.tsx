@@ -114,7 +114,7 @@ export default function PerformanceRadars({ showBenchmark = true, radars }: Perf
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Award className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
-          <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+          <h2 className="text-sm font-bold text-gray-900 dark:text-white capitalize font-mono">
             Institutional Performance Radar (4-Pillar Evaluation)
           </h2>
         </div>
@@ -179,7 +179,7 @@ export default function PerformanceRadars({ showBenchmark = true, radars }: Perf
                     <PolarGrid stroke={isDark ? '#262f40' : '#e2e8f0'} />
                     <PolarAngleAxis
                       dataKey="axis"
-                      tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 9, fontFamily: 'monospace', fontWeight: 600 }}
+                      tick={{ fill: isDark ? '#94a3b8' : '#64748b', fontSize: 9, fontFamily: 'Inter, sans-serif', fontWeight: 600 }}
                     />
                     <PolarRadiusAxis
                       angle={30}
@@ -211,7 +211,7 @@ export default function PerformanceRadars({ showBenchmark = true, radars }: Perf
                         borderColor: isDark ? '#262f40' : '#e2e8f0',
                         borderRadius: '12px',
                         fontSize: '11px',
-                        fontFamily: 'monospace',
+                        fontFamily: 'Inter, sans-serif',
                         color: isDark ? '#f8fafc' : '#0f172a',
                         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
                       }}

@@ -225,7 +225,7 @@ export default function LeaderboardClientPage({
         {/* Page Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 select-none">
           <div>
-            <h1 className="text-3xl font-semibold text-[#111111] ">
+            <h1 className="text-3xl font-semibold text-[#111111]">
               Leaderboard
             </h1>
             <p className="text-sm text-[#6B7280] mt-1.5 font-medium">
@@ -288,7 +288,7 @@ export default function LeaderboardClientPage({
           loading ? (
             <div className="py-32 text-center flex flex-col items-center justify-center select-none animate-pulse">
               <Loader2 className="w-8 h-8 text-[#2563EB] animate-spin mb-3" />
-              <span className="text-xs font-semibold text-gray-400 capitalize ">Recalculating standings...</span>
+              <span className="text-xs font-semibold text-gray-400 capitalize">Recalculating standings...</span>
             </div>
           ) : rankedUsers.length > 0 ? (
             <div className="space-y-10">
@@ -379,7 +379,7 @@ export default function LeaderboardClientPage({
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
                     <thead>
-                      <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
+                      <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px] select-none">
                         <th className="py-3.5 px-6">Rank</th>
                         <th className="py-3.5 px-6">Trader</th>
                         <th className="py-3.5 px-6">Total P&L</th>
@@ -434,7 +434,7 @@ export default function LeaderboardClientPage({
               <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-sm">
                 <Trophy className="w-7 h-7 text-gray-400" />
               </div>
-              <h3 className="font-semibold text-sm text-gray-700 ">No rankings yet</h3>
+              <h3 className="font-semibold text-sm text-gray-700">No rankings yet</h3>
               <p className="text-xs text-gray-400 mt-1.5 max-w-xs leading-relaxed font-semibold">
                 Be the first to complete a trade and top the leaderboard!
               </p>
@@ -453,7 +453,7 @@ export default function LeaderboardClientPage({
           compDetailLoading ? (
             <div className="py-32 text-center flex flex-col items-center justify-center select-none animate-pulse">
               <Loader2 className="w-8 h-8 text-[#2563EB] animate-spin mb-3" />
-              <span className="text-xs font-semibold text-gray-400 capitalize ">Loading competition standings...</span>
+              <span className="text-xs font-semibold text-gray-400 capitalize">Loading competition standings...</span>
             </div>
           ) : compRankings.length > 0 ? (
             (() => {
@@ -549,7 +549,7 @@ export default function LeaderboardClientPage({
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse text-xs font-sans min-w-[700px]">
                         <thead>
-                          <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px]  select-none">
+                          <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px] select-none">
                             <th className="py-3.5 px-6">Rank</th>
                             <th className="py-3.5 px-6">Trader</th>
                             <th className="py-3.5 px-6 text-right">P&L (%)</th>
@@ -606,7 +606,7 @@ export default function LeaderboardClientPage({
               <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-sm">
                 <Trophy className="w-7 h-7 text-gray-400" />
               </div>
-              <h3 className="font-semibold text-sm text-gray-700 ">No participants yet</h3>
+              <h3 className="font-semibold text-sm text-gray-700">No participants yet</h3>
               <p className="text-xs text-gray-400 mt-1.5 max-w-xs leading-relaxed font-semibold">
                 Be the first to join this competition and claim the top spot!
               </p>
@@ -631,7 +631,7 @@ export default function LeaderboardClientPage({
               <span className="p-1 bg-blue-50 text-blue-600 rounded-lg">
                 <Star className="w-4 h-4 text-[#2563EB] fill-[#2563EB]/25" />
               </span>
-              <span className="text-xs font-semibold text-gray-900 capitalize ">
+              <span className="text-xs font-semibold text-gray-900 capitalize">
                 Your Standings ({selectedLeaderboardTab === 'Global' ? timeTab : 'Competition'})
               </span>
             </div>

@@ -11,7 +11,7 @@ export default function DashboardLoading() {
             <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
               <TrendingUp className="text-gray-300 w-4.5 h-4.5" />
             </div>
-            <span className="font-semibold text-lg  text-gray-300">PaperPulse</span>
+            <span className="font-semibold text-lg text-gray-300">PaperPulse</span>
           </div>
 
           <div className="flex items-center gap-4">

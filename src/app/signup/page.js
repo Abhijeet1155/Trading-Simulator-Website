@@ -103,7 +103,7 @@ export default function SignupPage() {
             <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
               <TrendingUp className="text-white w-4.5 h-4.5" />
             </div>
-            <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
+            <span className="font-semibold text-lg text-[#111111]">PaperPulse</span>
           </Link>
         </div>
 
@@ -113,7 +113,7 @@ export default function SignupPage() {
             <Mail className="w-8 h-8" />
           </div>
           
-          <h2 className="text-2xl font-semibold  text-[#111111] mb-3">Check your email</h2>
+          <h2 className="text-2xl font-semibold text-[#111111] mb-3">Check your email</h2>
           <p className="text-sm text-[#6B7280] leading-relaxed mb-6">
             We've sent a verification link to <strong className="text-[#111111] font-semibold">{registeredEmail}</strong>. Please verify your email to activate your account.
           </p>
@@ -166,14 +166,14 @@ export default function SignupPage() {
           <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <TrendingUp className="text-white w-4.5 h-4.5" />
           </div>
-          <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
+          <span className="font-semibold text-lg text-[#111111]">PaperPulse</span>
         </Link>
       </div>
 
       {/* Main card */}
       <div className="sm:mx-auto sm:w-full sm:max-w-[420px] bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-8">
         <div className="mb-6 text-center">
-          <h2 className="text-2xl font-semibold  text-[#111111]">Create your account</h2>
+          <h2 className="text-2xl font-semibold text-[#111111]">Create your account</h2>
           <p className="text-sm text-[#6B7280] mt-1">Start risk-free virtual trading today</p>
         </div>
 
@@ -188,7 +188,7 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Full Name */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[#6B7280] capitalize ">Full Name</label>
+            <label className="text-xs font-semibold text-[#6B7280] capitalize">Full Name</label>
             <div className="relative">
               <User className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
               <input
@@ -209,7 +209,7 @@ export default function SignupPage() {
 
           {/* Email Address */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[#6B7280] capitalize ">Email Address</label>
+            <label className="text-xs font-semibold text-[#6B7280] capitalize">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
               <input
@@ -230,7 +230,7 @@ export default function SignupPage() {
 
           {/* Password */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[#6B7280] capitalize ">Password</label>
+            <label className="text-xs font-semibold text-[#6B7280] capitalize">Password</label>
             <div className="relative">
               <Lock className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
               <input
@@ -258,7 +258,7 @@ export default function SignupPage() {
 
           {/* Confirm Password */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[#6B7280] capitalize ">Confirm Password</label>
+            <label className="text-xs font-semibold text-[#6B7280] capitalize">Confirm Password</label>
             <div className="relative">
               <Lock className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
               <input

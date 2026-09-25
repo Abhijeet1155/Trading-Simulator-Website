@@ -80,12 +80,12 @@ export default function ReplayTradeWidget({
       {/* SECTION 1: ACCOUNT STATUS (TOP) */}
       <div className="p-3.5 border-b border-gray-200 dark:border-slate-800/80 bg-gray-50/70 dark:bg-[#0f1117]/60">
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[11px] uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-bold font-sans flex items-center gap-1.5">
+          <span className="text-[11px] capitalize text-cyan-600 dark:text-cyan-400 font-bold font-sans flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
             Account Status
           </span>
           <span className="text-[10px] text-gray-500 dark:text-slate-400 font-bold bg-gray-200/60 dark:bg-slate-800 px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700/60">
-            APEX SIM
+            Apex Sim
           </span>
         </div>
 
@@ -123,7 +123,7 @@ export default function ReplayTradeWidget({
       {/* SECTION 2: MARKET DATA (MIDDLE) */}
       <div className="p-3.5 border-b border-gray-200 dark:border-slate-800/80 bg-white dark:bg-[#131722] space-y-2.5">
         <div className="flex items-center justify-between">
-          <span className="text-[11px] uppercase tracking-wider text-gray-500 dark:text-slate-400 font-bold font-sans">
+          <span className="text-[11px] capitalize text-gray-500 dark:text-slate-400 font-bold font-sans">
             Market Data
           </span>
           <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">{symbol}</span>
@@ -132,7 +132,7 @@ export default function ReplayTradeWidget({
         {/* Current Price Big Display */}
         <div className="bg-gray-50 dark:bg-[#0f1117] p-2.5 rounded-lg border border-gray-200 dark:border-slate-800 flex items-center justify-between">
           <div>
-            <span className="text-[10px] text-gray-400 dark:text-slate-500 block uppercase">Last Price</span>
+            <span className="text-[10px] text-gray-400 dark:text-slate-500 block capitalize">Last Price</span>
             <div className={`text-xl font-extrabold ${currentBar && currentBar.close >= currentBar.open ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
               {currentPrice.toFixed(decimals)}
             </div>
@@ -155,7 +155,7 @@ export default function ReplayTradeWidget({
           </div>
           <div className="flex justify-between pt-1 border-t border-gray-200 dark:border-slate-800/60 text-gray-600 dark:text-slate-400">
             <span>Session:</span>
-            <span className="uppercase text-amber-600 dark:text-amber-400 font-bold text-[10px]">
+            <span className="capitalize text-amber-600 dark:text-amber-400 font-bold text-[10px]">
               {currentBar?.session ? `${currentBar.session} session` : 'Active Session'}
             </span>
           </div>
@@ -166,7 +166,7 @@ export default function ReplayTradeWidget({
       <div className="p-3.5 space-y-3 bg-gray-50/70 dark:bg-[#0f1117]/50 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-bold font-sans">
+            <span className="text-[11px] capitalize text-cyan-600 dark:text-cyan-400 font-bold font-sans">
               Trade Setup
             </span>
             <span className="text-[10px] text-gray-400 dark:text-slate-500 font-sans">Instant Execution</span>
@@ -176,7 +176,7 @@ export default function ReplayTradeWidget({
           {activePosition && activePosition.status === 'OPEN' ? (
             <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-3 shadow-sm animate-in fade-in">
               <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold capitalize ${
                   activePosition.type === 'BUY' ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40' : 'bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40'
                 }`}>
                   {activePosition.type} {activePosition.lots}L
@@ -233,7 +233,7 @@ export default function ReplayTradeWidget({
                   }`}
                 >
                   <TrendingUp className="w-3.5 h-3.5" />
-                  <span>BUY</span>
+                  <span>Buy</span>
                 </button>
 
                 <button
@@ -246,7 +246,7 @@ export default function ReplayTradeWidget({
                   }`}
                 >
                   <TrendingDown className="w-3.5 h-3.5" />
-                  <span>SELL</span>
+                  <span>Sell</span>
                 </button>
               </div>
 

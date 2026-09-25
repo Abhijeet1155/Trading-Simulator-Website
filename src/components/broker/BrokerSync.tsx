@@ -124,7 +124,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono">
                 Institutional Bridge
               </span>
               <span className="text-gray-500 text-xs">•</span>
@@ -133,7 +133,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
                 Read-Only Investor Security
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-white flex items-center gap-3">
               Broker Sync & MT5 Gateway
             </h1>
             <p className="text-xs md:text-sm text-gray-400 mt-1 max-w-2xl">
@@ -201,7 +201,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
                 {account && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1 font-mono">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                    LIVE HEARTBEAT
+                    Live Heartbeat
                   </span>
                 )}
               </div>
@@ -253,7 +253,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
             {/* Card 1: Balance & Equity */}
             <div className="bg-[#111726] border border-gray-800 rounded-3xl p-5 shadow-xl relative overflow-hidden space-y-2">
               <div className="flex items-center justify-between text-xs text-gray-400">
-                <span className="font-semibold uppercase tracking-wider text-[10px]">Balance / Equity</span>
+                <span className="font-semibold capitalize text-[10px]">Balance / Equity</span>
                 <DollarSign className="w-4 h-4 text-cyan-400" />
               </div>
               <div>
@@ -273,7 +273,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
             {/* Card 2: Account Specifications */}
             <div className="bg-[#111726] border border-gray-800 rounded-3xl p-5 shadow-xl space-y-2">
               <div className="flex items-center justify-between text-xs text-gray-400">
-                <span className="font-semibold uppercase tracking-wider text-[10px]">Account Profile</span>
+                <span className="font-semibold capitalize text-[10px]">Account Profile</span>
                 <Cpu className="w-4 h-4 text-cyan-400" />
               </div>
               <div>
@@ -293,7 +293,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
             {/* Card 3: Net Synced Profit */}
             <div className="bg-[#111726] border border-gray-800 rounded-3xl p-5 shadow-xl space-y-2">
               <div className="flex items-center justify-between text-xs text-gray-400">
-                <span className="font-semibold uppercase tracking-wider text-[10px]">Bridge Net PnL</span>
+                <span className="font-semibold capitalize text-[10px]">Bridge Net PnL</span>
                 <TrendingUp className="w-4 h-4 text-emerald-400" />
               </div>
               <div>
@@ -313,7 +313,7 @@ export default function BrokerSync({ userName = 'Trader', userId }: BrokerSyncPr
             {/* Card 4: Navigation Quick Links */}
             <div className="bg-[#111726] border border-gray-800 rounded-3xl p-5 shadow-xl flex flex-col justify-between">
               <div className="space-y-1">
-                <span className="font-semibold uppercase tracking-wider text-[10px] text-gray-400 block">Ecosystem Integrations</span>
+                <span className="font-semibold capitalize text-[10px] text-gray-400 block">Ecosystem Integrations</span>
                 <p className="text-xs text-gray-400">Jump directly to your synced analytics or journal view.</p>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-2">

@@ -325,12 +325,12 @@ export default function AnalyticsDashboard() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                     Quantitative Analytics Suite
                   </h1>
                   <span className="text-[10.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-full flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    REAL SYNC
+                    Real Sync
                   </span>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">
@@ -407,7 +407,7 @@ export default function AnalyticsDashboard() {
 
           {/* Secondary Quick Filter Pills */}
           <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100 dark:border-white/[0.06] text-xs">
-            <span className="text-[11px] font-mono text-gray-500 dark:text-neutral-400 font-bold uppercase mr-1 flex items-center gap-1">
+            <span className="text-[11px] font-mono text-gray-500 dark:text-neutral-400 font-bold capitalize mr-1 flex items-center gap-1">
               <Filter className="w-3 h-3 text-gray-400 dark:text-neutral-500" /> Filters:
             </span>
 

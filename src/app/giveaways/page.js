@@ -65,7 +65,7 @@ export default function GiveawayPage() {
               <Gift className="w-3.5 h-3.5 text-yellow-300" />
               <span>Official PaperPulse Giveaways & Rewards</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold">
               Win Funded Accounts, Cash Prizes & Elite Perks
             </h1>
             <p className="text-emerald-100 text-sm sm:text-base leading-relaxed">
@@ -91,7 +91,7 @@ export default function GiveawayPage() {
                 <div>
                   {/* Card Header Tag */}
                   <div className="p-5 pb-3 flex items-center justify-between border-b border-gray-100 dark:border-white/[0.04]">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 flex items-center gap-1">
+                    <span className="text-[10px] font-extrabold capitalize px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 flex items-center gap-1">
                       <Flame className="w-3 h-3" /> {item.tag}
                     </span>
                     <span className="text-xs text-gray-500 dark:text-neutral-400 font-mono flex items-center gap-1">

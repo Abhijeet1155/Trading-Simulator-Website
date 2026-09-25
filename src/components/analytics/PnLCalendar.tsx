@@ -83,7 +83,7 @@ export default function PnLCalendar({ trades = [], monthlyMatrix = [] }: PnLCale
               <Calendar className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono capitalize">
                 Interactive P&L Calendar Heatmap
               </h3>
               <p className="text-[11px] text-gray-500 dark:text-neutral-400">Real trade daily net profitability (click day to view trades)</p>
@@ -129,7 +129,7 @@ export default function PnLCalendar({ trades = [], monthlyMatrix = [] }: PnLCale
         </div>
 
         {/* Calendar Day Header */}
-        <div className="grid grid-cols-7 gap-2 my-3 text-center text-[11px] font-mono font-bold text-gray-400 dark:text-neutral-500 uppercase">
+        <div className="grid grid-cols-7 gap-2 my-3 text-center text-[11px] font-mono font-bold text-gray-400 dark:text-neutral-500 capitalize">
           {daysOfWeek.map((day) => (
             <div key={day} className="py-1">
               {day}
@@ -206,7 +206,7 @@ export default function PnLCalendar({ trades = [], monthlyMatrix = [] }: PnLCale
               <TableIcon className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono capitalize">
                 Monthly Returns Matrix (% & USD)
               </h3>
               <p className="text-[11px] text-gray-500 dark:text-neutral-400">Multi-year seasonality breakdown calculated from real trade database logs</p>
@@ -222,7 +222,7 @@ export default function PnLCalendar({ trades = [], monthlyMatrix = [] }: PnLCale
           ) : (
             <table className="w-full text-center border-collapse font-mono text-xs">
               <thead>
-                <tr className="bg-gray-50 dark:bg-[#161D2A] border-b border-gray-200 dark:border-white/[0.08] text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 uppercase">
+                <tr className="bg-gray-50 dark:bg-[#161D2A] border-b border-gray-200 dark:border-white/[0.08] text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
                   <th className="py-2.5 px-3 text-left">Year</th>
                   {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m) => (
                     <th key={m} className="py-2.5 px-2">{m}</th>
@@ -307,7 +307,7 @@ export default function PnLCalendar({ trades = [], monthlyMatrix = [] }: PnLCale
                 <div key={t.id} className="p-3 bg-gray-50 dark:bg-[#161D2A] rounded-xl border border-gray-200 dark:border-white/[0.08] flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white">
-                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] capitalize ${
                         t.direction === 'LONG' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
                       }`}>
                         {t.direction}

@@ -109,7 +109,7 @@ export default function ReplayControls({
             {/* Speed Selector Dropdown */}
             {showSpeedMenu && (
               <div className="absolute left-0 bottom-full mb-2 w-28 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-700 rounded-xl p-1 shadow-xl z-50 flex flex-col gap-0.5 font-mono text-xs animate-in fade-in slide-in-from-bottom-2">
-                <div className="px-2 py-1 text-[10px] text-gray-400 dark:text-neutral-500 font-sans uppercase font-bold">Speed</div>
+                <div className="px-2 py-1 text-[10px] text-gray-400 dark:text-neutral-500 font-sans capitalize font-bold">Speed</div>
                 {speeds.map((s) => (
                   <button
                     key={s}
@@ -164,7 +164,7 @@ export default function ReplayControls({
             {/* Jump Menu Dropdown */}
             {showJumpMenu && (
               <div className="absolute left-0 bottom-full mb-2 w-72 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-700 rounded-xl p-2 shadow-xl z-50 flex flex-col gap-1 text-xs animate-in fade-in slide-in-from-bottom-2">
-                <div className="px-2 py-1 text-[10px] text-gray-400 dark:text-neutral-500 font-sans uppercase font-bold border-b border-gray-100 dark:border-neutral-800 mb-1">
+                <div className="px-2 py-1 text-[10px] text-gray-400 dark:text-neutral-500 font-sans capitalize font-bold border-b border-gray-100 dark:border-neutral-800 mb-1">
                   Institutional Setup Anchors
                 </div>
                 {jumpPoints.map((jp) => (
@@ -237,7 +237,7 @@ export default function ReplayControls({
             {/* Shortcuts Modal Popover */}
             {showShortcuts && (
               <div className="absolute right-0 bottom-full mb-2 w-64 bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-700 rounded-2xl p-3 shadow-xl z-50 text-xs font-mono space-y-2 animate-in fade-in slide-in-from-bottom-2">
-                <div className="text-[11px] font-bold text-gray-900 dark:text-white font-sans uppercase tracking-wider pb-1 border-b border-gray-100 dark:border-neutral-800">
+                <div className="text-[11px] font-bold text-gray-900 dark:text-white font-sans capitalize pb-1 border-b border-gray-100 dark:border-neutral-800">
                   Keyboard Shortcuts
                 </div>
                 <div className="flex items-center justify-between text-gray-700 dark:text-neutral-300">

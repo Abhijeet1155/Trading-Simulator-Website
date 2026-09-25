@@ -103,7 +103,7 @@ export default function ReplayChartCanvas({
         background: { color: isDark ? '#131722' : '#ffffff' },
         textColor: isDark ? '#94a3b8' : '#475569',
         fontSize: 11,
-        fontFamily: "'JetBrains Mono', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       },
       grid: {
         vertLines: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' },

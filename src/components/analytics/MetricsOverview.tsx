@@ -37,7 +37,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
             <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Percent className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize font-mono">
               Win / Loss Engine
             </span>
           </div>
@@ -73,19 +73,19 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
 
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06] text-[11px] font-mono">
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Avg Win</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Avg Win</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-bold">+${metrics.avgWin.toFixed(2)}</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Avg Loss</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Avg Loss</span>
             <span className="text-rose-600 dark:text-rose-400 font-bold">-${metrics.avgLoss.toFixed(2)}</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Win/Loss Ratio</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Win/Loss Ratio</span>
             <span className="text-blue-700 dark:text-blue-400 font-bold">{metrics.winLossRatio.toFixed(2)} : 1</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Current Streak</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Current Streak</span>
             <span className="text-amber-700 dark:text-amber-400 font-bold">{metrics.currentStreak.count} {metrics.currentStreak.type}s</span>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
             <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-center justify-center text-[#2563EB] dark:text-blue-400">
               <Scale className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize font-mono">
               Risk & Efficiency
             </span>
           </div>
@@ -108,7 +108,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
         </div>
 
         <div className="my-3">
-          <span className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase block font-mono font-semibold">Profit Factor</span>
+          <span className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize block font-mono font-semibold">Profit Factor</span>
           <div className="flex items-baseline gap-2">
             <span className={`text-2xl lg:text-3xl font-mono font-extrabold ${
               metrics.profitFactor >= 2.0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
@@ -123,19 +123,19 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
 
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06] text-[11px] font-mono">
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Trade Expectancy</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Trade Expectancy</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-bold">+${metrics.expectancy.toFixed(2)} / t</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Max Drawdown</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Max Drawdown</span>
             <span className="text-rose-600 dark:text-rose-400 font-bold">-{metrics.maxDrawdownPct}% (${metrics.maxDrawdownAmount})</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Recovery Factor</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Recovery Factor</span>
             <span className="text-blue-700 dark:text-blue-400 font-bold">{metrics.recoveryFactor.toFixed(2)}</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Calmar Ratio</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Calmar Ratio</span>
             <span className="text-indigo-700 dark:text-indigo-400 font-bold">{metrics.calmarRatio.toFixed(2)}</span>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
             <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Zap className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize font-mono">
               Net Net Capital
             </span>
           </div>
@@ -160,8 +160,8 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
         </div>
 
         <div className="my-3">
-          <span className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase block font-mono font-semibold">Total Realized P&L</span>
-          <div className={`text-2xl lg:text-3xl font-mono font-extrabold tracking-tight ${
+          <span className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize block font-mono font-semibold">Total Realized P&L</span>
+          <div className={`text-2xl lg:text-3xl font-mono font-extrabold  ${
             isNetPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
           }`}>
             {isNetPositive ? '+' : ''}${metrics.netPnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -170,19 +170,19 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
 
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06] text-[11px] font-mono">
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Gross Profit</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Gross Profit</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-bold">+${metrics.grossProfit.toFixed(0)}</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Gross Loss</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Gross Loss</span>
             <span className="text-rose-600 dark:text-rose-400 font-bold">-${metrics.grossLoss.toFixed(0)}</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Max Win Streak</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Max Win Streak</span>
             <span className="text-emerald-700 dark:text-emerald-400 font-bold">{metrics.maxWinStreak} Wins 🔥</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Max Loss Streak</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Max Loss Streak</span>
             <span className="text-rose-700 dark:text-rose-400 font-bold">{metrics.maxLossStreak} Losses</span>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
             <div className="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <Clock className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize font-mono">
               Execution & Outliers
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
         </div>
 
         <div className="my-3">
-          <span className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase block font-mono font-semibold">Average Hold Time</span>
+          <span className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize block font-mono font-semibold">Average Hold Time</span>
           <div className="text-2xl lg:text-3xl font-mono font-extrabold text-gray-900 dark:text-white">
             {Math.floor(metrics.avgHoldTimeMinutes / 60)}h {metrics.avgHoldTimeMinutes % 60}m
           </div>
@@ -213,23 +213,23 @@ export default function MetricsOverview({ metrics }: MetricsOverviewProps) {
 
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-white/[0.06] text-[11px] font-mono">
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Largest Win</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Largest Win</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-bold truncate block" title={`${metrics.largestWinTrade.symbol} +$${metrics.largestWinTrade.amount}`}>
               +${metrics.largestWinTrade.amount} ({metrics.largestWinTrade.symbol})
             </span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Largest Loss</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Largest Loss</span>
             <span className="text-rose-600 dark:text-rose-400 font-bold truncate block" title={`${metrics.largestLossTrade.symbol} $${metrics.largestLossTrade.amount}`}>
               ${metrics.largestLossTrade.amount} ({metrics.largestLossTrade.symbol})
             </span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Avg Win Hold</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Avg Win Hold</span>
             <span className="text-gray-800 dark:text-neutral-200 font-bold">{Math.floor(metrics.avgHoldTimeWinMinutes / 60)}h {metrics.avgHoldTimeWinMinutes % 60}m</span>
           </div>
           <div className="bg-gray-50 dark:bg-[#161D2A] p-2 rounded-xl border border-gray-100 dark:border-white/[0.06]">
-            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] uppercase font-sans font-semibold">Commissions</span>
+            <span className="text-gray-500 dark:text-neutral-400 block text-[9.5px] capitalize font-sans font-semibold">Commissions</span>
             <span className="text-amber-700 dark:text-amber-400 font-bold">${metrics.commissionsPaid}</span>
           </div>
         </div>

@@ -11,10 +11,21 @@ export async function POST(req) {
 
     const supabase = await createClient();
     const requestUrl = new URL(req.url);
-    const origin = requestUrl.origin;
+    const forwardedHost = req.headers.get('x-forwarded-host');
+    const isLocalEnv = process.env.NODE_ENV === 'development';
+    const origin = (!isLocalEnv && forwardedHost) ? `https://${forwardedHost}` : requestUrl.origin;
 
-    // Supabase auth.resend removed to prevent Supabase built-in verification emails.
-    // Custom email flow is handled separately.
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email.toLowerCase().trim(),
+      options: {
+        emailRedirectTo: `${origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

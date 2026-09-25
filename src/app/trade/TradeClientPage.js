@@ -2721,7 +2721,7 @@ export default function TradeClientPage({
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
-            <div className="mt-6 [writing-mode:vertical-rl] rotate-180 text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 tracking-wider uppercase flex items-center gap-1.5">
+            <div className="mt-6 [writing-mode:vertical-rl] rotate-180 text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 capitalize flex items-center gap-1.5">
               <span>Watchlist</span>
               <span className="text-[9px] font-mono text-gray-400 dark:text-neutral-500">({Object.keys(ASSETS).length})</span>
             </div>
@@ -2749,7 +2749,7 @@ export default function TradeClientPage({
                     className="px-2.5 py-1 bg-[#f23645] hover:bg-[#d92332] active:scale-95 text-white rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
                     title="Open Sell Order Modal"
                   >
-                    <span className="uppercase text-[9px] tracking-wider opacity-90">SELL</span>
+                    <span className="capitalize text-[9px] opacity-90">Sell</span>
                     <span className="font-mono font-bold tabular-nums text-[10.5px]">
                       {formatAssetPrice(isForex ? parseFloat((livePrice - 0.0001).toFixed(4)) : parseFloat((livePrice * 0.9999).toFixed(2)))}
                     </span>
@@ -2766,7 +2766,7 @@ export default function TradeClientPage({
                     className="px-2.5 py-1 bg-[#2563EB] hover:bg-[#1d4ed8] active:scale-95 text-white rounded-md text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
                     title="Open Buy Order Modal"
                   >
-                    <span className="uppercase text-[9px] tracking-wider opacity-90">BUY</span>
+                    <span className="capitalize text-[9px] opacity-90">Buy</span>
                     <span className="font-mono font-bold tabular-nums text-[10.5px]">
                       {formatAssetPrice(livePrice)}
                     </span>
@@ -2879,7 +2879,7 @@ export default function TradeClientPage({
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <div className="mt-6 [writing-mode:vertical-rl] text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 tracking-wider uppercase flex items-center gap-1.5">
+            <div className="mt-6 [writing-mode:vertical-rl] text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 group-hover:text-[#2563EB] dark:group-hover:text-blue-400 capitalize flex items-center gap-1.5">
               <span>{rightPanelTab === 'ticket' ? 'Spot Ticket' : 'Level 2 Book'}</span>
             </div>
           </aside>
@@ -3144,7 +3144,7 @@ export default function TradeClientPage({
             </p>
             <form onSubmit={handleUpdateTPSLSubmit} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">Take Profit Price</label>
+                <label className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 capitalize block">Take Profit Price</label>
                 <input
                   type="number"
                   step="any"
@@ -3155,7 +3155,7 @@ export default function TradeClientPage({
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider block">Stop Loss Price</label>
+                <label className="text-[10px] font-semibold text-red-600 dark:text-red-400 capitalize block">Stop Loss Price</label>
                 <input
                   type="number"
                   step="any"
@@ -3466,7 +3466,7 @@ export default function TradeClientPage({
                       : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100'
                   }`}
                 >
-                  BUY
+                  Buy
                 </button>
                 <button
                   type="button"
@@ -3477,14 +3477,14 @@ export default function TradeClientPage({
                       : 'text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-neutral-100'
                   }`}
                 >
-                  SELL
+                  Sell
                 </button>
               </div>
 
               {/* 1. Currency Pair & Live Market Price Row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
+                  <label className="block text-[10px] font-bold capitalize text-gray-500 dark:text-neutral-400 mb-1">
                     Currency Pair
                   </label>
                   <input
@@ -3496,7 +3496,7 @@ export default function TradeClientPage({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
+                  <label className="block text-[10px] font-bold capitalize text-gray-500 dark:text-neutral-400 mb-1">
                     Market Price (Live)
                   </label>
                   <div className="w-full bg-gray-50 dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#2563EB] dark:text-blue-400 flex items-center justify-between">
@@ -3508,7 +3508,7 @@ export default function TradeClientPage({
 
               {/* 2. Execution Type */}
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
+                <label className="block text-[10px] font-bold capitalize text-gray-500 dark:text-neutral-400 mb-1">
                   Execution Type
                 </label>
                 <select
@@ -3529,7 +3529,7 @@ export default function TradeClientPage({
               {/* 3. Volume / Lots */}
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">
+                  <label className="text-[10px] font-bold capitalize text-gray-500 dark:text-neutral-400">
                     Volume / Lots
                   </label>
                   <span className="text-[9.5px] font-mono text-gray-400 dark:text-neutral-500">1 lot = {isForex ? '100,000' : '1 unit'}</span>
@@ -3574,7 +3574,7 @@ export default function TradeClientPage({
               {/* 4. Conditional Trigger Price (Hidden if Market execution) */}
               {modalExecType !== 'Market' && (
                 <div className="animate-in fade-in duration-150">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400 mb-1">
+                  <label className="block text-[10px] font-bold capitalize text-gray-500 dark:text-neutral-400 mb-1">
                     Order Price ({selectedAsset.includes('/') ? 'Quote' : 'USDT'}) *
                   </label>
                   <input
@@ -3592,7 +3592,7 @@ export default function TradeClientPage({
               {/* 5. Take Profit & Stop Loss Row */}
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
+                  <label className="block text-[10px] font-bold capitalize text-emerald-600 dark:text-emerald-400 mb-1">
                     Take Profit (optional)
                   </label>
                   <input
@@ -3606,7 +3606,7 @@ export default function TradeClientPage({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-1">
+                  <label className="block text-[10px] font-bold capitalize text-red-600 dark:text-red-400 mb-1">
                     Stop Loss (optional)
                   </label>
                   <input

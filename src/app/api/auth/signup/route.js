@@ -32,7 +32,9 @@ export async function POST(req) {
     const emailLower = email.toLowerCase().trim();
 
     const requestUrl = new URL(req.url);
-    const origin = requestUrl.origin;
+    const forwardedHost = req.headers.get('x-forwarded-host');
+    const isLocalEnv = process.env.NODE_ENV === 'development';
+    const origin = (!isLocalEnv && forwardedHost) ? `https://${forwardedHost}` : requestUrl.origin;
 
     // 1. Sign up the user in Supabase Auth
     console.log('Attempting Supabase Auth Sign Up. URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);

@@ -68,7 +68,7 @@ export default function AnalyticsCharts({
               <BarChart3 className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+              <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize font-mono">
                 Daily Net P&L & Cumulative Curve
               </h3>
               <p className="text-[10.5px] text-gray-500 dark:text-neutral-400">Real trade daily distribution and cumulative growth</p>
@@ -96,13 +96,13 @@ export default function AnalyticsCharts({
                   dataKey="displayDate" 
                   stroke="#94a3b8" 
                   fontSize={10} 
-                  fontFamily="monospace"
+                  fontFamily="Inter, sans-serif"
                   tickLine={false}
                 />
                 <YAxis 
                   stroke="#94a3b8" 
                   fontSize={10} 
-                  fontFamily="monospace"
+                  fontFamily="Inter, sans-serif"
                   tickLine={false}
                   tickFormatter={(val) => `$${val >= 1000 || val <= -1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
                 />
@@ -159,7 +159,7 @@ export default function AnalyticsCharts({
               <Clock className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+              <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize font-mono">
                 Hourly Performance (00:00 - 23:00 UTC)
               </h3>
               <p className="text-[10.5px] text-gray-500 dark:text-neutral-400">Volume and edge cluster analysis across market sessions</p>
@@ -186,14 +186,14 @@ export default function AnalyticsCharts({
                 dataKey="hour" 
                 stroke="#94a3b8" 
                 fontSize={9} 
-                fontFamily="monospace"
+                fontFamily="Inter, sans-serif"
                 tickLine={false}
                 interval={2}
               />
               <YAxis 
                 stroke="#94a3b8" 
                 fontSize={10} 
-                fontFamily="monospace"
+                fontFamily="Inter, sans-serif"
                 tickLine={false}
                 tickFormatter={(val) => `$${val >= 1000 || val <= -1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
               />
@@ -250,7 +250,7 @@ export default function AnalyticsCharts({
               <ScatterIcon className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+              <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize font-mono">
                 R:R Scatter Plot (Planned vs Realized)
               </h3>
               <p className="text-[10.5px] text-gray-500 dark:text-neutral-400">Institutional threshold: 1:2+ target capture validation</p>
@@ -276,7 +276,7 @@ export default function AnalyticsCharts({
                   name="Risk ($)" 
                   stroke="#94a3b8" 
                   fontSize={10} 
-                  fontFamily="monospace"
+                  fontFamily="Inter, sans-serif"
                   tickFormatter={(v) => `$${v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v}`}
                 />
                 <YAxis 
@@ -286,7 +286,7 @@ export default function AnalyticsCharts({
                   domain={[-2, 6]}
                   stroke="#94a3b8" 
                   fontSize={10} 
-                  fontFamily="monospace"
+                  fontFamily="Inter, sans-serif"
                   tickFormatter={(v) => `${v}R`}
                 />
                 <Tooltip
@@ -318,9 +318,9 @@ export default function AnalyticsCharts({
                     return null;
                   }}
                 />
-                <ReferenceLine y={2.0} stroke="#10b981" strokeDasharray="3 3" label={{ value: '2.0R Target', fill: '#10b981', fontSize: 10, fontFamily: 'monospace' }} />
+                <ReferenceLine y={2.0} stroke="#10b981" strokeDasharray="3 3" label={{ value: '2.0R Target', fill: '#10b981', fontSize: 10, fontFamily: 'Inter, sans-serif' }} />
                 <ReferenceLine y={0} stroke={isDark ? '#334155' : '#cbd5e1'} strokeWidth={1} />
-                <ReferenceLine y={-1.0} stroke="#f43f5e" strokeDasharray="3 3" label={{ value: '-1.0R Stop', fill: '#f43f5e', fontSize: 10, fontFamily: 'monospace' }} />
+                <ReferenceLine y={-1.0} stroke="#f43f5e" strokeDasharray="3 3" label={{ value: '-1.0R Stop', fill: '#f43f5e', fontSize: 10, fontFamily: 'Inter, sans-serif' }} />
                 <Scatter name="Trades" data={scatterPoints}>
                   {scatterPoints.map((entry, index) => {
                     const isWinAbove2R = entry.realizedRR >= 2.0;
@@ -350,7 +350,7 @@ export default function AnalyticsCharts({
               <CalendarDays className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider font-mono">
+              <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize font-mono">
                 Day of Week Performance
               </h3>
               <p className="text-[10.5px] text-gray-500 dark:text-neutral-400">Profitability & Win-rate matrix from Monday to Friday</p>
@@ -369,13 +369,13 @@ export default function AnalyticsCharts({
                 dataKey="day" 
                 stroke="#94a3b8" 
                 fontSize={11} 
-                fontFamily="monospace"
+                fontFamily="Inter, sans-serif"
                 tickLine={false}
               />
               <YAxis 
                 stroke="#94a3b8" 
                 fontSize={10} 
-                fontFamily="monospace"
+                fontFamily="Inter, sans-serif"
                 tickLine={false}
                 tickFormatter={(val) => `$${val >= 1000 || val <= -1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
               />

@@ -29,7 +29,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
           : 'bg-gradient-to-br from-rose-50/70 via-white to-white dark:from-rose-950/40 dark:via-[#1E1E1E] dark:to-[#1E1E1E] border-rose-200 dark:border-rose-800/60'
       }`}>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize flex items-center gap-1.5">
             <Zap className={`w-3.5 h-3.5 ${isNetPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`} />
             Net Realized P&L
           </span>
@@ -43,7 +43,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
         </div>
         
         <div className="flex items-baseline gap-2">
-          <div className={`text-2xl lg:text-3xl font-mono font-extrabold tracking-tight ${
+          <div className={`text-2xl lg:text-3xl font-mono font-extrabold  ${
             isNetPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
           }`}>
             {isNetPositive ? '+' : ''}${metrics.netPnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -65,7 +65,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
 
       {/* 2. Win Rate */}
       <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl p-3.5 flex flex-col justify-between hover:border-gray-300 dark:hover:border-neutral-700 transition-colors shadow-xs">
-        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
           <span>Win Rate</span>
           <Percent className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
         </div>
@@ -87,7 +87,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
 
       {/* 3. Profit Factor */}
       <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl p-3.5 flex flex-col justify-between hover:border-gray-300 dark:hover:border-neutral-700 transition-colors shadow-xs">
-        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
           <span>Profit Factor</span>
           <BarChart3 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
         </div>
@@ -107,7 +107,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
 
       {/* 4. Average R:R */}
       <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl p-3.5 flex flex-col justify-between hover:border-gray-300 dark:hover:border-neutral-700 transition-colors shadow-xs">
-        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
           <span>Avg Realized R:R</span>
           <Target className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
         </div>
@@ -123,7 +123,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
 
       {/* 5. Best Trade */}
       <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl p-3.5 flex flex-col justify-between hover:border-gray-300 dark:hover:border-neutral-700 transition-colors shadow-xs">
-        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
           <span>Best Trade</span>
           <Award className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
         </div>
@@ -139,7 +139,7 @@ export default function JournalMetrics({ metrics }: JournalMetricsProps) {
 
       {/* 6. Worst Trade / Max Drawdown */}
       <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-2xl p-3.5 flex flex-col justify-between hover:border-gray-300 dark:hover:border-neutral-700 transition-colors shadow-xs">
-        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 capitalize">
           <span>Max Loss</span>
           <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
         </div>

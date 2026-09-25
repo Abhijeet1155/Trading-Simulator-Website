@@ -155,8 +155,8 @@ export default function AdminLoginPage() {
             <TrendingUp className="text-white w-5 h-5" />
           </div>
           <div className="flex flex-col items-start leading-none">
-            <span className="font-semibold text-lg  text-white">PaperPulse</span>
-            <span className="text-[10px] text-blue-400 font-semibold capitalize  mt-0.5">Admin Portal</span>
+            <span className="font-semibold text-lg text-white">PaperPulse</span>
+            <span className="text-[10px] text-blue-400 font-semibold capitalize mt-0.5">Admin Portal</span>
           </div>
         </Link>
       </div>
@@ -167,7 +167,7 @@ export default function AdminLoginPage() {
           <div className="mx-auto w-12 h-12 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-3">
             <ShieldCheck className="text-blue-400 w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-semibold  text-white">Admin Authentication</h2>
+          <h2 className="text-2xl font-semibold text-white">Admin Authentication</h2>
           <p className="text-sm text-gray-400 mt-1">Sign in with authorized administrator credentials</p>
         </div>
 
@@ -190,7 +190,7 @@ export default function AdminLoginPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Email Address */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-400 capitalize ">Email Address</label>
+            <label className="text-xs font-semibold text-gray-400 capitalize">Email Address</label>
             <div className="relative">
               <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-gray-500" />
               <input
@@ -211,7 +211,7 @@ export default function AdminLoginPage() {
 
           {/* Password */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-400 capitalize ">Password</label>
+            <label className="text-xs font-semibold text-gray-400 capitalize">Password</label>
             <div className="relative">
               <Lock className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-gray-500" />
               <input

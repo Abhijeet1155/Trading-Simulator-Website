@@ -99,7 +99,7 @@ export default function SupportClientPage({ userName, userEmail }) {
             <LifeBuoy className="w-3.5 h-3.5" />
             24/7 Help Center &amp; Support
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             How can we help you today?
           </h1>
           <p className="text-sm text-gray-500 font-medium">

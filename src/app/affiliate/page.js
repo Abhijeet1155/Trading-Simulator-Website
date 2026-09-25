@@ -48,7 +48,7 @@ export default function AffiliatePage() {
               <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
               <span>PaperPulse Affiliate & Partner Program</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold">
               Earn up to 50% Lifetime Recurring Commission
             </h1>
             <p className="text-blue-100 text-sm sm:text-base leading-relaxed">
@@ -65,7 +65,7 @@ export default function AffiliatePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-[#111722] rounded-xl p-5 border border-gray-200 dark:border-white/[0.08] shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">Total Earnings</span>
+              <span className="text-xs font-bold capitalize text-gray-500 dark:text-neutral-400">Total Earnings</span>
               <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
                 <DollarSign className="w-4 h-4" />
               </div>
@@ -80,7 +80,7 @@ export default function AffiliatePage() {
 
           <div className="bg-white dark:bg-[#111722] rounded-xl p-5 border border-gray-200 dark:border-white/[0.08] shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">Referred Traders</span>
+              <span className="text-xs font-bold capitalize text-gray-500 dark:text-neutral-400">Referred Traders</span>
               <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
                 <Users className="w-4 h-4" />
               </div>
@@ -93,7 +93,7 @@ export default function AffiliatePage() {
 
           <div className="bg-white dark:bg-[#111722] rounded-xl p-5 border border-gray-200 dark:border-white/[0.08] shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">Conversion Rate</span>
+              <span className="text-xs font-bold capitalize text-gray-500 dark:text-neutral-400">Conversion Rate</span>
               <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
                 <Zap className="w-4 h-4" />
               </div>
@@ -106,7 +106,7 @@ export default function AffiliatePage() {
 
           <div className="bg-white dark:bg-[#111722] rounded-xl p-5 border border-gray-200 dark:border-white/[0.08] shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-neutral-400">Available Payout</span>
+              <span className="text-xs font-bold capitalize text-gray-500 dark:text-neutral-400">Available Payout</span>
               <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
                 <Award className="w-4 h-4" />
               </div>
@@ -165,7 +165,7 @@ export default function AffiliatePage() {
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-500 dark:text-neutral-400 uppercase">{tier.badge}</span>
+                    <span className="text-xs font-bold text-gray-500 dark:text-neutral-400 capitalize">{tier.badge}</span>
                     {tier.active && <span className="w-2 h-2 rounded-full bg-[#2563EB]" />}
                   </div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white mt-1">{tier.name}</h3>
@@ -190,12 +190,12 @@ export default function AffiliatePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs font-mono">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#161D2A] text-gray-500 dark:text-neutral-400 text-[10px] uppercase font-sans">
-                  <th className="py-2.5 px-4">REFERRAL ID</th>
+                <tr className="border-b border-gray-200 dark:border-white/[0.08] bg-gray-50 dark:bg-[#161D2A] text-gray-500 dark:text-neutral-400 text-[10px] capitalize font-sans">
+                  <th className="py-2.5 px-4">Referral ID</th>
                   <th className="py-2.5 px-4">DATE & TIME</th>
-                  <th className="py-2.5 px-4">PLAN / CHALLENGE</th>
-                  <th className="py-2.5 px-4 text-right">COMMISSION</th>
-                  <th className="py-2.5 px-4 text-right">STATUS</th>
+                  <th className="py-2.5 px-4">Plan / Challenge</th>
+                  <th className="py-2.5 px-4 text-right">Commission</th>
+                  <th className="py-2.5 px-4 text-right">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/[0.04]">

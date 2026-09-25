@@ -426,7 +426,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
               <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
                 <Layers className="w-4 h-4" />
               </div>
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-neutral-100">
                 Account Management &amp; Setup
               </h1>
             </div>
@@ -438,7 +438,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
           <div className="flex items-center gap-3">
             <div className="bg-white dark:bg-[#1E1E1E] border border-gray-200 dark:border-neutral-800 rounded-xl px-4 py-2 flex items-center gap-3 shadow-xs">
               <div className="flex flex-col">
-                <span className="text-[10px] uppercase font-semibold tracking-wider text-gray-400 dark:text-neutral-500">Total Portfolio</span>
+                <span className="text-[10px] capitalize font-semibold text-gray-400 dark:text-neutral-500">Total Portfolio</span>
                 <span className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400">
                   ${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
                 </span>
@@ -547,7 +547,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {/* Demo / Real Badge */}
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize  ${
                               acc.isDemo !== false
                                 ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60'
                                 : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60'
@@ -592,7 +592,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                       {/* Middle: Nickname & Account Number */}
                       <div className="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-100 dark:border-neutral-800">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
+                          <span className="text-sm font-bold text-gray-900 dark:text-neutral-100">
                             {acc.nickname || acc.accountName || `Demo Account`}
                           </span>
                           <span className="text-xs font-mono text-gray-400 dark:text-neutral-500">
@@ -634,21 +634,21 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                       {/* Financial Metrics Grid */}
                       <div className="grid grid-cols-3 gap-2 bg-gray-50/80 dark:bg-[#151515] p-2.5 rounded-xl border border-gray-200/70 dark:border-neutral-800/80 mb-3 font-mono">
                         <div>
-                          <div className="text-[9px] uppercase font-semibold text-gray-400 dark:text-neutral-500">Balance</div>
+                          <div className="text-[9px] capitalize font-semibold text-gray-400 dark:text-neutral-500">Balance</div>
                           <div className="text-xs font-bold text-gray-900 dark:text-neutral-100">
                             ${acc.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                         </div>
 
                         <div>
-                          <div className="text-[9px] uppercase font-semibold text-gray-400 dark:text-neutral-500">Equity</div>
+                          <div className="text-[9px] capitalize font-semibold text-gray-400 dark:text-neutral-500">Equity</div>
                           <div className="text-xs font-bold text-gray-700 dark:text-neutral-300">
                             ${(acc.equity || acc.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                         </div>
 
                         <div>
-                          <div className="text-[9px] uppercase font-semibold text-gray-400 dark:text-neutral-500">Margin</div>
+                          <div className="text-[9px] capitalize font-semibold text-gray-400 dark:text-neutral-500">Margin</div>
                           <div className="text-xs font-bold text-gray-600 dark:text-neutral-400">
                             ${(acc.margin || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
@@ -762,7 +762,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 
                 {/* 1. Account Type Selector Grid (5 Exness Types) */}
                 <div className="space-y-2.5">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                  <label className="block text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                     1. Select Account Type
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -825,7 +825,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Platform */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                    <label className="block text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                       2. Trading Platform
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -849,7 +849,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
 
                   {/* Execution Type */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                    <label className="block text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                       3. Execution Type
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -879,7 +879,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                   {/* Max Leverage */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                      <label className="text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                         4. Max Leverage
                       </label>
                       <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400">
@@ -912,7 +912,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
 
                   {/* Currency Selector */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                    <label className="block text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                       5. Account Currency
                     </label>
                     <div className="grid grid-cols-4 gap-1.5">
@@ -937,7 +937,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 {/* 4. Starting Balance Input (Demo / Virtual Funds) */}
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                    <label className="text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                       6. Starting Balance ({selectedCurrency})
                     </label>
                     <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
@@ -987,7 +987,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 {/* 5. Account Nickname */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-neutral-300">
+                    <label className="text-xs font-bold capitalize text-gray-700 dark:text-neutral-300">
                       7. Account Nickname
                     </label>
                     <span className="text-[11px] text-gray-400 dark:text-neutral-500 font-mono">
@@ -1008,26 +1008,26 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 {/* ACCOUNT SPECS STRIP (Bottom summary of chosen configuration) */}
                 {/* ════════════════════════════════════════════════════════════ */}
                 <div className="bg-gray-50 dark:bg-[#151515] border border-gray-200 dark:border-neutral-800 rounded-xl p-3.5 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 pb-2 border-b border-gray-200/80 dark:border-neutral-800 uppercase tracking-wider">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 dark:text-neutral-400 pb-2 border-b border-gray-200/80 dark:border-neutral-800 capitalize">
                     <span>Account Specifications Summary</span>
                     <span className="text-blue-600 dark:text-blue-400 font-mono">{activeTypeConfig?.name} · {selectedPlatform}</span>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
                     <div>
-                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] uppercase">Min Deposit</span>
+                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] capitalize">Min Deposit</span>
                       <span className="text-gray-900 dark:text-neutral-100 font-bold">${activeTypeConfig?.min_deposit}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] uppercase">Spread From</span>
+                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] capitalize">Spread From</span>
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">{activeTypeConfig?.min_spread.toFixed(1)} pips</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] uppercase">Commission</span>
+                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] capitalize">Commission</span>
                       <span className="text-gray-700 dark:text-neutral-300 font-bold">{activeTypeConfig?.commission}</span>
                     </div>
                     <div>
-                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] uppercase">Max Leverage</span>
+                      <span className="text-gray-400 dark:text-neutral-500 block text-[9px] capitalize">Max Leverage</span>
                       <span className="text-blue-600 dark:text-blue-400 font-bold">1:{selectedLeverage}</span>
                     </div>
                   </div>
@@ -1208,7 +1208,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 <div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-neutral-100 flex items-center gap-2">
                     <span>MetaTrader 4 / 5 Bridge</span>
-                    <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full uppercase">
+                    <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-full capitalize">
                       Live Sync
                     </span>
                   </h3>
@@ -1304,7 +1304,7 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                       <span className="text-[9px] bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-1.5 py-0.2 rounded font-sans font-semibold">Trade Access</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-gray-900 dark:text-neutral-100 font-mono tracking-wider">
+                      <span className="font-bold text-gray-900 dark:text-neutral-100 font-mono">
                         {showPassword ? mtBridgeData.credentials.masterPassword : '••••••••••••'}
                       </span>
                       <button
@@ -1349,15 +1349,15 @@ export default function AccountSetupClient({ initialUserData, initialAccounts, i
                 {/* Real-time Synchronized Metrics Preview */}
                 <div className="grid grid-cols-3 gap-2 bg-gray-50 dark:bg-[#151515] p-3 rounded-2xl border border-gray-200 dark:border-neutral-800 font-mono text-center">
                   <div>
-                    <span className="text-[9.5px] uppercase text-gray-400 dark:text-neutral-500 font-semibold block">Balance</span>
+                    <span className="text-[9.5px] capitalize text-gray-400 dark:text-neutral-500 font-semibold block">Balance</span>
                     <span className="font-bold text-gray-900 dark:text-neutral-100 text-xs">${mtBridgeData.metrics.balance.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-[9.5px] uppercase text-gray-400 dark:text-neutral-500 font-semibold block">Equity</span>
+                    <span className="text-[9.5px] capitalize text-gray-400 dark:text-neutral-500 font-semibold block">Equity</span>
                     <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs">${mtBridgeData.metrics.equity.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-[9.5px] uppercase text-gray-400 dark:text-neutral-500 font-semibold block">Margin Level</span>
+                    <span className="text-[9.5px] capitalize text-gray-400 dark:text-neutral-500 font-semibold block">Margin Level</span>
                     <span className="font-bold text-blue-600 dark:text-blue-400 text-xs">{mtBridgeData.metrics.marginLevel}</span>
                   </div>
                 </div>

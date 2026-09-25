@@ -319,7 +319,7 @@ export default function DashboardClientPage({
             {/* Circular User Avatar */}
             <div 
               onClick={() => router.push('/settings')}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all uppercase"
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all capitalize"
               title={userName}
             >
               {userName ? userName.slice(0, 2) : 'US'}
@@ -335,7 +335,7 @@ export default function DashboardClientPage({
           {/* HEADER BAR */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1 select-none">
             <div>
-              <h1 className="text-2xl sm:text-[26px] font-bold text-[#111827] dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-[26px] font-bold text-[#111827] dark:text-white">
                 Dashboard
               </h1>
               <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 mt-0.5">
@@ -367,11 +367,11 @@ export default function DashboardClientPage({
             
             {/* Card 1: ACCOUNT BALANCE */}
             <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                ACCOUNT BALANCE
+              <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
+                Account Balance
               </span>
               <div className="mt-2">
-                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white">
                   ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
                 <div className="text-[11px] text-slate-400 dark:text-neutral-500 mt-1 font-medium flex items-center gap-1">
@@ -384,13 +384,13 @@ export default function DashboardClientPage({
             {/* Card 2: TOTAL CLOSED PNL */}
             <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                  TOTAL CLOSED PNL
+                <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
+                  Total Closed Pnl
                 </span>
                 <Filter className="w-3 h-3 text-slate-400 cursor-pointer hover:text-slate-600" />
               </div>
               <div className="mt-2">
-                <div className="text-xl sm:text-2xl font-bold font-mono text-[#10B981] dark:text-emerald-400 tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-[#10B981] dark:text-emerald-400">
                   {totalClosedPnL >= 0 ? '+' : ''}${totalClosedPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
                 <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold flex items-center gap-0.5">
@@ -402,11 +402,11 @@ export default function DashboardClientPage({
 
             {/* Card 3: WIN RATE */}
             <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                WIN RATE
+              <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
+                Win Rate
               </span>
               <div className="mt-2">
-                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white tracking-tight flex items-center justify-between">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white flex items-center justify-between">
                   <span>48.21%</span>
                   <span className="bg-emerald-50 dark:bg-emerald-950/50 text-[#10B981] text-xs font-semibold px-2 py-0.5 rounded-full flex items-center">
                     ↗ 5.4%
@@ -420,11 +420,11 @@ export default function DashboardClientPage({
 
             {/* Card 4: AVG R PER TRADE */}
             <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                AVG R PER TRADE
+              <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
+                Avg R Per Trade
               </span>
               <div className="mt-2">
-                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white tracking-tight">
+                <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white">
                   +0.42R <span className="text-emerald-500 text-sm">↗</span>
                 </div>
                 {/* Mini horizontal stacked bar */}
@@ -443,12 +443,12 @@ export default function DashboardClientPage({
 
             {/* Card 5: PROFIT FACTOR */}
             <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-neutral-500">
-                PROFIT FACTOR
+              <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
+                Profit Factor
               </span>
               <div className="mt-2 flex items-center justify-between">
                 <div>
-                  <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white tracking-tight">
+                  <div className="text-xl sm:text-2xl font-bold font-mono text-[#111827] dark:text-white">
                     1.60
                   </div>
                   <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-semibold">
@@ -636,7 +636,7 @@ export default function DashboardClientPage({
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs font-sans min-w-[520px]">
                     <thead>
-                      <tr className="border-b border-slate-100 dark:border-white/[0.06] text-slate-400 dark:text-neutral-500 font-bold uppercase text-[10px]">
+                      <tr className="border-b border-slate-100 dark:border-white/[0.06] text-slate-400 dark:text-neutral-500 font-bold capitalize text-[10px]">
                         <th className="py-2.5 px-3">Instrument</th>
                         <th className="py-2.5 px-3">Direction</th>
                         <th className="py-2.5 px-3">PnL</th>

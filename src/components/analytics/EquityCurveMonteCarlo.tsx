@@ -68,7 +68,7 @@ export default function EquityCurveMonteCarlo({
             <TrendingUp className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white font-mono capitalize">
               {activeTab === 'equity' ? 'Cumulative Equity Curve vs Benchmark' : 'Monte Carlo Predictive Simulation (1,000 Runs)'}
             </h3>
             <p className="text-[11px] text-gray-500 dark:text-neutral-400">
@@ -144,14 +144,14 @@ export default function EquityCurveMonteCarlo({
                     dataKey="tradeNumber" 
                     stroke="#94a3b8" 
                     fontSize={10} 
-                    fontFamily="monospace"
+                    fontFamily="Inter, sans-serif"
                     tickLine={false}
                     tickFormatter={(v) => `T#${v}`}
                   />
                   <YAxis 
                     stroke="#94a3b8" 
                     fontSize={10} 
-                    fontFamily="monospace"
+                    fontFamily="Inter, sans-serif"
                     tickLine={false}
                     domain={['dataMin - 1000', 'dataMax + 1000']}
                     tickFormatter={(val) => `$${val >= 1000 || val <= -1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
@@ -208,23 +208,23 @@ export default function EquityCurveMonteCarlo({
           {/* Quick Metrics Bar below chart */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-3 border-t border-gray-100 dark:border-white/[0.06] font-mono text-xs">
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Starting Balance</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Starting Balance</span>
               <span className="text-gray-900 dark:text-white font-bold">${startingBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Current Equity</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Current Equity</span>
               <span className={`font-bold ${netPnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                 ${currentBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} ({netPnl >= 0 ? '+' : ''}{returnPct}%)
               </span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Alpha vs S&P 500</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Alpha vs S&P 500</span>
               <span className={`font-bold ${parseFloat(alpha) >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-amber-600 dark:text-amber-400'}`}>
                 {parseFloat(alpha) >= 0 ? '+' : ''}{alpha}% Excess
               </span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Max Historical DD</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Max Historical DD</span>
               <span className="text-rose-600 dark:text-rose-400 font-bold">-{maxDrawdownPct}% (${maxDrawdownAmount.toFixed(0)})</span>
             </div>
           </div>
@@ -245,14 +245,14 @@ export default function EquityCurveMonteCarlo({
                     dataKey="tradeIndex" 
                     stroke="#94a3b8" 
                     fontSize={10} 
-                    fontFamily="monospace"
+                    fontFamily="Inter, sans-serif"
                     tickLine={false}
                     tickFormatter={(v) => `+${v}t`}
                   />
                   <YAxis 
                     stroke="#94a3b8" 
                     fontSize={10} 
-                    fontFamily="monospace"
+                    fontFamily="Inter, sans-serif"
                     tickLine={false}
                     tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
                   />
@@ -289,21 +289,21 @@ export default function EquityCurveMonteCarlo({
           {/* Monte Carlo Statistical Confidence Summary */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-3 border-t border-gray-100 dark:border-white/[0.06] font-mono text-xs">
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Probability of Ruin</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Probability of Ruin</span>
               <span className="text-emerald-600 dark:text-emerald-400 font-bold">&lt; 0.05% (Safe)</span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Empirical Win Factor</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Empirical Win Factor</span>
               <span className="text-blue-600 dark:text-blue-400 font-bold">{netPnl >= 0 ? 'Positive Edge' : 'Neutral'}</span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Median 30-Trade Target</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Median 30-Trade Target</span>
               <span className="text-gray-900 dark:text-white font-bold">
                 ${monteCarlo.length > 0 ? monteCarlo[monteCarlo.length - 1].p50.toLocaleString() : (startingBalance * 1.1).toFixed(0)}
               </span>
             </div>
             <div className="bg-gray-50 dark:bg-[#161D2A] p-2.5 rounded-xl border border-gray-200 dark:border-white/[0.08]">
-              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] uppercase font-sans">Simulated Iterations</span>
+              <span className="text-gray-500 dark:text-neutral-400 block text-[10px] capitalize font-sans">Simulated Iterations</span>
               <span className="text-indigo-600 dark:text-indigo-400 font-bold">1,000 Runs</span>
             </div>
           </div>

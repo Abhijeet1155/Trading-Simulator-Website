@@ -66,7 +66,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
             <Sparkles className="w-3.5 h-3.5" />
             Simple & Transparent Pricing
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-3">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Choose the Perfect Plan for Your Trading Strategy
           </h1>
           <p className="text-sm md:text-base text-gray-600 font-normal leading-relaxed">
@@ -94,7 +94,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
               }`}
             >
               Yearly Billing
-              <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+              <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full capitalize">
                 Save {yearlySavingsPercent}%
               </span>
             </button>
@@ -132,7 +132,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
               </div>
 
               <div className="pt-6 border-t border-gray-100 space-y-3.5">
-                <p className="text-xs font-bold text-gray-900 uppercase tracking-wider">What's included:</p>
+                <p className="text-xs font-bold text-gray-900 capitalize">What's included:</p>
                 
                 <div className="flex items-start gap-2.5 text-xs text-gray-700 font-medium">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -189,7 +189,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
           {/* PRO PLAN */}
           <div className="relative bg-white border-2 border-[#2563EB] rounded-2xl p-8 flex flex-col justify-between shadow-[0_8px_30px_rgba(37,99,235,0.12)]">
             {/* Top Banner Tag */}
-            <div className="absolute -top-3.5 right-6 bg-gradient-to-r from-[#2563EB] to-[#1d4ed8] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-md">
+            <div className="absolute -top-3.5 right-6 bg-gradient-to-r from-[#2563EB] to-[#1d4ed8] text-white px-3 py-1 rounded-full text-[10px] font-bold capitalize flex items-center gap-1 shadow-md">
               <Crown className="w-3 h-3 text-amber-300 fill-amber-300" />
               Most Popular
             </div>
@@ -200,7 +200,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
                   <div className="flex items-center gap-2">
                     <h3 className="text-xl font-bold text-gray-900">Pro Trader</h3>
                     <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold rounded-md">
-                      PRO
+                      Pro
                     </span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
@@ -229,7 +229,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
               </div>
 
               <div className="pt-6 border-t border-gray-100 space-y-3.5">
-                <p className="text-xs font-bold text-gray-900 uppercase tracking-wider">Everything in Free, plus:</p>
+                <p className="text-xs font-bold text-gray-900 capitalize">Everything in Free, plus:</p>
                 
                 <div className="flex items-start gap-2.5 text-xs text-gray-900 font-semibold">
                   <Check className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
@@ -295,7 +295,7 @@ export default function PricingClientPage({ user, displayName, planType = 'free'
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
               <thead>
-                <tr className="border-b border-gray-200 text-gray-400 font-semibold uppercase text-[10px]">
+                <tr className="border-b border-gray-200 text-gray-400 font-semibold capitalize text-[10px]">
                   <th className="py-3 px-4">Feature</th>
                   <th className="py-3 px-4 text-center">Practice (Free)</th>
                   <th className="py-3 px-4 text-center text-[#2563EB]">Pro Trader</th>

@@ -943,7 +943,7 @@ export default function BarReplayEngine() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-gray-50 dark:bg-[#161D2A] px-3 py-1 rounded-lg border border-gray-200 dark:border-white/[0.08]">
             <div className="text-right">
-              <div className="text-[9px] uppercase tracking-wider text-gray-500 dark:text-neutral-400 font-semibold flex items-center justify-end gap-1">
+              <div className="text-[9px] capitalize text-gray-500 dark:text-neutral-400 font-semibold flex items-center justify-end gap-1">
                 <span className={`w-1.5 h-1.5 rounded-full ${accountInfo?.isDemo ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`} />
                 <span>{accountInfo?.accountName || 'Account Balance'}</span>
               </div>
@@ -958,7 +958,7 @@ export default function BarReplayEngine() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#2563EB] to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
           >
             <Radio className="w-3.5 h-3.5 animate-pulse" />
-            <span>CONNECT MT5</span>
+            <span>Connect MT5</span>
             <span className="text-[9px] font-normal opacity-80 hidden sm:inline">(Broker Sync)</span>
           </button>
         </div>
@@ -981,7 +981,7 @@ export default function BarReplayEngine() {
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#2563EB]/10 dark:bg-blue-500/15 text-[#2563EB] dark:text-blue-400 font-bold font-mono text-xs border border-blue-200 dark:border-blue-800/60 hover:bg-[#2563EB]/20 transition-all cursor-pointer shrink-0"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${isPlaying ? 'animate-spin' : ''}`} />
-              <span>BAR-BY-BAR REPLAY</span>
+              <span>Bar-By-Bar Replay</span>
             </button>
 
             {/* REAL CALENDAR / DATE / MONTH / YEAR / TIMING SELECTION DROPDOWN */}
@@ -1402,7 +1402,7 @@ export default function BarReplayEngine() {
 
                 {isSymbolDropdownOpen && (
                   <div className="dropdown-menu absolute left-0 top-full mt-1.5 z-50 bg-white dark:bg-[#111722] border border-gray-200 dark:border-white/[0.12] rounded-xl shadow-2xl p-1.5 w-64 text-xs font-sans animate-in fade-in slide-in-from-top-2">
-                    <div className="px-2 py-1 text-[10px] uppercase font-bold text-gray-400 dark:text-neutral-500 border-b border-gray-100 dark:border-white/[0.06] mb-1">
+                    <div className="px-2 py-1 text-[10px] capitalize font-bold text-gray-400 dark:text-neutral-500 border-b border-gray-100 dark:border-white/[0.06] mb-1">
                       Available Trading Instruments
                     </div>
                     <div className="max-h-60 overflow-y-auto space-y-0.5">
@@ -1533,7 +1533,7 @@ export default function BarReplayEngine() {
                   : 'text-gray-500 dark:text-neutral-400 hover:text-gray-800 dark:hover:text-neutral-200'
               }`}
             >
-              EXECUTION
+              Execution
             </button>
             <button
               type="button"
@@ -1544,7 +1544,7 @@ export default function BarReplayEngine() {
                   : 'text-gray-500 dark:text-neutral-400 hover:text-gray-800 dark:hover:text-neutral-200'
               }`}
             >
-              NEWS
+              News
             </button>
           </div>
 
@@ -1660,7 +1660,7 @@ export default function BarReplayEngine() {
                       }}
                       className="py-3 px-2 rounded-xl bg-[#EF4444] hover:bg-red-600 text-white flex flex-col items-center justify-center shadow-md shadow-red-500/20 active:scale-[0.98] transition-all cursor-pointer"
                     >
-                      <span className="text-[11px] font-semibold tracking-wide">Sell</span>
+                      <span className="text-[11px] font-semibold">Sell</span>
                       <span className="text-sm font-extrabold font-mono mt-0.5">
                         {currentPriceFormatted}
                       </span>
@@ -1674,7 +1674,7 @@ export default function BarReplayEngine() {
                       }}
                       className="py-3 px-2 rounded-xl bg-[#2563EB] hover:bg-blue-600 text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all cursor-pointer"
                     >
-                      <span className="text-[11px] font-semibold tracking-wide">Buy</span>
+                      <span className="text-[11px] font-semibold">Buy</span>
                       <span className="text-sm font-extrabold font-mono mt-0.5">
                         {(currentBar ? (currentBar.close + symbolMeta.pipSize * 2.6).toFixed(symbolMeta.precision) : '2418.76')}
                       </span>
@@ -1762,7 +1762,7 @@ export default function BarReplayEngine() {
                       }`}
                     >
                       <div className="text-[11px] font-semibold text-[#EF4444]">Sell</div>
-                      <div className="text-sm font-extrabold font-mono text-[#EF4444] mt-0.5 tracking-tight">
+                      <div className="text-sm font-extrabold font-mono text-[#EF4444] mt-0.5">
                         {currentPriceFormatted}
                       </div>
                     </button>
@@ -1778,7 +1778,7 @@ export default function BarReplayEngine() {
                       }`}
                     >
                       <div className="text-[11px] font-semibold text-[#2563EB]">Buy</div>
-                      <div className="text-sm font-extrabold font-mono text-[#2563EB] mt-0.5 tracking-tight">
+                      <div className="text-sm font-extrabold font-mono text-[#2563EB] mt-0.5">
                         {(currentBar ? (currentBar.close + symbolMeta.pipSize * 2.6).toFixed(symbolMeta.precision) : '2418.76')}
                       </div>
                     </button>
@@ -2007,7 +2007,7 @@ export default function BarReplayEngine() {
                       <button
                         type="button"
                         onClick={handleClosePosition}
-                        className="w-full py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md bg-[#EF4444] hover:bg-red-600 text-white transition-all cursor-pointer flex items-center justify-center gap-2"
+                        className="w-full py-3 rounded-xl font-bold text-xs capitalize shadow-md bg-[#EF4444] hover:bg-red-600 text-white transition-all cursor-pointer flex items-center justify-center gap-2"
                       >
                         <AlertCircle className="w-4 h-4" />
                         <span>CLOSE POSITION (P&L: {activePosition.pnl >= 0 ? '+' : ''}${activePosition.pnl.toFixed(2)})</span>
@@ -2016,7 +2016,7 @@ export default function BarReplayEngine() {
                       <button
                         type="button"
                         onClick={handleSimulateTrade}
-                        className={`w-full py-3 rounded-xl font-bold text-xs tracking-wide shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] ${
+                        className={`w-full py-3 rounded-xl font-bold text-xs  shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] ${
                           orderDirection === 'BUY'
                             ? 'bg-[#2563EB] hover:bg-blue-600 text-white shadow-blue-500/20'
                             : 'bg-[#EF4444] hover:bg-red-600 text-white shadow-red-500/20'
@@ -2035,8 +2035,8 @@ export default function BarReplayEngine() {
           ) : (
             /* NEWS TAB CONTENT */
             <div className="p-2 space-y-1.5 font-mono text-xs overflow-y-auto">
-              <div className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase font-sans font-bold px-1 py-1">
-                MARKET HEADLINES
+              <div className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize font-sans font-bold px-1 py-1">
+                Market Headlines
               </div>
               {newsItems.map((item, idx) => (
                 <div key={idx} className="p-2 rounded bg-gray-50 dark:bg-[#161D2A] border border-gray-200 dark:border-white/[0.08] space-y-1 hover:border-gray-300 dark:hover:border-white/[0.15] transition-colors">
@@ -2143,14 +2143,14 @@ export default function BarReplayEngine() {
               {leftBottomTab === 'Positions' || leftBottomTab === 'Order History' ? (
                 <table className="w-full text-left border-collapse text-[11px]">
                   <thead>
-                    <tr className="border-b border-gray-200 dark:border-white/[0.08] text-gray-500 dark:text-neutral-400 text-[10px] uppercase font-sans">
-                      <th className="py-1 px-1.5">SYMBOL</th>
-                      <th className="py-1 px-1.5">TYPE</th>
-                      <th className="py-1 px-1.5">LOTS</th>
-                      <th className="py-1 px-1.5">ENTRY</th>
-                      <th className="py-1 px-1.5">MARK/EXIT</th>
+                    <tr className="border-b border-gray-200 dark:border-white/[0.08] text-gray-500 dark:text-neutral-400 text-[10px] capitalize font-sans">
+                      <th className="py-1 px-1.5">Symbol</th>
+                      <th className="py-1 px-1.5">Type</th>
+                      <th className="py-1 px-1.5">Lots</th>
+                      <th className="py-1 px-1.5">Entry</th>
+                      <th className="py-1 px-1.5">Mark/Exit</th>
                       <th className="py-1 px-1.5 text-right">P&L</th>
-                      <th className="py-1 px-1.5 text-right">ACTION</th>
+                      <th className="py-1 px-1.5 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-white/[0.04]">
@@ -2238,12 +2238,12 @@ export default function BarReplayEngine() {
                 <div className="space-y-1.5">
                   <table className="w-full text-left border-collapse text-[11px]">
                     <thead>
-                      <tr className="border-b border-gray-200 dark:border-white/[0.08] text-gray-500 dark:text-neutral-400 text-[10px] uppercase font-sans">
-                        <th className="py-1 px-1.5">TIME</th>
-                        <th className="py-1 px-1.5">PAIR</th>
+                      <tr className="border-b border-gray-200 dark:border-white/[0.08] text-gray-500 dark:text-neutral-400 text-[10px] capitalize font-sans">
+                        <th className="py-1 px-1.5">Time</th>
+                        <th className="py-1 px-1.5">Pair</th>
                         <th className="py-1 px-1.5">P&L</th>
-                        <th className="py-1 px-1.5">NOTES</th>
-                        <th className="py-1 px-1.5 text-right">ACTION</th>
+                        <th className="py-1 px-1.5">Notes</th>
+                        <th className="py-1 px-1.5 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/[0.04]">
@@ -2329,7 +2329,7 @@ export default function BarReplayEngine() {
                   {/* Calendar Grid (Mon to Sun) */}
                   <div className="grid grid-cols-7 gap-1 text-center">
                     {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((dayName, idx) => (
-                      <div key={`${dayName}-${idx}`} className="text-[9px] font-bold text-gray-400 dark:text-neutral-500 uppercase py-0.2">
+                      <div key={`${dayName}-${idx}`} className="text-[9px] font-bold text-gray-400 dark:text-neutral-500 capitalize py-0.2">
                         {dayName}
                       </div>
                     ))}
@@ -2362,7 +2362,7 @@ export default function BarReplayEngine() {
                         >
                           <div className="flex items-center justify-between text-[9px]">
                             <span className="font-bold">{item.day}</span>
-                            {item.isLiveDay && <span className="text-[7px] font-bold bg-[#2563EB] text-white px-0.5 rounded">NOW</span>}
+                            {item.isLiveDay && <span className="text-[7px] font-bold bg-[#2563EB] text-white px-0.5 rounded">Now</span>}
                           </div>
                           <div className="text-[8px] font-bold font-mono text-right">
                             {hasTrades ? `${isProfit ? '+' : ''}$${item.pnl.toFixed(0)}` : '—'}

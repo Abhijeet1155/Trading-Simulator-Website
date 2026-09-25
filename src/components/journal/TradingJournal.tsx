@@ -348,12 +348,12 @@ export default function TradingJournal() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-neutral-100">
                   Trading Journal & Playbook
                 </h1>
                 <span className="text-[10.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  DATABASE LIVE
+                  Database Live
                 </span>
               </div>
               <p className="text-xs text-gray-500 dark:text-neutral-400 mt-0.5">

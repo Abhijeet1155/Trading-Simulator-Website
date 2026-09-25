@@ -311,7 +311,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
               <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center">
                 <TrendingUp className="text-white w-4.5 h-4.5" />
               </div>
-              <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
+              <span className="font-semibold text-lg text-[#111111]">PaperPulse</span>
             </div>
           </div>
         </header>
@@ -433,7 +433,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                               Trading Tournament
                             </span>
                             {comp.is_premium_only && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-wider">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 capitalize">
                                 <Crown className="w-2.5 h-2.5" /> Pro Exclusive
                               </span>
                             )}
@@ -546,22 +546,22 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                 {/* User's active standing summary (only when joined) */}
                 {detailData.joined && detailData.userProgress && (
                   <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                    <h3 className="font-semibold text-gray-900 text-xs capitalize  mb-4">Your Tournament Status</h3>
+                    <h3 className="font-semibold text-gray-900 text-xs capitalize mb-4">Your Tournament Status</h3>
                     <div className="grid grid-cols-3 gap-4 mb-5 text-center">
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Starting Funds</span>
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize block">Starting Funds</span>
                         <span className="text-sm font-semibold font-mono text-gray-900 mt-1 block">
                           ${parseFloat(detailData.userProgress.starting_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Current Equity</span>
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize block">Current Equity</span>
                         <span className="text-sm font-semibold font-mono text-gray-900 mt-1 block">
                           ${parseFloat(detailData.userProgress.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                       <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3">
-                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Leaderboard Rank</span>
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize block">Leaderboard Rank</span>
                         <span className="text-sm font-semibold text-[#2563EB] mt-1 block">
                           #{detailData.userRank || '—'}
                         </span>
@@ -598,7 +598,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[500px] sm:min-w-0">
                       <thead>
-                        <tr className="border-b border-[#E5E7EB] text-[10px] font-semibold text-gray-400 capitalize ">
+                        <tr className="border-b border-[#E5E7EB] text-[10px] font-semibold text-gray-400 capitalize">
                           <th className="pb-3 px-4">Rank</th>
                           <th className="pb-3 px-4">Participant</th>
                           <th className="pb-3 px-4 text-right">P&L (%)</th>
@@ -644,7 +644,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                         {detailData.userProgress && detailData.userRank > 5 && (
                           <>
                             <tr className="bg-white">
-                              <td colSpan="4" className="py-1 text-center text-xs text-gray-400 font-semibold capitalize  bg-gray-50/50 select-none">
+                              <td colSpan="4" className="py-1 text-center text-xs text-gray-400 font-semibold capitalize bg-gray-50/50 select-none">
                                 •••
                               </td>
                             </tr>
@@ -784,14 +784,14 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                     <div className="space-y-6">
                       {/* Account Details */}
                       <div>
-                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-3">Account Details</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize block mb-3">Account Details</span>
                         <div className="grid grid-cols-3 gap-2">
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Type</span>
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize block">Type</span>
                             <span className="text-xs font-semibold text-gray-800 mt-1 block">Standard</span>
                           </div>
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Initial Equity</span>
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize block">Initial Equity</span>
                             <span className="text-xs font-semibold text-gray-800 mt-1 block font-mono">
                               ${(() => {
                                 const initialEquityValue = (detailData.joined && detailData.userProgress) 
@@ -802,7 +802,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                             </span>
                           </div>
                           <div className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-3 text-center">
-                            <span className="text-[8px] font-semibold text-gray-400 capitalize  block">Duration</span>
+                            <span className="text-[8px] font-semibold text-gray-400 capitalize block">Duration</span>
                             <span className="text-xs font-semibold text-gray-800 mt-1 block">
                               {(() => {
                                 const diff = new Date(detailData.competition.end_date) - new Date(detailData.competition.start_date);
@@ -816,7 +816,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
 
                       {/* Competition Rules */}
                       <div>
-                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-3">Competition Rules</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize block mb-3">Competition Rules</span>
                         <div className="space-y-3">
                           <div className="flex items-center justify-between p-3 border border-[#E5E7EB] rounded-xl text-xs font-semibold text-gray-700 bg-[#FAFAFA]">
                             <span className="flex items-center gap-2 text-gray-500">
@@ -846,11 +846,11 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                   ) : (
                     <div className="space-y-5">
                       <div className="text-center p-4 bg-[#2563EB]/5 border border-[#2563EB]/10 rounded-xl">
-                        <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Estimated Tournament Pool</span>
+                        <span className="text-[9px] font-semibold text-gray-400 capitalize block">Estimated Tournament Pool</span>
                         <span className="text-2xl font-semibold text-[#2563EB] mt-1 block">
                           {getPrizePool(detailData.competition)}
                         </span>
-                        <span className="text-[9px] text-[#2563EB] font-semibold mt-1 block capitalize ">
+                        <span className="text-[9px] text-[#2563EB] font-semibold mt-1 block capitalize">
                           Virtual Recognition Points
                         </span>
                       </div>
@@ -860,7 +860,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                       </p>
 
                       <div className="space-y-2">
-                        <span className="text-[10px] font-semibold text-gray-400 capitalize  block mb-2">Rewards Breakdown</span>
+                        <span className="text-[10px] font-semibold text-gray-400 capitalize block mb-2">Rewards Breakdown</span>
                         
                         <div className="grid grid-cols-3 gap-2">
                           <div className="border border-amber-200 bg-amber-50/50 rounded-xl p-3 text-center">
@@ -918,10 +918,10 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
             {/* Redesigned Hero Section */}
             <div className="bg-white border border-[#E5E7EB] rounded-2xl p-8 md:p-12 mb-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col md:flex-row justify-between items-center gap-6 select-none">
               <div className="max-w-2xl text-center md:text-left">
-                <span className="text-[10px] md:text-xs font-semibold  text-[#2563EB] capitalize block mb-2">
+                <span className="text-[10px] md:text-xs font-semibold text-[#2563EB] capitalize block mb-2">
                   DAILY BATTLES. REAL MARKETS. BIG REWARDS
                 </span>
-                <h1 className="text-3xl md:text-4xl font-semibold text-[#111111]  mb-3">
+                <h1 className="text-3xl md:text-4xl font-semibold text-[#111111] mb-3">
                   Enter the Competitions Arena
                 </h1>
                 <p className="text-sm md:text-base text-[#6B7280] font-medium leading-relaxed">
@@ -1003,7 +1003,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                     <div className="w-16 h-16 bg-[#EFF6FF] rounded-full flex items-center justify-center mx-auto mb-6 text-[#2563EB]">
                       {icon}
                     </div>
-                    <h2 className="text-xl font-semibold text-[#111111] ">{title}</h2>
+                    <h2 className="text-xl font-semibold text-[#111111]">{title}</h2>
                     <p className="text-sm text-[#6B7280] mt-2 max-w-sm mx-auto leading-relaxed">{desc}</p>
                     <div className="mt-8">
                       <button 
@@ -1089,7 +1089,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                                 {comp.title}
                               </h3>
                               {comp.is_premium_only && (
-                                <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-amber-500 text-white uppercase tracking-wider shrink-0 flex items-center gap-0.5 shadow-xs">
+                                <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-amber-500 text-white capitalize shrink-0 flex items-center gap-0.5 shadow-xs">
                                   <Crown className="w-2 h-2" /> Pro
                                 </span>
                               )}
@@ -1115,11 +1115,11 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
                           <div className="pt-3 border-t border-[#F3F4F6] mt-auto">
                             <div className="flex justify-between items-baseline mb-3">
                               <div>
-                                <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Prize Pool</span>
+                                <span className="text-[9px] font-semibold text-gray-400 capitalize block">Prize Pool</span>
                                 <span className="text-lg font-semibold text-[#2563EB]">{prizePool}</span>
                               </div>
                               <div className="text-right">
-                                <span className="text-[9px] font-semibold text-gray-400 capitalize  block">Target Profit</span>
+                                <span className="text-[9px] font-semibold text-gray-400 capitalize block">Target Profit</span>
                                 <span className="text-xs font-semibold text-gray-800">+{comp.target_profit_percent}%</span>
                               </div>
                             </div>

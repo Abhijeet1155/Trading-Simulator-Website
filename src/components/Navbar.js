@@ -68,7 +68,7 @@ export default function Navbar({ userName }) {
               <div className="w-7 h-7 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-sm">
                 <TrendingUp className="text-white w-4 h-4" />
               </div>
-              <span className="font-bold text-base text-[#111111] dark:text-white tracking-tight">PaperPulse</span>
+              <span className="font-bold text-base text-[#111111] dark:text-white">PaperPulse</span>
             </Link>
             
             <div className="h-5 w-[1px] bg-gray-200 dark:bg-neutral-800 hidden md:block" />
@@ -129,7 +129,7 @@ export default function Navbar({ userName }) {
               {isMenuOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-neutral-800 rounded-2xl shadow-[0_12px_30px_-5px_rgba(0,0,0,0.12),0_8px_10px_-6px_rgba(0,0,0,0.08)] p-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-150 select-none">
                   <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-[10px] font-bold text-gray-400 dark:text-neutral-500 uppercase tracking-wider">
+                    <div className="px-3 py-1 text-[10px] font-bold text-gray-400 dark:text-neutral-500 capitalize">
                       Navigation
                     </div>
                     {primaryNavLinks.map((link) => {
@@ -163,7 +163,7 @@ export default function Navbar({ userName }) {
                     })}
 
                     <div className="pt-2 mt-2 border-t border-gray-100 dark:border-neutral-800">
-                      <div className="px-3 py-1 text-[10px] font-bold text-gray-400 dark:text-neutral-500 uppercase tracking-wider">
+                      <div className="px-3 py-1 text-[10px] font-bold text-gray-400 dark:text-neutral-500 capitalize">
                         Appearance
                       </div>
                       <ThemeToggle variant="menu-item" />

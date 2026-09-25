@@ -536,7 +536,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <Flag className="w-4 h-4" />
                     </div>
                     <div>
-                      <h2 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                      <h2 className="text-xs font-bold text-gray-900 dark:text-white capitalize">
                         Forex Economic Calendar
                       </h2>
                       <p className="text-[10.5px] text-gray-400 dark:text-neutral-400">Real macroeconomic releases, central bank decisions & NFP</p>
@@ -567,7 +567,7 @@ export default function NewsClientPage({ userName, userId }) {
 
                 {/* Forex Impact Filters */}
                 <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider mr-1">Impact:</span>
+                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 capitalize mr-1">Impact:</span>
                   {IMPACT_LEVELS.map(imp => {
                     const isSelected = forexImpacts.includes(imp.key);
                     return (
@@ -593,7 +593,7 @@ export default function NewsClientPage({ userName, userId }) {
 
                 {/* Forex Currency Filters */}
                 <div className="flex flex-wrap items-center gap-1 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
-                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider mr-1">Currencies:</span>
+                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 capitalize mr-1">Currencies:</span>
                   {FOREX_CURRENCIES.map(curr => {
                     const isSelected = forexCurrencies.includes(curr);
                     return (
@@ -621,7 +621,7 @@ export default function NewsClientPage({ userName, userId }) {
                 <div className="bg-white dark:bg-[#111722] rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-xs overflow-hidden transition-colors">
                   <div className="w-full px-4 py-3 bg-gradient-to-r from-blue-50/90 to-white dark:from-blue-950/40 dark:to-[#111722] flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize flex items-center gap-2">
                         <span>Today</span>
                         <span className="bg-[#2563EB] text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
@@ -677,7 +677,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <span className="text-gray-500 dark:text-neutral-400 font-bold text-sm">
                         {forexSections.upcoming ? '▼' : '▶'}
                       </span>
-                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize">
                         Upcoming (Next 7 Days)
                       </h3>
                     </div>
@@ -708,7 +708,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <span className="text-gray-500 dark:text-neutral-400 font-bold text-sm">
                         {forexSections.previous ? '▼' : '▶'}
                       </span>
-                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize">
                         Previous (Last 7 Days)
                       </h3>
                     </div>
@@ -744,7 +744,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <Zap className="w-4 h-4" />
                     </div>
                     <div>
-                      <h2 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wide">
+                      <h2 className="text-xs font-bold text-gray-900 dark:text-white capitalize">
                         Cryptocurrency News
                       </h2>
                       <p className="text-[10.5px] text-gray-400 dark:text-neutral-400">Live feeds from CoinTelegraph, Decrypt & CoinDesk</p>
@@ -775,7 +775,7 @@ export default function NewsClientPage({ userName, userId }) {
 
                 {/* Sentiment Filter Tabs */}
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider mr-1">Sentiment:</span>
+                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 capitalize mr-1">Sentiment:</span>
                   {[
                     { id: 'all', label: 'All' },
                     { id: 'bullish', label: 'Bullish', color: 'text-emerald-500' },
@@ -798,7 +798,7 @@ export default function NewsClientPage({ userName, userId }) {
 
                 {/* Crypto Coin Filters */}
                 <div className="flex flex-wrap items-center gap-1 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
-                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 uppercase tracking-wider mr-1">Coins:</span>
+                  <span className="text-[10.5px] font-bold text-gray-500 dark:text-neutral-400 capitalize mr-1">Coins:</span>
                   {CRYPTO_COINS.map(coin => {
                     const isSelected = cryptoCoins.includes(coin);
                     return (
@@ -825,7 +825,7 @@ export default function NewsClientPage({ userName, userId }) {
                 <div className="bg-white dark:bg-[#111722] rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-xs overflow-hidden transition-colors">
                   <div className="w-full px-4 py-3 bg-gradient-to-r from-blue-50/90 to-white dark:from-blue-950/40 dark:to-[#111722] flex items-center justify-between border-b border-gray-100 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-gray-900 dark:text-white capitalize flex items-center gap-2">
                         <span>Today</span>
                         <span className="bg-[#2563EB] text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
@@ -863,7 +863,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <span className="text-gray-500 dark:text-neutral-400 font-bold text-sm">
                         {cryptoSections.upcoming ? '▼' : '▶'}
                       </span>
-                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize">
                         Upcoming Catalysts & Unlocks
                       </h3>
                     </div>
@@ -894,7 +894,7 @@ export default function NewsClientPage({ userName, userId }) {
                       <span className="text-gray-500 dark:text-neutral-400 font-bold text-sm">
                         {cryptoSections.previous ? '▼' : '▶'}
                       </span>
-                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-gray-800 dark:text-neutral-200 capitalize">
                         Previous Highlights
                       </h3>
                     </div>
@@ -1105,7 +1105,7 @@ export default function NewsClientPage({ userName, userId }) {
 
             <form onSubmit={handleSaveNote} className="p-5 flex flex-col gap-4 overflow-y-auto">
               <div>
-                <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 capitalize mb-1">
                   Title
                 </label>
                 <input
@@ -1120,7 +1120,7 @@ export default function NewsClientPage({ userName, userId }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 capitalize mb-1">
                     Category
                   </label>
                   <select
@@ -1137,7 +1137,7 @@ export default function NewsClientPage({ userName, userId }) {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 capitalize mb-1">
                     Tags (comma separated)
                   </label>
                   <input
@@ -1152,7 +1152,7 @@ export default function NewsClientPage({ userName, userId }) {
 
               {noteLinkedNews && (
                 <div>
-                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider mb-1">
+                  <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 capitalize mb-1">
                     Linked News Event
                   </label>
                   <div className="px-3 py-1.5 bg-gray-50 dark:bg-[#161D2A] rounded-xl border border-gray-200 dark:border-white/[0.08] text-xs text-gray-700 dark:text-neutral-200 font-medium flex items-center justify-between">
@@ -1169,7 +1169,7 @@ export default function NewsClientPage({ userName, userId }) {
               )}
 
               <div>
-                <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider mb-1">
+                <label className="block text-[11px] font-bold text-gray-700 dark:text-neutral-300 capitalize mb-1">
                   Note & Strategy Content
                 </label>
                 <textarea
@@ -1250,7 +1250,7 @@ export default function NewsClientPage({ userName, userId }) {
 
           <div className="flex items-center gap-2 shrink-0">
             {/* Impact Badge */}
-            <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${impactObj?.color || 'bg-gray-400 text-white'}`}>
+            <span className={`px-2 py-0.5 rounded text-[9px] font-bold capitalize  ${impactObj?.color || 'bg-gray-400 text-white'}`}>
               {event.impact}
             </span>
 
@@ -1277,15 +1277,15 @@ export default function NewsClientPage({ userName, userId }) {
 
             <div className="grid grid-cols-3 gap-2 bg-white dark:bg-[#161D2A] p-2.5 rounded-lg border border-gray-200/80 dark:border-white/[0.08] text-center font-mono">
               <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase font-semibold">Actual</span>
+                <span className="text-[10px] text-gray-400 dark:text-neutral-500 capitalize font-semibold">Actual</span>
                 <span className="text-xs font-bold text-[#089981] dark:text-emerald-400">{event.actual}</span>
               </div>
               <div className="flex flex-col border-x border-gray-100 dark:border-white/[0.06]">
-                <span className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase font-semibold">Forecast</span>
+                <span className="text-[10px] text-gray-400 dark:text-neutral-500 capitalize font-semibold">Forecast</span>
                 <span className="text-xs font-bold text-gray-700 dark:text-neutral-200">{event.forecast}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 dark:text-neutral-500 uppercase font-semibold">Previous</span>
+                <span className="text-[10px] text-gray-400 dark:text-neutral-500 capitalize font-semibold">Previous</span>
                 <span className="text-xs font-bold text-gray-500 dark:text-neutral-400">{event.previous}</span>
               </div>
             </div>
@@ -1353,7 +1353,7 @@ export default function NewsClientPage({ userName, userId }) {
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold capitalize  ${
               item.sentiment === 'bullish' ? 'bg-[#10B981]/15 text-[#10B981] dark:bg-emerald-950/40 dark:text-emerald-400' :
               item.sentiment === 'bearish' ? 'bg-[#EF4444]/15 text-[#EF4444] dark:bg-rose-950/40 dark:text-rose-400' : 'bg-gray-100 dark:bg-neutral-800 text-gray-600 dark:text-neutral-300'
             }`}>

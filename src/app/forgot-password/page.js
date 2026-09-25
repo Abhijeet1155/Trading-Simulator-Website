@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
           <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <TrendingUp className="text-white w-4.5 h-4.5" />
           </div>
-          <span className="font-semibold text-lg  text-[#111111]">PaperPulse</span>
+          <span className="font-semibold text-lg text-[#111111]">PaperPulse</span>
         </Link>
       </div>
 
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
         {!submitted ? (
           <>
             <div className="mb-6 text-center">
-              <h2 className="text-2xl font-semibold  text-[#111111]">Reset password</h2>
+              <h2 className="text-2xl font-semibold text-[#111111]">Reset password</h2>
               <p className="text-sm text-[#6B7280] mt-1">
                 Enter your email address and we'll send you a link to reset your password.
               </p>
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {/* Email Address */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[#6B7280] capitalize ">Email Address</label>
+                <label className="text-xs font-semibold text-[#6B7280] capitalize">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-[#6B7280]" />
                   <input

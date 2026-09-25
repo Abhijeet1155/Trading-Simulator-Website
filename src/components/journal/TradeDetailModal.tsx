@@ -56,7 +56,7 @@ export default function TradeDetailModal({
         {/* Top Header Bar */}
         <div className="p-4 sm:px-6 py-3.5 border-b border-gray-200 dark:border-neutral-800 flex items-center justify-between bg-gray-50/80 dark:bg-[#151515] shrink-0">
           <div className="flex items-center gap-3">
-            <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold uppercase flex items-center gap-1.5 ${
+            <span className={`px-2.5 py-1 rounded-lg text-xs font-mono font-extrabold capitalize flex items-center gap-1.5 ${
               isLong 
                 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60' 
                 : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60'
@@ -67,7 +67,7 @@ export default function TradeDetailModal({
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-mono font-bold text-gray-900 dark:text-neutral-100 tracking-tight">
+                <h1 className="text-lg font-mono font-bold text-gray-900 dark:text-neutral-100">
                   {trade.symbol}
                 </h1>
                 <span className="text-[11px] font-mono text-gray-600 dark:text-neutral-400 bg-gray-100 dark:bg-neutral-800 px-2 py-0.5 rounded border border-gray-200 dark:border-neutral-700">
@@ -126,7 +126,7 @@ export default function TradeDetailModal({
           <div className="lg:col-span-7 p-4 sm:p-6 bg-gray-50/50 dark:bg-[#151515] border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-neutral-800 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-gray-700 dark:text-neutral-300 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                <span className="text-xs font-bold text-gray-700 dark:text-neutral-300 capitalize flex items-center gap-1.5 font-mono">
                   <ImageIcon className="w-4 h-4 text-[#2563EB] dark:text-blue-400" />
                   Chart Snapshot & Markups
                 </span>
@@ -177,7 +177,7 @@ export default function TradeDetailModal({
             {/* Strategy Playbook Summary Pill */}
             <div className="mt-4 p-3 bg-white dark:bg-[#181818] rounded-xl border border-gray-200 dark:border-neutral-800 flex items-center justify-between shadow-2xs">
               <div>
-                <span className="text-[10px] uppercase font-mono font-bold text-gray-400 dark:text-neutral-500 block">Setup Model</span>
+                <span className="text-[10px] capitalize font-mono font-bold text-gray-400 dark:text-neutral-500 block">Setup Model</span>
                 <span className="text-xs font-bold text-[#2563EB] dark:text-blue-400">{trade.setupModel || 'Custom Setup'}</span>
               </div>
               <div className="flex items-center gap-1">
@@ -205,7 +205,7 @@ export default function TradeDetailModal({
                 : 'bg-gray-50 dark:bg-[#151515] border-gray-200 dark:border-neutral-800'
             }`}>
               <div>
-                <span className="text-[10.5px] uppercase font-mono font-bold text-gray-500 dark:text-neutral-400 block">
+                <span className="text-[10.5px] capitalize font-mono font-bold text-gray-500 dark:text-neutral-400 block">
                   Net Realized P&L
                 </span>
                 <div className={`text-2xl font-mono font-extrabold ${
@@ -216,7 +216,7 @@ export default function TradeDetailModal({
               </div>
 
               <div className="text-right">
-                <span className="text-[10px] uppercase font-mono text-gray-500 dark:text-neutral-400 block">Realized R:R</span>
+                <span className="text-[10px] capitalize font-mono text-gray-500 dark:text-neutral-400 block">Realized R:R</span>
                 <span className={`text-lg font-mono font-extrabold ${
                   trade.rrRealized > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-700 dark:text-neutral-300'
                 }`}>
@@ -227,40 +227,40 @@ export default function TradeDetailModal({
 
             {/* Execution Price Matrix */}
             <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-2xl border border-gray-200 dark:border-neutral-800 space-y-3">
-              <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block font-mono">
+              <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize block font-mono">
                 Execution Matrix
               </span>
 
               <div className="grid grid-cols-2 gap-2 text-xs font-mono">
                 <div className="bg-white dark:bg-[#181818] p-2.5 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
-                  <span className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase block font-semibold">Entry Price</span>
+                  <span className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize block font-semibold">Entry Price</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold text-sm">{trade.entryPrice}</span>
                 </div>
                 <div className="bg-white dark:bg-[#181818] p-2.5 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
-                  <span className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase block font-semibold">Exit Price</span>
+                  <span className="text-[10px] text-gray-500 dark:text-neutral-400 capitalize block font-semibold">Exit Price</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold text-sm">{trade.exitPrice || '—'}</span>
                 </div>
                 <div className="bg-white dark:bg-[#181818] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
-                  <span className="text-[10px] text-rose-600 dark:text-rose-400 uppercase block font-semibold">Stop Loss</span>
+                  <span className="text-[10px] text-rose-600 dark:text-rose-400 capitalize block font-semibold">Stop Loss</span>
                   <span className="text-rose-700 dark:text-rose-400 font-bold text-sm">{trade.stopLoss}</span>
                 </div>
                 <div className="bg-white dark:bg-[#181818] p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-900/60 shadow-2xs">
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase block font-semibold">Take Profit</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 capitalize block font-semibold">Take Profit</span>
                   <span className="text-emerald-700 dark:text-emerald-400 font-bold text-sm">{trade.takeProfit || '—'}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-1 text-gray-600 dark:text-neutral-400">
                 <div className="bg-white dark:bg-[#181818] p-2 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
-                  <span className="text-[9.5px] uppercase block text-gray-400 dark:text-neutral-500">Size</span>
+                  <span className="text-[9.5px] capitalize block text-gray-400 dark:text-neutral-500">Size</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">{trade.lotSize} lots</span>
                 </div>
                 <div className="bg-white dark:bg-[#181818] p-2 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
-                  <span className="text-[9.5px] uppercase block text-gray-400 dark:text-neutral-500">Planned R:R</span>
+                  <span className="text-[9.5px] capitalize block text-gray-400 dark:text-neutral-500">Planned R:R</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">{trade.rrPlanned || 0}R</span>
                 </div>
                 <div className="bg-white dark:bg-[#181818] p-2 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-2xs">
-                  <span className="text-[9.5px] uppercase block text-gray-400 dark:text-neutral-500">Commission</span>
+                  <span className="text-[9.5px] capitalize block text-gray-400 dark:text-neutral-500">Commission</span>
                   <span className="text-gray-900 dark:text-neutral-100 font-bold">${trade.commission || 0}</span>
                 </div>
               </div>
@@ -269,7 +269,7 @@ export default function TradeDetailModal({
             {/* Partials Timeline */}
             {trade.partials && trade.partials.length > 0 && (
               <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-2xl border border-gray-200 dark:border-neutral-800 space-y-2.5">
-                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block font-mono">
+                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize block font-mono">
                   Scale Outs & Partials Timeline ({trade.partials.length})
                 </span>
                 <div className="space-y-1.5 font-mono text-xs">
@@ -292,7 +292,7 @@ export default function TradeDetailModal({
             {/* Confluences List */}
             {trade.confluences && trade.confluences.length > 0 && (
               <div className="space-y-2">
-                <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider block font-mono">
+                <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 capitalize block font-mono">
                   Confluences & Key Levels
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -308,7 +308,7 @@ export default function TradeDetailModal({
             {/* Psychology & Execution Discipline */}
             {((trade.psychology && trade.psychology.length > 0) || (trade.mistakes && trade.mistakes.length > 0)) && (
               <div className="space-y-2.5">
-                <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 uppercase tracking-wider block font-mono">
+                <span className="text-xs font-bold text-gray-600 dark:text-neutral-400 capitalize block font-mono">
                   Execution Discipline & Psychology
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -333,7 +333,7 @@ export default function TradeDetailModal({
             {/* Trade Notes */}
             {trade.notes && (
               <div className="bg-gray-50/80 dark:bg-[#151515] p-4 rounded-2xl border border-gray-200 dark:border-neutral-800 space-y-2">
-                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 uppercase tracking-wider block font-mono">
+                <span className="text-xs font-bold text-gray-900 dark:text-neutral-100 capitalize block font-mono">
                   Analysis & Post-Trade Notes
                 </span>
                 <p className="text-xs text-gray-700 dark:text-neutral-300 leading-relaxed whitespace-pre-line font-sans">

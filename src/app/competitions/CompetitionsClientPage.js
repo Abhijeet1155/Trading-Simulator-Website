@@ -333,7 +333,7 @@ export default function CompetitionsClientPage({ userId, userEmail, initialDispl
       <Navbar userName={displayName} />
 
       {/* Main Content Area */}
-      <main className="max-w-6xl mx-auto px-6 py-10 flex-grow w-full">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-10 flex-grow w-full pb-24 md:pb-10">
         {error && (
           <div className="mb-6 flex items-start gap-2.5 text-sm font-semibold text-[#DC2626] bg-[#DC2626]/10 px-4 py-3 rounded-lg border border-[#DC2626]/20">
             <AlertCircle className="w-5 h-5 flex-shrink-0 text-[#DC2626]" />

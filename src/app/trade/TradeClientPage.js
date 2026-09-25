@@ -6,7 +6,7 @@ import {
   TrendingUp, TrendingDown, User, AlertCircle, Info, CheckCircle2, Search,
   Settings, HelpCircle, ChevronDown, ChevronUp, ChevronRight, ChevronLeft, Maximize2, Plus, Minus, Lock, Unlock,
   Eye, EyeOff, Trash2, RefreshCw, Sliders, X, Menu, RotateCcw, Pencil, Wallet, ShieldAlert,
-  ArrowDownCircle, Check, Star, PanelLeftClose, PanelRightClose, PanelBottomClose
+  ArrowDownCircle, Check, Star, PanelLeftClose, PanelRightClose, PanelBottomClose, Layers
 } from 'lucide-react';
 import UserDropdown from '../dashboard/UserDropdown';
 import Navbar from '@/components/Navbar';
@@ -974,6 +974,8 @@ export default function TradeClientPage({
   const [isLeftCollapsed, setIsLeftCollapsed] = useState(false);
   const [isRightCollapsed, setIsRightCollapsed] = useState(false);
   const [isBottomCollapsed, setIsBottomCollapsed] = useState(false);
+  const [isMobileWatchlistOpen, setIsMobileWatchlistOpen] = useState(false);
+  const [isMobilePositionsOpen, setIsMobilePositionsOpen] = useState(false);
 
   // Load persisted panel states from localStorage if present
   useEffect(() => {
@@ -1589,6 +1591,7 @@ export default function TradeClientPage({
     setTpPrice('');
     setSlPrice('');
     setIsSearchOpen(false);
+    setIsMobileWatchlistOpen(false);
   };
 
   const formatAssetPrice = (val, sym = selectedAsset) => {
@@ -2583,8 +2586,8 @@ export default function TradeClientPage({
       <Navbar userName={userName} onAccountSwitch={fetchAccountDetails} />
 
       {/* TOP TICKER STRIP */}
-      <div className="bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] h-7 overflow-hidden relative flex items-center w-full select-none shrink-0">
-        <div className="animate-marquee whitespace-nowrap flex items-center gap-12 text-[10px] font-sans py-0.5">
+      <div className="bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] h-7 overflow-x-auto no-scrollbar relative flex items-center w-full select-none shrink-0">
+        <div className="animate-marquee whitespace-nowrap flex items-center gap-8 md:gap-12 text-[10px] font-sans py-0.5 px-2">
           {[...Object.values(ASSETS), ...Object.values(ASSETS), ...Object.values(ASSETS)].map((item, idx) => {
             const currentPrice = prices[item.symbol] || item.price;
             const changePct = getChangePercent(item.symbol);
@@ -2613,10 +2616,10 @@ export default function TradeClientPage({
       </div>
 
       {/* Main Trading Platform Outer Container */}
-      <div className="flex-grow flex flex-col w-full h-full min-h-0 overflow-hidden relative">
+      <div className="flex-grow flex flex-col w-full h-full min-h-0 overflow-hidden relative pb-16 lg:pb-0">
         
         {/* ROW 1: Top Trading Workspace (Watchlist | Chart | Order Panel) */}
-        <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-y-auto lg:overflow-hidden w-full relative">
+        <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden w-full relative">
         
         {/* Far Left Drawing Toolbar (TradingView Style) */}
         <aside className="hidden lg:flex w-11 bg-white dark:bg-[#111722] border-r border-[#E0E3EB] dark:border-white/[0.08] flex-col items-center py-2 justify-between shrink-0 select-none">
@@ -2733,15 +2736,29 @@ export default function TradeClientPage({
         )}
 
         {/* Center and Left Work Area (Chart & Bottom Terminal) */}
-        <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white dark:bg-[#0B0E14]">
+        <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-white dark:bg-[#0B0E14] h-full pb-14 lg:pb-0">
           
           {/* Chart Section */}
-          <div className="h-[420px] lg:h-0 lg:flex-grow flex flex-col overflow-hidden relative shrink-0 lg:min-h-0 bg-white dark:bg-[#0B0E14]">
-            {/* Chart Top Header Toolbar: [SELL] [BUY] [Timeframes] [Chart Types] [Indicators/Tools] */}
-            <div className="h-10 bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] flex items-center justify-between px-2.5 shrink-0 select-none z-20">
+          <div className="h-full flex-grow flex flex-col overflow-hidden relative shrink-0 min-h-0 bg-white dark:bg-[#0B0E14]">
+            {/* Chart Top Header Toolbar */}
+            <div className="h-11 md:h-10 bg-white dark:bg-[#111722] border-b border-[#E0E3EB] dark:border-white/[0.08] flex items-center justify-between px-2 md:px-2.5 shrink-0 select-none z-20">
+              
+              {/* Left: Mobile Symbol Picker / Desktop SELL-BUY */}
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                {/* SELL / BUY Quick Action Group */}
-                <div className="flex items-center gap-1 bg-[#FAFAFA] dark:bg-[#161D2A] p-0.5 rounded-lg border border-gray-200/90 dark:border-white/[0.08] shadow-2xs shrink-0">
+                {/* Mobile Asset Selector Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsMobileWatchlistOpen(true)}
+                  className="lg:hidden flex items-center gap-2 px-2.5 py-1 bg-gray-100 dark:bg-[#161D2A] hover:bg-gray-200/80 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-xl text-xs font-bold text-gray-900 dark:text-white transition-colors cursor-pointer shrink-0"
+                >
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getAssetColor(selectedAsset) }} />
+                  <span>{selectedAsset}</span>
+                  <span className="font-mono text-[11px] text-gray-500 dark:text-neutral-400 font-semibold">{formatAssetPrice(livePrice, selectedAsset)}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                </button>
+
+                {/* Desktop SELL / BUY Quick Action Group */}
+                <div className="hidden lg:flex items-center gap-1 bg-[#FAFAFA] dark:bg-[#161D2A] p-0.5 rounded-lg border border-gray-200/90 dark:border-white/[0.08] shadow-2xs shrink-0">
                   {/* SELL BUTTON (Red) */}
                   <button
                     type="button"
@@ -2774,7 +2791,7 @@ export default function TradeClientPage({
                 </div>
 
                 {/* Vertical Divider */}
-                <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/[0.08] mx-1 shrink-0" />
+                <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/[0.08] mx-1 shrink-0 hidden lg:block" />
 
                 {/* Timeframes: 1m, 15m, 1H, 4H, 1D */}
                 <div className="flex items-center gap-0.5 bg-gray-100/70 dark:bg-[#161D2A] p-0.5 rounded-lg shrink-0 text-[10px] font-semibold">
@@ -2829,7 +2846,7 @@ export default function TradeClientPage({
                 <button
                   type="button"
                   onClick={() => showToast('Technical indicators loaded on chart.', 'info')}
-                  className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-600 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-neutral-100 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg transition-colors cursor-pointer shrink-0"
+                  className="hidden sm:flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-600 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-neutral-100 bg-gray-50 dark:bg-[#161D2A] hover:bg-gray-100 dark:hover:bg-[#1E293B] border border-gray-200 dark:border-white/[0.08] rounded-lg transition-colors cursor-pointer shrink-0"
                 >
                   <Sliders className="w-3 h-3 text-[#2563EB] dark:text-blue-400" />
                   <span>Indicators</span>
@@ -2838,6 +2855,14 @@ export default function TradeClientPage({
 
               {/* Right Side Tools */}
               <div className="flex items-center gap-1 shrink-0 pl-2">
+                <button
+                  type="button"
+                  onClick={() => setIsMobileWatchlistOpen(true)}
+                  className="lg:hidden p-1.5 hover:bg-gray-100 dark:hover:bg-white/[0.08] rounded-lg text-gray-600 dark:text-neutral-300 transition-colors"
+                  title="Watchlist"
+                >
+                  <Search className="w-4 h-4" />
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -2890,7 +2915,7 @@ export default function TradeClientPage({
               onMouseDown={startResizeRight}
               className="hidden lg:block w-[4px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-transparent border-l border-[#E0E3EB] dark:border-white/[0.08] hover:border-transparent cursor-col-resize transition-all duration-150 shrink-0 select-none z-10"
             />
-            <aside style={{ width: isDesktop ? `${rightWidth}px` : '100%' }} className="w-full lg:w-auto bg-white dark:bg-[#111722] border-t lg:border-t-0 flex flex-col shrink-0 overflow-y-auto lg:overflow-hidden h-auto lg:h-full transition-all">
+            <aside style={{ width: isDesktop ? `${rightWidth}px` : '100%' }} className="hidden lg:flex w-full lg:w-auto bg-white dark:bg-[#111722] border-t lg:border-t-0 flex-col shrink-0 overflow-y-auto lg:overflow-hidden h-auto lg:h-full transition-all">
               {renderOrderPanel()}
             </aside>
           </>
@@ -2898,18 +2923,18 @@ export default function TradeClientPage({
 
         </div>
 
-        {/* Terminal Horizontal Resize Handle (Full Width Bar) - hidden if collapsed */}
+        {/* Terminal Horizontal Resize Handle (Full Width Bar) - hidden if collapsed or mobile */}
         {!isBottomCollapsed && (
           <div 
             onMouseDown={startResizeTerminal}
-            className="h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] dark:bg-[#161D2A] border-t border-b border-[#E0E3EB] dark:border-white/[0.08] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10 w-full"
+            className="hidden lg:block h-[5px] hover:bg-[#2563EB]/40 active:bg-[#2563EB] bg-[#FAFAFA] dark:bg-[#161D2A] border-t border-b border-[#E0E3EB] dark:border-white/[0.08] hover:border-transparent cursor-row-resize transition-all duration-150 shrink-0 select-none z-10 w-full"
           />
         )}
 
-        {/* ROW 2: Bottom Terminal (Positions / Pending Orders / Order History) — Full Width */}
+        {/* ROW 2: Bottom Terminal (Positions / Pending Orders / Order History) — Desktop Full Width */}
         <div 
           style={{ height: isBottomCollapsed ? '32px' : `${terminalHeight}px` }} 
-          className="bg-white dark:bg-[#111722] overflow-hidden flex flex-col shrink-0 w-full border-t border-gray-200 dark:border-white/[0.08] transition-[height] duration-200 ease-in-out"
+          className="hidden lg:flex bg-white dark:bg-[#111722] overflow-hidden flex-col shrink-0 w-full border-t border-gray-200 dark:border-white/[0.08] transition-[height] duration-200 ease-in-out"
         >
           {/* Header Tabs */}
           <div className="text-[11px] font-semibold border-b border-gray-100 dark:border-white/[0.08] bg-[#FAFAFA] dark:bg-[#161D2A] text-gray-400 dark:text-neutral-400 shrink-0 flex justify-between items-center px-2 py-0.5 h-8 select-none">
@@ -3125,6 +3150,366 @@ export default function TradeClientPage({
       </div>
 
       </div>
+
+      {/* MOBILE BOTTOM ACTION DOCK (Fixed thumb-friendly action bar for mobile) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#111722]/95 backdrop-blur-md border-t border-gray-200/80 dark:border-white/[0.08] px-3 py-2 flex items-center gap-2 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] pb-safe">
+        {/* Positions Quick Trigger */}
+        <button
+          type="button"
+          onClick={() => setIsMobilePositionsOpen(true)}
+          className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-[#161D2A] border border-gray-200/70 dark:border-white/[0.08] text-gray-700 dark:text-neutral-200 hover:bg-gray-200/70 dark:hover:bg-white/[0.06] transition-all active:scale-95 shrink-0 min-w-[76px]"
+        >
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] font-bold">Positions</span>
+            {positions.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-[#2563EB] text-white text-[9px] font-bold">
+                {positions.length}
+              </span>
+            )}
+          </div>
+          <span className={`text-[9.5px] font-mono font-bold leading-tight ${totalFloatingPnL >= 0 ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+            {totalFloatingPnL >= 0 ? '+' : ''}${totalFloatingPnL.toFixed(2)}
+          </span>
+        </button>
+
+        {/* SELL Button */}
+        <button
+          type="button"
+          onClick={() => openChartTradeModal('sell')}
+          className="flex-1 flex flex-col items-center justify-center py-2 px-2 bg-[#f23645] hover:bg-[#d92332] active:scale-[0.98] text-white rounded-xl shadow-sm transition-all cursor-pointer select-none"
+        >
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-black tracking-wide uppercase">SELL</span>
+          </div>
+          <span className="text-[10px] font-mono font-bold opacity-90">
+            ${formatAssetPrice(livePrice * 0.9998)}
+          </span>
+        </button>
+
+        {/* BUY Button */}
+        <button
+          type="button"
+          onClick={() => openChartTradeModal('buy')}
+          className="flex-1 flex flex-col items-center justify-center py-2 px-2 bg-[#089981] hover:bg-[#07826d] active:scale-[0.98] text-white rounded-xl shadow-sm transition-all cursor-pointer select-none"
+        >
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-black tracking-wide uppercase">BUY</span>
+          </div>
+          <span className="text-[10px] font-mono font-bold opacity-90">
+            ${formatAssetPrice(livePrice * 1.0002)}
+          </span>
+        </button>
+      </div>
+
+      {/* MOBILE WATCHLIST DRAWER */}
+      {isMobileWatchlistOpen && (
+        <div className="fixed inset-0 z-[100] lg:hidden">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setIsMobileWatchlistOpen(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 max-h-[85vh] bg-white dark:bg-[#111722] border-t border-gray-200 dark:border-white/[0.08] rounded-t-3xl shadow-2xl flex flex-col z-[101] animate-in slide-in-from-bottom duration-250 pb-safe">
+            {/* Handle */}
+            <div className="w-12 h-1.5 bg-gray-300 dark:bg-neutral-700 rounded-full mx-auto my-2.5 shrink-0" />
+            
+            {/* Header */}
+            <div className="px-4 py-2 border-b border-gray-100 dark:border-white/[0.08] flex items-center justify-between shrink-0">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 dark:text-neutral-100">Select Market</h3>
+                <p className="text-[10.5px] text-gray-400 dark:text-neutral-500 font-medium">Choose an instrument to trade</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobileWatchlistOpen(false)}
+                className="p-1.5 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-neutral-200 hover:bg-gray-100 dark:hover:bg-white/[0.08] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Category Tabs */}
+            <div className="px-4 py-2 border-b border-gray-100 dark:border-white/[0.08] flex gap-2 overflow-x-auto no-scrollbar shrink-0">
+              {['All', 'Crypto', 'Forex', 'Stocks', 'Favorites'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setWatchlistTab(tab)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                    watchlistTab === tab
+                      ? 'bg-[#2563EB] text-white shadow-xs'
+                      : 'bg-gray-100 dark:bg-[#161D2A] text-gray-600 dark:text-neutral-300 hover:bg-gray-200 dark:hover:bg-white/[0.06]'
+                  }`}
+                >
+                  {tab === 'Favorites' ? '⭐ Favorites' : tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Bar */}
+            <div className="p-3 border-b border-gray-100 dark:border-white/[0.08] shrink-0">
+              <div className="flex items-center gap-2 bg-gray-100 dark:bg-[#161D2A] rounded-xl px-3 py-2 border border-transparent focus-within:border-[#2563EB]">
+                <Search className="w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search coin or pair (e.g. BTC, EUR/USD)..."
+                  value={watchlistSearchQuery}
+                  onChange={(e) => setWatchlistSearchQuery(e.target.value)}
+                  className="w-full bg-transparent border-none text-xs text-gray-900 dark:text-neutral-100 placeholder-gray-400 focus:outline-none focus:ring-0 p-0"
+                />
+                {watchlistSearchQuery && (
+                  <button onClick={() => setWatchlistSearchQuery('')}>
+                    <X className="w-3.5 h-3.5 text-gray-400" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Assets List */}
+            <div className="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-white/[0.04] px-2">
+              {Object.values(ASSETS)
+                .filter(item => {
+                  if (watchlistTab === 'Favorites' && !favoriteSymbols.includes(item.symbol)) return false;
+                  if (watchlistTab === 'Forex' && item.type !== 'Forex') return false;
+                  if (watchlistTab === 'Crypto' && item.type !== 'Crypto') return false;
+                  if (watchlistTab === 'Stocks' && item.type !== 'Stocks') return false;
+                  if (watchlistSearchQuery) {
+                    const q = watchlistSearchQuery.toLowerCase().trim();
+                    return item.symbol.toLowerCase().includes(q) || item.name.toLowerCase().includes(q);
+                  }
+                  return true;
+                })
+                .map(item => {
+                  const buyPrice = prices[item.symbol] || item.price;
+                  const changePct = getChangePercent(item.symbol);
+                  const isUp = changePct >= 0;
+                  const isSelected = selectedAsset === item.symbol;
+                  const isFav = favoriteSymbols.includes(item.symbol);
+
+                  return (
+                    <div
+                      key={item.symbol}
+                      onClick={() => {
+                        handleAssetChange(item.symbol);
+                        setIsMobileWatchlistOpen(false);
+                      }}
+                      className={`flex items-center justify-between p-3 rounded-xl transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.06] ${
+                        isSelected ? 'bg-blue-50/80 dark:bg-blue-500/15' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={(e) => toggleFavoriteSymbol(item.symbol, e)}
+                          className="p-1 text-gray-300 dark:text-neutral-600 hover:text-amber-400"
+                        >
+                          <Star className={`w-4 h-4 ${isFav ? 'text-amber-400 fill-amber-400' : ''}`} />
+                        </button>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-xs font-bold ${isSelected ? 'text-[#2563EB] dark:text-blue-400' : 'text-gray-900 dark:text-neutral-100'}`}>
+                              {item.pair || item.symbol}
+                            </span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-neutral-800 text-gray-500 dark:text-neutral-400 font-semibold uppercase">
+                              {item.type}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-gray-400 dark:text-neutral-500 truncate max-w-[140px]">
+                            {item.name}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-xs font-mono font-bold text-gray-900 dark:text-neutral-100">
+                          ${formatAssetPrice(buyPrice, item.symbol)}
+                        </div>
+                        <div className={`text-[10.5px] font-mono font-bold ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                          {isUp ? '+' : ''}{changePct.toFixed(2)}%
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MOBILE POSITIONS & ORDERS BOTTOM SHEET */}
+      {isMobilePositionsOpen && (
+        <div className="fixed inset-0 z-[100] lg:hidden">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+            onClick={() => setIsMobilePositionsOpen(false)}
+          />
+          <div className="fixed inset-x-0 bottom-0 max-h-[88vh] bg-white dark:bg-[#111722] border-t border-gray-200 dark:border-white/[0.08] rounded-t-3xl shadow-2xl flex flex-col z-[101] animate-in slide-in-from-bottom duration-250 pb-safe">
+            {/* Handle */}
+            <div className="w-12 h-1.5 bg-gray-300 dark:bg-neutral-700 rounded-full mx-auto my-2.5 shrink-0" />
+            
+            {/* Header */}
+            <div className="px-4 py-2 border-b border-gray-100 dark:border-white/[0.08] flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                {['positions', 'pending', 'history'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setTableTab(tab)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${
+                      tableTab === tab
+                        ? 'bg-[#2563EB] text-white shadow-xs'
+                        : 'bg-gray-100 dark:bg-[#161D2A] text-gray-500 dark:text-neutral-400'
+                    }`}
+                  >
+                    {tab === 'positions' ? `Positions (${positions.length})` : tab === 'pending' ? 'Pending (0)' : 'History'}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobilePositionsOpen(false)}
+                className="p-1.5 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-neutral-200 hover:bg-gray-100 dark:hover:bg-white/[0.08] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-3">
+              {tableTab === 'positions' ? (
+                positions.length > 0 ? (
+                  positions.map(pos => {
+                    const currentVal = prices[pos.symbol] || pos.entry;
+                    const pnl = getPositionPnL(pos);
+                    const isUp = pnl >= 0;
+                    const isBuy = pos.side?.toLowerCase() === 'buy';
+
+                    return (
+                      <div 
+                        key={pos.id}
+                        className="bg-gray-50/80 dark:bg-[#161D2A] border border-gray-200/80 dark:border-white/[0.08] rounded-2xl p-3.5 space-y-3 shadow-xs"
+                      >
+                        {/* Top row: Symbol, Side, Leverage, PnL */}
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide ${
+                              isBuy ? 'bg-[#089981]/15 text-[#089981]' : 'bg-[#f23645]/15 text-[#f23645]'
+                            }`}>
+                              {pos.side ? pos.side.toUpperCase() : 'BUY'}
+                            </span>
+                            <span className="font-bold text-sm text-gray-900 dark:text-neutral-100">
+                              {pos.symbol?.includes('/') ? pos.symbol : `${pos.symbol}/USDT`}
+                            </span>
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-200 dark:bg-white/[0.08] text-gray-600 dark:text-neutral-300 font-semibold">
+                              {pos.leverage || leverage}x
+                            </span>
+                          </div>
+
+                          <div className="text-right">
+                            <div className={`text-sm font-mono font-black ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                              {isUp ? '+' : ''}${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </div>
+                            <div className="text-[9.5px] text-gray-400 dark:text-neutral-500 font-medium">
+                              Unrealized P&L
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2-Col Data Grid */}
+                        <div className="grid grid-cols-2 gap-2 text-xs bg-white dark:bg-[#111722] p-2.5 rounded-xl border border-gray-100 dark:border-white/[0.05]">
+                          <div>
+                            <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-medium block">Entry Price</span>
+                            <span className="font-mono font-bold text-gray-800 dark:text-neutral-200">
+                              {FOREX_SYMBOLS.includes(pos.symbol) ? (pos.entry || 0).toFixed(4) : `$${(pos.entry || 0).toLocaleString()}`}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-medium block">Market Price</span>
+                            <span className="font-mono font-bold text-gray-800 dark:text-neutral-200">
+                              {FOREX_SYMBOLS.includes(pos.symbol) ? (currentVal || 0).toFixed(4) : `$${(currentVal || 0).toLocaleString()}`}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-medium block">Size (Lots)</span>
+                            <span className="font-mono font-bold text-gray-800 dark:text-neutral-200">
+                              {formatLotSize(pos.size)} lots
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-gray-400 dark:text-neutral-500 font-medium block">TP / SL</span>
+                            <span className="font-mono font-bold text-gray-800 dark:text-neutral-200 text-[11px]">
+                              <span className={pos.take_profit ? 'text-[#089981]' : 'text-gray-400'}>
+                                {pos.take_profit ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.take_profit.toFixed(4) : pos.take_profit) : '--'}
+                              </span>
+                              <span className="mx-1 text-gray-300 dark:text-neutral-600">/</span>
+                              <span className={pos.stop_loss ? 'text-[#f23645]' : 'text-gray-400'}>
+                                {pos.stop_loss ? (FOREX_SYMBOLS.includes(pos.symbol) ? pos.stop_loss.toFixed(4) : pos.stop_loss) : '--'}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Actions Row */}
+                        <div className="flex items-center gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => openTPSLEditModal(pos)}
+                            className="flex-1 py-2 px-3 rounded-xl border border-gray-200 dark:border-white/[0.08] hover:bg-gray-100 dark:hover:bg-white/[0.05] text-xs font-bold text-gray-700 dark:text-neutral-200 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Edit TP/SL</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isClosingId !== null}
+                            onClick={() => handleClosePosition(pos.id, pos.symbol, pos.entry)}
+                            className="flex-1 py-2 px-3 rounded-xl bg-black dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            <span>{isClosingId === pos.id ? 'Closing...' : 'Close Position'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="py-12 text-center select-none">
+                    <div className="w-12 h-12 bg-gray-100 dark:bg-[#161D2A] rounded-full flex items-center justify-center mx-auto mb-2 text-gray-400">
+                      <Layers className="w-6 h-6" />
+                    </div>
+                    <p className="text-xs font-bold text-gray-700 dark:text-neutral-300">No open positions</p>
+                    <p className="text-[10.5px] text-gray-400 dark:text-neutral-500 mt-0.5">Use the BUY/SELL buttons below to open trades</p>
+                  </div>
+                )
+              ) : tableTab === 'history' ? (
+                historyTrades && historyTrades.length > 0 ? (
+                  historyTrades.map(pos => {
+                    const isUp = pos.pnl >= 0;
+                    return (
+                      <div key={pos.id} className="bg-gray-50/80 dark:bg-[#161D2A] border border-gray-200/80 dark:border-white/[0.08] rounded-xl p-3 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs text-gray-900 dark:text-neutral-100">{pos.symbol}/USDT</span>
+                          <span className={`text-xs font-mono font-bold ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            {isUp ? '+' : ''}${pos.pnl.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-[10px] text-gray-500 dark:text-neutral-400">
+                          <span>{pos.side?.toUpperCase()} • {formatLotSize(pos.size)} lots</span>
+                          <span>Closed: {pos.closed_time}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="py-12 text-center text-gray-400 dark:text-neutral-500 text-xs font-semibold">
+                    No closed orders yet
+                  </div>
+                )
+              ) : (
+                <div className="py-12 text-center text-gray-400 dark:text-neutral-500 text-xs font-semibold">
+                  No pending orders
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal for TP / SL adjustments */}
       {isTPSLModalOpen && tpslEditingPos && (
@@ -3651,7 +4036,7 @@ export default function TradeClientPage({
       )}
 
       {/* Footer */}
-      <footer className="text-center text-[9px] text-[#9CA3AF] dark:text-neutral-500 py-1 bg-white dark:bg-[#111722] border-t border-[#E0E3EB] dark:border-white/[0.08] shrink-0 select-none font-medium">
+      <footer className="hidden lg:block text-center text-[9px] text-[#9CA3AF] dark:text-neutral-500 py-1 bg-white dark:bg-[#111722] border-t border-[#E0E3EB] dark:border-white/[0.08] shrink-0 select-none font-medium">
         &copy; {new Date().getFullYear()} PaperPulse. Virtual trading educational simulator. No real money trades are processed.
       </footer>
     </div>

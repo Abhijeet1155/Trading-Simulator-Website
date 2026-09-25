@@ -235,7 +235,7 @@ export default function DashboardClientPage({
       <div className="flex-1 flex w-full overflow-x-hidden">
         
         {/* 1. SLIM ICON NAVIGATION SIDEBAR (w-16 / 64px) */}
-        <aside className="w-16 bg-white dark:bg-[#121620] border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between items-center py-4 shrink-0 select-none z-20 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-colors">
+        <aside className="hidden md:flex w-16 bg-white dark:bg-[#121620] border-r border-slate-200/80 dark:border-white/[0.08] flex flex-col justify-between items-center py-4 shrink-0 select-none z-20 shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-colors">
           
           {/* Top Logo & Primary Nav Icons */}
           <div className="w-full flex flex-col items-center gap-4">
@@ -330,12 +330,12 @@ export default function DashboardClientPage({
         </aside>
 
         {/* 2. MAIN DASHBOARD CONTENT AREA */}
-        <main className="flex-1 px-4 sm:px-8 py-6 max-w-[1550px] mx-auto w-full overflow-y-auto min-h-0 space-y-5">
+        <main className="flex-1 px-3 sm:px-8 py-4 sm:py-6 max-w-[1550px] mx-auto w-full overflow-y-auto min-h-0 space-y-4 sm:space-y-5 pb-24 md:pb-6">
           
           {/* HEADER BAR */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1 select-none">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-1 select-none">
             <div>
-              <h1 className="text-2xl sm:text-[26px] font-bold text-[#111827] dark:text-white">
+              <h1 className="text-xl sm:text-[26px] font-bold text-[#111827] dark:text-white">
                 Dashboard
               </h1>
               <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 mt-0.5">
@@ -344,13 +344,13 @@ export default function DashboardClientPage({
             </div>
 
             {/* Segmented Control (Timeframe Pills: Day, Week, 1M, 30D) */}
-            <div className="bg-white dark:bg-[#121620] p-1 rounded-xl border border-slate-200/80 dark:border-white/[0.08] flex items-center shadow-xs self-start sm:self-auto">
+            <div className="bg-white dark:bg-[#121620] p-1 rounded-xl border border-slate-200/80 dark:border-white/[0.08] flex items-center shadow-xs self-start sm:self-auto w-full sm:w-auto justify-between sm:justify-start">
               {(['Day', 'Week', '1M', '30D'] as const).map((tf) => (
                 <button
                   key={tf}
                   type="button"
                   onClick={() => setGlobalTimeframe(tf)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex-1 sm:flex-initial text-center ${
                     globalTimeframe === tf
                       ? 'bg-[#6366F1] text-white shadow-xs font-bold'
                       : 'text-slate-500 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-white'
@@ -363,10 +363,10 @@ export default function DashboardClientPage({
           </div>
 
           {/* 3. TOP KPI METRICS BAR (5 CARDS) */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
             
             {/* Card 1: ACCOUNT BALANCE */}
-            <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
               <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
                 Account Balance
               </span>
@@ -442,7 +442,7 @@ export default function DashboardClientPage({
             </div>
 
             {/* Card 5: PROFIT FACTOR */}
-            <div className="bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div className="col-span-2 sm:col-span-1 bg-white dark:bg-[#121620] border border-slate-200/80 dark:border-white/[0.08] rounded-2xl p-3.5 sm:p-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-md transition-shadow">
               <span className="text-[10px] font-bold capitalize text-slate-400 dark:text-neutral-500">
                 Profit Factor
               </span>
@@ -633,7 +633,50 @@ export default function DashboardClientPage({
                   </Link>
                 </div>
 
-                <div className="overflow-x-auto">
+                {/* Mobile Stacked Trades (< md) */}
+                <div className="md:hidden divide-y divide-slate-100 dark:divide-white/[0.04] space-y-2">
+                  {displayTrades.map((t) => {
+                    const isWin = t.outcome === 'Win';
+                    const isLoss = t.outcome === 'Loss';
+                    return (
+                      <div key={t.id} className="p-3 bg-slate-50/60 dark:bg-white/[0.02] rounded-xl border border-slate-100 dark:border-white/[0.05] space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">{t.flag}</span>
+                            <span className="font-bold font-mono text-xs text-slate-900 dark:text-neutral-100">
+                              {t.pair}
+                            </span>
+                            <span className={`font-bold font-mono text-[10px] ${
+                              t.direction === 'BUY' ? 'text-[#10B981]' : 'text-[#EF4444]'
+                            }`}>
+                              {t.direction === 'BUY' ? '↑ BUY' : '↓ SELL'}
+                            </span>
+                          </div>
+                          <span className={`font-mono font-bold text-xs ${
+                            isWin ? 'text-[#10B981]' : isLoss ? 'text-[#EF4444]' : 'text-slate-500'
+                          }`}>
+                            {t.pnl >= 0 ? '+' : ''}${Math.abs(t.pnl).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-slate-400 dark:text-neutral-500">
+                          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold ${
+                            isWin
+                              ? 'bg-emerald-50 dark:bg-emerald-950/50 text-[#059669] dark:text-emerald-400'
+                              : isLoss
+                              ? 'bg-rose-50 dark:bg-rose-950/50 text-[#E11D48] dark:text-rose-400'
+                              : 'bg-slate-100 dark:bg-neutral-800 text-slate-600'
+                          }`}>
+                            {t.outcome}
+                          </span>
+                          <span className="font-mono">{t.time}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table (>= md) */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left border-collapse text-xs font-sans min-w-[520px]">
                     <thead>
                       <tr className="border-b border-slate-100 dark:border-white/[0.06] text-slate-400 dark:text-neutral-500 font-bold capitalize text-[10px]">

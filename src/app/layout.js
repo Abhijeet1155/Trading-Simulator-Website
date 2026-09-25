@@ -10,6 +10,23 @@ const inter = Inter({
 export const metadata = {
   title: "PaperPulse | Learn Trading Without Risking Real Money",
   description: "Master the markets with zero risk. Practice paper trading crypto, forex, and stocks using virtual money. Real-time prices, analytical portfolios, and global tournaments.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PaperPulse",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+  ],
 };
 
 const themeInitScript = `
@@ -48,7 +65,7 @@ export default function RootLayout({ children }) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col font-sans transition-colors duration-200">
+      <body className="min-h-full flex flex-col font-sans transition-colors duration-200 overflow-x-hidden antialiased">
         <ThemeProvider>
           {children}
         </ThemeProvider>

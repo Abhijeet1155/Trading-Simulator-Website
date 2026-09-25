@@ -206,7 +206,7 @@ export default function SettingsClientPage({
       <Navbar userName={name} />
 
       {/* Main Container */}
-      <main className="max-w-3xl mx-auto px-6 py-10 flex-grow w-full">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-10 flex-grow w-full pb-24 md:pb-10">
         {/* Back Link */}
         <div className="mb-6">
           <Link

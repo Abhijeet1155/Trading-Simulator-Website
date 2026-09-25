@@ -1317,7 +1317,7 @@ export default function BarReplayEngine() {
       <div className="flex-1 flex w-full overflow-hidden min-h-0">
         
         {/* LEFT VERTICAL NAVIGATION */}
-        <nav className="w-14 bg-white dark:bg-[#111722] border-r border-gray-200 dark:border-white/[0.08] flex flex-col justify-between items-center py-2 shrink-0 select-none z-10 transition-colors duration-200">
+        <nav className="hidden md:flex w-14 bg-white dark:bg-[#111722] border-r border-gray-200 dark:border-white/[0.08] flex flex-col justify-between items-center py-2 shrink-0 select-none z-10 transition-colors duration-200">
           
           <div className="space-y-3 w-full flex flex-col items-center">
             {[

@@ -110,138 +110,138 @@ export default function HistoryClientPage({ userName, trades = [] }) {
       <Navbar userName={userName} />
 
       {/* Main Section */}
-      <main className="max-w-6xl mx-auto px-6 py-10 flex-grow w-full">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-10 flex-grow w-full pb-20 md:pb-10">
         {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-[#111111]">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#111111]">
             Trade History
           </h1>
-          <p className="text-sm text-[#6B7280] mt-1.5 font-medium">
-            Review all your past trades
+          <p className="text-xs md:text-sm text-[#6B7280] mt-1 font-medium">
+            Review all your past trades and execution metrics
           </p>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 select-none">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8 select-none">
           {/* Total Trades */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Total Trades</span>
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-3.5 md:p-5 shadow-xs">
+            <div className="flex justify-between items-start mb-2 md:mb-3">
+              <span className="text-[10px] font-bold text-gray-400 capitalize">Total Trades</span>
               <div className="p-1.5 bg-[#F3F4F6] rounded-lg text-gray-500">
-                <Briefcase className="w-4 h-4" />
+                <Briefcase className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </div>
             </div>
-            <p className="text-xl font-semibold text-[#111111]">{totalTradesCount}</p>
-            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
-              Completed executions
+            <p className="text-lg md:text-xl font-bold text-[#111111]">{totalTradesCount}</p>
+            <span className="text-[9.5px] md:text-[10px] text-gray-400 font-medium mt-0.5 block">
+              Executions
             </span>
           </div>
 
           {/* Win Rate */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Win Rate</span>
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-3.5 md:p-5 shadow-xs">
+            <div className="flex justify-between items-start mb-2 md:mb-3">
+              <span className="text-[10px] font-bold text-gray-400 capitalize">Win Rate</span>
               <div className="p-1.5 bg-blue-50 rounded-lg text-[#2563EB]">
-                <Percent className="w-4 h-4" />
+                <Percent className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </div>
             </div>
-            <p className="text-xl font-semibold text-[#111111]">{winRate.toFixed(1)}%</p>
-            <span className="text-[10px] text-[#2563EB] font-semibold mt-0.5 block">
-              Profitable positions
+            <p className="text-lg md:text-xl font-bold text-[#111111]">{winRate.toFixed(1)}%</p>
+            <span className="text-[9.5px] md:text-[10px] text-[#2563EB] font-medium mt-0.5 block">
+              Profitable
             </span>
           </div>
 
           {/* Total P&L */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Total P&L</span>
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-3.5 md:p-5 shadow-xs">
+            <div className="flex justify-between items-start mb-2 md:mb-3">
+              <span className="text-[10px] font-bold text-gray-400 capitalize">Total P&L</span>
               <div className={`p-1.5 rounded-lg ${totalPnLSum >= 0 ? 'bg-[#16A34A]/10 text-[#16A34A]' : 'bg-[#DC2626]/10 text-[#DC2626]'}`}>
-                <DollarSign className="w-4 h-4" />
+                <DollarSign className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </div>
             </div>
-            <p className={`text-xl font-semibold ${totalPnLSum >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
+            <p className={`text-lg md:text-xl font-bold ${totalPnLSum >= 0 ? 'text-[#16A34A]' : 'text-[#DC2626]'}`}>
               {totalPnLSum >= 0 ? '+' : ''}${totalPnLSum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
-              Net balance changes
+            <span className="text-[9.5px] md:text-[10px] text-gray-400 font-medium mt-0.5 block">
+              Net balance
             </span>
           </div>
 
           {/* Best Trade */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <div className="flex justify-between items-start mb-3">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Best Trade</span>
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-3.5 md:p-5 shadow-xs">
+            <div className="flex justify-between items-start mb-2 md:mb-3">
+              <span className="text-[10px] font-bold text-gray-400 capitalize">Best Trade</span>
               <div className="p-1.5 bg-amber-50 rounded-lg text-amber-500">
-                <Trophy className="w-4 h-4" />
+                <Trophy className="w-3.5 h-3.5 md:w-4 md:h-4" />
               </div>
             </div>
-            <p className="text-xl font-semibold text-[#16A34A]">
+            <p className="text-lg md:text-xl font-bold text-[#16A34A]">
               +${bestTrade.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <span className="text-[10px] text-gray-400 font-semibold mt-0.5 block">
-              Highest single gain
+            <span className="text-[9.5px] md:text-[10px] text-gray-400 font-medium mt-0.5 block">
+              Max single gain
             </span>
           </div>
         </div>
 
         {/* Filter Row */}
-        <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] mb-6 select-none flex flex-wrap gap-4 items-center justify-between">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl p-3.5 md:p-4 shadow-xs mb-6 select-none flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-gray-400" />
-            <span className="text-xs font-semibold text-gray-500 capitalize">Filters</span>
+            <span className="text-xs font-bold text-gray-700 capitalize">Filter Trades</span>
           </div>
 
-          <div className="flex flex-wrap gap-4 items-center">
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 sm:gap-4 items-center w-full sm:w-auto">
             {/* Filter Asset */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Asset</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-gray-400 capitalize">Asset</span>
               <select
                 value={assetFilter}
                 onChange={(e) => setAssetFilter(e.target.value)}
-                className="bg-[#FAFAFA] border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none"
+                className="bg-[#FAFAFA] border border-gray-200 rounded-xl px-2 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none w-full"
               >
                 <option value="All">All Assets</option>
-                <option value="BTC">BTC (Bitcoin)</option>
-                <option value="ETH">ETH (Ethereum)</option>
-                <option value="EUR/USD">EUR/USD (Euro)</option>
-                <option value="GBP/USD">GBP/USD (Pound)</option>
-                <option value="XAU/USD">XAU/USD (Gold)</option>
-                <option value="AAPL">AAPL (Apple)</option>
+                <option value="BTC">BTC</option>
+                <option value="ETH">ETH</option>
+                <option value="EUR/USD">EUR/USD</option>
+                <option value="GBP/USD">GBP/USD</option>
+                <option value="XAU/USD">XAU/USD</option>
+                <option value="AAPL">AAPL</option>
               </select>
             </div>
 
             {/* Filter Side */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Side</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-gray-400 capitalize">Side</span>
               <select
                 value={sideFilter}
                 onChange={(e) => setSideFilter(e.target.value)}
-                className="bg-[#FAFAFA] border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none"
+                className="bg-[#FAFAFA] border border-gray-200 rounded-xl px-2 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none w-full"
               >
                 <option value="All">All Sides</option>
-                <option value="Buy">Buy (Long)</option>
-                <option value="Sell">Sell (Short)</option>
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
               </select>
             </div>
 
             {/* Filter Time */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 capitalize">Time</span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-gray-400 capitalize">Time</span>
               <select
                 value={timeFilter}
                 onChange={(e) => setTimeFilter(e.target.value)}
-                className="bg-[#FAFAFA] border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none"
+                className="bg-[#FAFAFA] border border-gray-200 rounded-xl px-2 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer focus:outline-none w-full"
               >
                 <option value="All">All Time</option>
-                <option value="7days">Last 7 Days</option>
-                <option value="30days">Last 30 Days</option>
+                <option value="7days">Last 7d</option>
+                <option value="30days">Last 30d</option>
               </select>
             </div>
           </div>
         </div>
 
         {/* History Table Card */}
-        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+        <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-xs overflow-hidden">
           {filtering ? (
             /* Loading Shimmer State */
             <div className="py-20 text-center flex flex-col items-center justify-center select-none animate-pulse">
@@ -249,52 +249,121 @@ export default function HistoryClientPage({ userName, trades = [] }) {
               <span className="text-xs font-semibold text-gray-400 capitalize">Applying filters...</span>
             </div>
           ) : paginatedTrades.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs font-sans min-w-[800px]">
-                <thead>
-                  <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px] select-none">
-                    <th className="py-3.5 px-4">Symbol</th>
-                    <th className="py-3.5 px-4">Side</th>
-                    <th className="py-3.5 px-4">Volume</th>
-                    <th className="py-3.5 px-4">Entry Price</th>
-                    <th className="py-3.5 px-4">Exit Price</th>
-                    <th className="py-3.5 px-4 text-right">P&L (USD)</th>
-                    <th className="py-3.5 px-4">Opened</th>
-                    <th className="py-3.5 px-4">Closed</th>
-                    <th className="py-3.5 px-4 text-right">Duration</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 text-gray-700">
-                  {paginatedTrades.map((pos) => {
-                    const isUp = pos.pnl >= 0;
-                    return (
-                      <tr key={pos.id} className="hover:bg-gray-50/50">
-                        <td className="py-3.5 px-4 font-semibold text-gray-900">{pos.symbol}/USDT</td>
-                        <td className="py-3.5 px-4">
-                          <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
-                            pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
+            <div>
+              {/* MOBILE STACKED CARDS VIEW (< md) */}
+              <div className="md:hidden divide-y divide-gray-100 p-2 space-y-2.5">
+                {paginatedTrades.map((pos) => {
+                  const isUp = pos.pnl >= 0;
+                  const isBuy = pos.side?.toLowerCase() === 'buy';
+
+                  return (
+                    <div key={pos.id} className="bg-gray-50/70 border border-gray-200/70 rounded-2xl p-3.5 space-y-2.5 shadow-2xs">
+                      {/* Top row: Symbol, Side, Volume, P&L */}
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide ${
+                            isBuy ? 'bg-[#089981]/15 text-[#089981]' : 'bg-[#f23645]/15 text-[#f23645]'
                           }`}>
-                            {pos.side?.toLowerCase() === 'buy' ? 'Buy' : 'Sell'}
+                            {isBuy ? 'BUY' : 'SELL'}
                           </span>
-                        </td>
-                        <td className="py-3.5 px-4 font-mono font-medium">{formatLotSize(pos.size)}</td>
-                        <td className="py-3.5 px-4 font-mono font-medium">
-                          {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
-                        </td>
-                        <td className="py-3.5 px-4 font-mono font-medium">
-                          {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.exit.toFixed(4) : `$${pos.exit.toLocaleString()}`}
-                        </td>
-                        <td className={`py-3.5 px-4 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
-                          {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
-                        </td>
-                        <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.opened_at)}</td>
-                        <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.closed_at)}</td>
-                        <td className="py-3.5 px-4 text-right text-gray-500 font-semibold">{getDurationString(pos.opened_at, pos.closed_at)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <span className="font-bold text-sm text-gray-900">
+                            {pos.symbol?.includes('/') ? pos.symbol : `${pos.symbol}/USDT`}
+                          </span>
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 font-semibold">
+                            {formatLotSize(pos.size)} lots
+                          </span>
+                        </div>
+
+                        <div className="text-right">
+                          <div className={`text-sm font-mono font-black ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            {isUp ? '+' : ''}${pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </div>
+                          <span className="text-[9px] text-gray-400 font-medium">Realized P&L</span>
+                        </div>
+                      </div>
+
+                      {/* 2-Col Details Grid */}
+                      <div className="grid grid-cols-2 gap-2 text-xs bg-white p-2.5 rounded-xl border border-gray-100">
+                        <div>
+                          <span className="text-[9.5px] text-gray-400 font-medium block">Entry / Exit</span>
+                          <span className="font-mono font-bold text-gray-800 text-[11px]">
+                            {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
+                            {' → '}
+                            {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.exit?.toFixed(4) : `$${pos.exit?.toLocaleString()}`}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[9.5px] text-gray-400 font-medium block">Duration</span>
+                          <span className="font-mono font-bold text-gray-700 text-[11px]">
+                            {getDurationString(pos.opened_at, pos.closed_at)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[9.5px] text-gray-400 font-medium block">Opened</span>
+                          <span className="text-[10.5px] text-gray-500 font-semibold">
+                            {formatDateDeterministic(pos.opened_at)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[9.5px] text-gray-400 font-medium block">Closed</span>
+                          <span className="text-[10.5px] text-gray-500 font-semibold">
+                            {formatDateDeterministic(pos.closed_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* DESKTOP TABLE VIEW (>= md) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs font-sans min-w-[800px]">
+                  <thead>
+                    <tr className="border-b border-gray-200 bg-[#F9FAFB]/50 text-gray-400 font-semibold capitalize text-[9px] select-none">
+                      <th className="py-3.5 px-4">Symbol</th>
+                      <th className="py-3.5 px-4">Side</th>
+                      <th className="py-3.5 px-4">Volume</th>
+                      <th className="py-3.5 px-4">Entry Price</th>
+                      <th className="py-3.5 px-4">Exit Price</th>
+                      <th className="py-3.5 px-4 text-right">P&L (USD)</th>
+                      <th className="py-3.5 px-4">Opened</th>
+                      <th className="py-3.5 px-4">Closed</th>
+                      <th className="py-3.5 px-4 text-right">Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-gray-700">
+                    {paginatedTrades.map((pos) => {
+                      const isUp = pos.pnl >= 0;
+                      return (
+                        <tr key={pos.id} className="hover:bg-gray-50/50">
+                          <td className="py-3.5 px-4 font-semibold text-gray-900">{pos.symbol}/USDT</td>
+                          <td className="py-3.5 px-4">
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold capitalize  ${
+                              pos.side?.toLowerCase() === 'buy' ? 'bg-[#089981]/10 text-[#089981]' : 'bg-[#f23645]/10 text-[#f23645]'
+                            }`}>
+                              {pos.side?.toLowerCase() === 'buy' ? 'Buy' : 'Sell'}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 font-mono font-medium">{formatLotSize(pos.size)}</td>
+                          <td className="py-3.5 px-4 font-mono font-medium">
+                            {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.entry.toFixed(4) : `$${pos.entry.toLocaleString()}`}
+                          </td>
+                          <td className="py-3.5 px-4 font-mono font-medium">
+                            {['EUR/USD', 'GBP/USD'].includes(pos.symbol) ? pos.exit.toFixed(4) : `$${pos.exit.toLocaleString()}`}
+                          </td>
+                          <td className={`py-3.5 px-4 text-right font-mono font-semibold tabular-nums ${isUp ? 'text-[#089981]' : 'text-[#f23645]'}`}>
+                            {isUp ? '+' : ''}{pos.pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD
+                          </td>
+                          <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.opened_at)}</td>
+                          <td className="py-3.5 px-4 text-gray-400 font-semibold">{formatDateDeterministic(pos.closed_at)}</td>
+                          <td className="py-3.5 px-4 text-right text-gray-500 font-semibold">{getDurationString(pos.opened_at, pos.closed_at)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Pagination Controls */}
               {totalPages > 1 && (

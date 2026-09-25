@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import UserDropdown from '@/app/dashboard/UserDropdown';
 import ThemeToggle from '@/components/ThemeToggle';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function Navbar({ userName }) {
   const pathname = usePathname();
@@ -176,6 +177,7 @@ export default function Navbar({ userName }) {
           </div>
         </div>
       </header>
+      <MobileBottomNav />
     </>
   );
 }

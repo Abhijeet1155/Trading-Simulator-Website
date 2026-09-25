@@ -325,7 +325,7 @@ export default function TradingJournal() {
   }, [filteredTrades]);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#121212] text-gray-900 dark:text-neutral-100 p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#121212] text-gray-900 dark:text-neutral-100 p-3 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200 pb-24 md:pb-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Status Toast */}
